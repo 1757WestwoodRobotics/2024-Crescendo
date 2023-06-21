@@ -10,9 +10,7 @@ from wpilib import (
     Timer,
     DataLogManager,
 )
-from ctre import ControlMode, WPI_TalonFX
 
-from ctre.sensors import CANCoder, SensorInitializationStrategy, AbsoluteSensorRange
 from navx import AHRS
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.filter import SlewRateLimiter
@@ -27,7 +25,36 @@ from wpimath.kinematics import (
 import constants
 from util import convenientmath
 from util.angleoptimize import optimizeAngle
-from util.ctrecheck import ctreCheckError
+from util.simcoder import CTREEncoder
+from util.simfalcon import Falcon
+
+
+class SwerveModuleConfigParams:
+    swerveEncoderOffset: float
+    swerveEncoderID: int
+    driveMotorID: int
+    driveMotorInverted: bool
+    steerMotorID: int
+    steerMotorInverted: bool
+    canbus: str = ""
+
+    def __init__(
+        self,
+        driveMotorID: int,
+        driveMotorInverted: bool,
+        steerMotorID: int,
+        steerMotorInverted: bool,
+        swerveEncoderID: int,
+        swerveEncoderOffset: float,
+        canbus: str = "",
+    ) -> None:
+        self.driveMotorID = driveMotorID
+        self.driveMotorInverted = driveMotorInverted
+        self.steerMotorID = steerMotorID
+        self.steerMotorInverted = steerMotorInverted
+        self.swerveEncoderID = swerveEncoderID
+        self.swerveEncoderOffset = swerveEncoderOffset
+        self.canbus = canbus
 
 
 class SwerveModule:
@@ -139,156 +166,42 @@ class CTRESwerveModule(SwerveModule):
         swerveEncoder: CANCoder
     """
 
-    def __init__(
-        self,
-        name: str,
-        driveMotor: WPI_TalonFX,
-        driveMotorInverted: bool,
-        steerMotor: WPI_TalonFX,
-        steerMotorInverted: bool,
-        swerveEncoder: CANCoder,
-        swerveEncoderOffset: float,
-    ) -> None:
+    def __init__(self, name: str, config: SwerveModuleConfigParams) -> None:
         SwerveModule.__init__(self, name)
-        self.driveMotor = driveMotor
-        self.driveMotorInverted = driveMotorInverted
-        self.steerMotor = steerMotor
-        self.steerMotorInverted = steerMotorInverted
-        self.swerveEncoder = swerveEncoder
-        self.swerveEncoderOffset = swerveEncoderOffset
-
         DataLogManager.log(f"Initializing swerve module: {self.name}")
-        DataLogManager.log(
-            f"   Configuring swerve encoder: CAN ID: {self.swerveEncoder.getDeviceNumber()}"
+        DataLogManager.log(f"   Configuring drive motor: CAN ID: {config.driveMotorID}")
+        self.driveMotor = Falcon(
+            config.driveMotorID,
+            constants.kDrivePIDSlot,
+            constants.kDrivePGain,
+            constants.kDriveIGain,
+            constants.kDriveDGain,
+            config.driveMotorInverted,
+            config.canbus,
         )
-
-        if not ctreCheckError(
-            "configFactoryDefault",
-            self.swerveEncoder.configFactoryDefault(
-                constants.kConfigurationTimeoutLimit
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "configSensorInitializationStrategy",
-            self.swerveEncoder.configSensorInitializationStrategy(
-                SensorInitializationStrategy.BootToAbsolutePosition,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "configMagnetOffset",
-            self.swerveEncoder.configMagnetOffset(
-                -1 * self.swerveEncoderOffset,  # invert the offset to zero the encoder
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "configAbsoluteSensorRange",
-            self.swerveEncoder.configAbsoluteSensorRange(
-                AbsoluteSensorRange.Signed_PlusMinus180,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "setPositionToAbsolute",
-            self.swerveEncoder.setPositionToAbsolute(
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
+        self.driveMotor.setCurrentLimit(constants.kDriveSupplyCurrentLimitConfiguration)
+        DataLogManager.log("   ... Done")
+        DataLogManager.log(f"   Configuring steer motor: CAN ID: {config.steerMotorID}")
+        self.steerMotor = Falcon(
+            config.steerMotorID,
+            constants.kSteerPIDSlot,
+            constants.kSteerPGain,
+            constants.kSteerIGain,
+            constants.kSteerDGain,
+            config.steerMotorInverted,
+        )
         DataLogManager.log("   ... Done")
         DataLogManager.log(
-            f"   Configuring drive motor: CAN ID: {self.driveMotor.getDeviceID()}"
+            f"   Configuring swerve encoder: CAN ID: {config.swerveEncoderID}"
         )
-        if not ctreCheckError(
-            "configFactoryDefault",
-            self.driveMotor.configFactoryDefault(constants.kConfigurationTimeoutLimit),
-        ):
-            return
-        self.driveMotor.setInverted(self.driveMotorInverted)
-        if not ctreCheckError(
-            "config_kP",
-            self.driveMotor.config_kP(
-                constants.kDrivePIDSlot,
-                constants.kDrivePGain,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "config_kI",
-            self.driveMotor.config_kI(
-                constants.kDrivePIDSlot,
-                constants.kDriveIGain,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "config_kD",
-            self.driveMotor.config_kD(
-                constants.kDrivePIDSlot,
-                constants.kDriveDGain,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "config_SupplyLim",
-            self.driveMotor.configSupplyCurrentLimit(
-                constants.kDriveSupplyCurrentLimitConfiguration,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        DataLogManager.log("   ... Done")
-
-        DataLogManager.log(
-            f"   Configuring steer motor: CAN ID: {self.steerMotor.getDeviceID()}"
+        self.swerveEncoder = CTREEncoder(
+            config.swerveEncoderID, config.swerveEncoderOffset
         )
-        if not ctreCheckError(
-            "configFactoryDefault",
-            self.steerMotor.configFactoryDefault(constants.kConfigurationTimeoutLimit),
-        ):
-            return
-        self.steerMotor.setInverted(self.steerMotorInverted)
-        if not ctreCheckError(
-            "config_kP",
-            self.steerMotor.config_kP(
-                constants.kSteerPIDSlot,
-                constants.kSteerPGain,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "config_kI",
-            self.steerMotor.config_kI(
-                constants.kSteerPIDSlot,
-                constants.kSteerIGain,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
-        if not ctreCheckError(
-            "config_kD",
-            self.steerMotor.config_kD(
-                constants.kSteerPIDSlot,
-                constants.kSteerDGain,
-                constants.kConfigurationTimeoutLimit,
-            ),
-        ):
-            return
         DataLogManager.log("   ... Done")
-
         DataLogManager.log("... Done")
 
     def getSwerveAngle(self) -> Rotation2d:
-        steerEncoderPulses = self.steerMotor.getSelectedSensorPosition()
+        steerEncoderPulses = self.steerMotor.get(Falcon.ControlMode.Position)
         swerveAngle = steerEncoderPulses / constants.kSwerveEncoderPulsesPerRadian
         return Rotation2d(swerveAngle)
 
@@ -296,17 +209,17 @@ class CTRESwerveModule(SwerveModule):
         steerEncoderPulses = (
             swerveAngle.radians()
         ) * constants.kSwerveEncoderPulsesPerRadian
-        self.steerMotor.setSelectedSensorPosition(steerEncoderPulses)
+        self.steerMotor.setEncoderPosition(steerEncoderPulses)
 
     def setSwerveAngleTarget(self, swerveAngleTarget: Rotation2d) -> None:
         steerEncoderPulsesTarget = (
             swerveAngleTarget.radians() * constants.kSwerveEncoderPulsesPerRadian
         )
-        self.steerMotor.set(ControlMode.Position, steerEncoderPulsesTarget)
+        self.steerMotor.set(Falcon.ControlMode.Position, steerEncoderPulsesTarget)
 
     def getWheelLinearVelocity(self) -> float:
         driveEncoderPulsesPerSecond = (
-            self.driveMotor.getSelectedSensorVelocity()
+            self.driveMotor.get(Falcon.ControlMode.Velocity)
             * constants.k100MillisecondsPerSecond
         )
         wheelLinearVelocity = (
@@ -315,7 +228,7 @@ class CTRESwerveModule(SwerveModule):
         return wheelLinearVelocity
 
     def getWheelTotalPosition(self) -> float:
-        driveEncoderPulses = self.driveMotor.getSelectedSensorPosition()
+        driveEncoderPulses = self.driveMotor.get(Falcon.ControlMode.Position)
         driveDistance = (
             driveEncoderPulses
             / constants.kWheelEncoderPulsesPerRadian
@@ -328,15 +241,12 @@ class CTRESwerveModule(SwerveModule):
             wheelLinearVelocityTarget * constants.kWheelEncoderPulsesPerMeter
         )
         self.driveMotor.set(
-            ControlMode.Velocity,
+            Falcon.ControlMode.Velocity,
             driveEncoderPulsesPerSecond / constants.k100MillisecondsPerSecond,
         )
 
     def reset(self) -> None:
-        swerveEncoderAngle = (
-            self.swerveEncoder.getAbsolutePosition() * constants.kRadiansPerDegree
-        )
-        self.setSwerveAngle(Rotation2d(swerveEncoderAngle))
+        self.setSwerveAngle(self.swerveEncoder.getPosition())
 
 
 class DriveSubsystem(SubsystemBase):
@@ -355,39 +265,51 @@ class DriveSubsystem(SubsystemBase):
         if RobotBase.isReal():
             self.frontLeftModule = CTRESwerveModule(
                 constants.kFrontLeftModuleName,
-                WPI_TalonFX(constants.kFrontLeftDriveMotorId, constants.kCANivoreName),
-                constants.kFrontLeftDriveInverted,
-                WPI_TalonFX(constants.kFrontLeftSteerMotorId, constants.kCANivoreName),
-                constants.kFrontLeftSteerInverted,
-                CANCoder(constants.kFrontLeftSteerEncoderId, constants.kCANivoreName),
-                constants.kFrontLeftAbsoluteEncoderOffset,
+                SwerveModuleConfigParams(
+                    constants.kFrontLeftDriveMotorId,
+                    constants.kFrontLeftDriveInverted,
+                    constants.kFrontLeftSteerMotorId,
+                    constants.kFrontLeftSteerInverted,
+                    constants.kFrontLeftSteerEncoderId,
+                    constants.kFrontLeftAbsoluteEncoderOffset,
+                    constants.kCANivoreName,
+                ),
             )
             self.frontRightModule = CTRESwerveModule(
                 constants.kFrontRightModuleName,
-                WPI_TalonFX(constants.kFrontRightDriveMotorId, constants.kCANivoreName),
-                constants.kFrontRightDriveInverted,
-                WPI_TalonFX(constants.kFrontRightSteerMotorId, constants.kCANivoreName),
-                constants.kFrontRightSteerInverted,
-                CANCoder(constants.kFrontRightSteerEncoderId, constants.kCANivoreName),
-                constants.kFrontRightAbsoluteEncoderOffset,
+                SwerveModuleConfigParams(
+                    constants.kFrontRightDriveMotorId,
+                    constants.kFrontRightDriveInverted,
+                    constants.kFrontRightSteerMotorId,
+                    constants.kFrontRightSteerInverted,
+                    constants.kFrontRightSteerEncoderId,
+                    constants.kFrontRightAbsoluteEncoderOffset,
+                    constants.kCANivoreName,
+                ),
             )
             self.backLeftModule = CTRESwerveModule(
                 constants.kBackLeftModuleName,
-                WPI_TalonFX(constants.kBackLeftDriveMotorId, constants.kCANivoreName),
-                constants.kBackLeftDriveInverted,
-                WPI_TalonFX(constants.kBackLeftSteerMotorId, constants.kCANivoreName),
-                constants.kBackLeftSteerInverted,
-                CANCoder(constants.kBackLeftSteerEncoderId, constants.kCANivoreName),
-                constants.kBackLeftAbsoluteEncoderOffset,
+                SwerveModuleConfigParams(
+                    constants.kBackLeftDriveMotorId,
+                    constants.kBackLeftDriveInverted,
+                    constants.kBackLeftSteerMotorId,
+                    constants.kBackLeftSteerInverted,
+                    constants.kBackLeftSteerEncoderId,
+                    constants.kBackLeftAbsoluteEncoderOffset,
+                    constants.kCANivoreName,
+                ),
             )
             self.backRightModule = CTRESwerveModule(
                 constants.kBackRightModuleName,
-                WPI_TalonFX(constants.kBackRightDriveMotorId, constants.kCANivoreName),
-                constants.kBackRightDriveInverted,
-                WPI_TalonFX(constants.kBackRightSteerMotorId, constants.kCANivoreName),
-                constants.kBackRightSteerInverted,
-                CANCoder(constants.kBackRightSteerEncoderId, constants.kCANivoreName),
-                constants.kBackRightAbsoluteEncoderOffset,
+                SwerveModuleConfigParams(
+                    constants.kBackRightDriveMotorId,
+                    constants.kBackRightDriveInverted,
+                    constants.kBackRightSteerMotorId,
+                    constants.kBackRightSteerInverted,
+                    constants.kBackRightSteerEncoderId,
+                    constants.kBackRightAbsoluteEncoderOffset,
+                    constants.kCANivoreName,
+                ),
             )
         else:
             self.frontLeftModule = PWMSwerveModule(

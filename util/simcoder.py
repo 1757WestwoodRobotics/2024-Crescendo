@@ -52,6 +52,9 @@ class CTREEncoder:
         ):
             return
 
+    def getDeviceNumber(self) -> int:
+        return self.encoder.getDeviceNumber()
+
     def getPosition(self) -> Rotation2d:
         return Rotation2d.fromDegrees(self.encoder.getAbsolutePosition())
 
