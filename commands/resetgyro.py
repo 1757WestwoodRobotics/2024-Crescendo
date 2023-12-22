@@ -1,4 +1,4 @@
-from commands2 import CommandBase
+from commands2.command import Command
 from wpimath.geometry import Pose2d
 
 from wpilib import DataLogManager
@@ -6,13 +6,13 @@ from wpilib import DataLogManager
 from subsystems.drivesubsystem import DriveSubsystem
 
 
-class ResetGyro(CommandBase):
+class ResetGyro(Command):
     def __init__(self, drive: DriveSubsystem, position: Pose2d = Pose2d()) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
         self.drive = drive
         self.position = position
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
 
     def initialize(self) -> None:
         DataLogManager.log(f"Command: {self.getName()}")

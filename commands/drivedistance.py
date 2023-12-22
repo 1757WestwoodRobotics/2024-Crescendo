@@ -1,14 +1,14 @@
 import math
 from enum import Enum, auto
 
-from commands2 import CommandBase
+from commands2.command import Command
 from wpimath.geometry import Transform2d
 
 import constants
 from subsystems.drivesubsystem import DriveSubsystem
 
 
-class DriveDistance(CommandBase):
+class DriveDistance(Command):
     class Axis(Enum):
         X = auto()
         Y = auto()
@@ -16,14 +16,14 @@ class DriveDistance(CommandBase):
     def __init__(
         self, distance, speedFactor, axis: Axis, drive: DriveSubsystem
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.distance = math.copysign(distance, distance * speedFactor)
         self.speedFactor = math.copysign(speedFactor, distance * speedFactor)
         self.axis = axis
         self.drive = drive
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
         self.targetPose = None
         self.distanceToTarget = None
 

@@ -4,13 +4,13 @@ from wpilib import SmartDashboard
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
 
-from commands2 import CommandBase
+from commands2 import Command
 from subsystems.drivesubsystem import DriveSubsystem
 
 import constants
 
 
-class TargetRelativeDrive(CommandBase):
+class TargetRelativeDrive(Command):
     def __init__(
         self,
         drive: DriveSubsystem,
@@ -18,7 +18,7 @@ class TargetRelativeDrive(CommandBase):
         sideways: typing.Callable[[], float],
         rotation: typing.Callable[[], float],
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.drive = drive
@@ -32,7 +32,7 @@ class TargetRelativeDrive(CommandBase):
             constants.kTargetRelativeDriveAngleDGain,
         )
 
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
         self.setName(__class__.__name__)
 
     def execute(self) -> None:

@@ -1,7 +1,7 @@
 from functools import reduce
 from operator import add
 
-from commands2 import SubsystemBase
+from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 from wpilib import PowerDistribution, SmartDashboard, DriverStation
 
@@ -10,9 +10,9 @@ from operatorinterface import OperatorInterface
 import constants
 
 
-class LoggingSubsystem(SubsystemBase):
+class LoggingSubsystem(Subsystem):
     def __init__(self, oi: OperatorInterface) -> None:
-        SubsystemBase.__init__(self)
+        Subsystem.__init__(self)
         self.setName(__class__.__name__)
 
         self.pdh = PowerDistribution(1, PowerDistribution.ModuleType.kRev)
@@ -52,4 +52,5 @@ class LoggingSubsystem(SubsystemBase):
             self.dsTable.putBoolean("enabled", DriverStation.isEnabled())
             self.dsTable.putBoolean("auto", DriverStation.isAutonomous())
             self.dsTable.putString("alliance", str(DriverStation.getAlliance()))
-            self.dsTable.putNumber("location", DriverStation.getLocation())
+            station = DriverStation.getLocation()
+            self.dsTable.putNumber("location", 0.0 if station is None else station)

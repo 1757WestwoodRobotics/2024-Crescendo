@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from commands2 import SubsystemBase
+from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 from photonvision import PoseStrategy, RobotPoseEstimator, PhotonCamera
 from robotpy_apriltag import AprilTagField
@@ -13,9 +13,9 @@ from util import advantagescopeconvert
 from util.convenientmath import pose3dFrom2d
 
 
-class VisionSubsystem(SubsystemBase):
+class VisionSubsystem(Subsystem):
     def __init__(self, drive: DriveSubsystem) -> None:
-        SubsystemBase.__init__(self)
+        Subsystem.__init__(self)
         self.setName(__class__.__name__)
         self.drive = drive
         self.estimatedPosition = Pose2d()

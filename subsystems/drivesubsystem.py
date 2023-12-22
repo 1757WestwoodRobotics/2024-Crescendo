@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 from typing import Tuple
-from commands2 import SubsystemBase
+from commands2 import Subsystem
 from wpilib import (
     Encoder,
     PWMVictorSPX,
@@ -249,14 +249,14 @@ class CTRESwerveModule(SwerveModule):
         self.setSwerveAngle(self.swerveEncoder.getPosition())
 
 
-class DriveSubsystem(SubsystemBase):
+class DriveSubsystem(Subsystem):
     class CoordinateMode(Enum):
         RobotRelative = auto()
         FieldRelative = auto()
         TargetRelative = auto()
 
     def __init__(self) -> None:
-        SubsystemBase.__init__(self)
+        Subsystem.__init__(self)
         self.setName(__class__.__name__)
         SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, False)
 

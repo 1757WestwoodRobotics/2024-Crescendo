@@ -1,6 +1,6 @@
 from math import atan2, pi
 import typing
-from commands2 import CommandBase
+from commands2 import Command
 from wpilib import DriverStation
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
@@ -9,7 +9,7 @@ from util.angleoptimize import optimizeAngle
 import constants
 
 
-class AbsoluteRelativeDrive(CommandBase):
+class AbsoluteRelativeDrive(Command):
     def __init__(
         self,
         drive: DriveSubsystem,
@@ -18,7 +18,7 @@ class AbsoluteRelativeDrive(CommandBase):
         rotationX: typing.Callable[[], float],
         rotationY: typing.Callable[[], float],
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.drive = drive
@@ -30,7 +30,7 @@ class AbsoluteRelativeDrive(CommandBase):
         self.rotationY = rotationY
         self.rotationX = rotationX
 
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
         self.setName(__class__.__name__)
 
     def rotation(self) -> float:

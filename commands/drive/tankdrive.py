@@ -1,5 +1,5 @@
 import typing
-from commands2 import CommandBase
+from commands2 import Command
 from wpimath.trajectory import TrapezoidProfile
 from wpimath.controller import ProfiledPIDController
 from wpimath.kinematics import DifferentialDriveKinematics, DifferentialDriveWheelSpeeds
@@ -29,14 +29,14 @@ class ControlledMotor:
         return self.pid.calculate(self.control())
 
 
-class TankDrive(CommandBase):
+class TankDrive(Command):
     def __init__(
         self,
         drive: DriveSubsystem,
         left: typing.Callable[[], float],
         right: typing.Callable[[], float],
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.drivetrain = DifferentialDriveKinematics(
@@ -47,7 +47,7 @@ class TankDrive(CommandBase):
         self.left = ControlledMotor(left)
         self.right = ControlledMotor(right)
 
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
 
     def execute(self) -> None:
         l = -self.left()

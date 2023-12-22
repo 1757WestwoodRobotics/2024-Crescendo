@@ -1,16 +1,16 @@
-from commands2 import CommandBase
+from commands2.command import Command
 from wpilib import DataLogManager
 from wpimath.geometry import Rotation2d
 from subsystems.drivesubsystem import DriveSubsystem, SwerveModule
 
 
-class DefenseState(CommandBase):
+class DefenseState(Command):
     def __init__(self, drive: DriveSubsystem) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
         self.drive = drive
 
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
 
     def initialize(self) -> None:
         DataLogManager.log(f"Command: {self.getName()}")

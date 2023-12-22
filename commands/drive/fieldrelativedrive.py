@@ -1,10 +1,10 @@
 import typing
-from commands2 import CommandBase
+from commands2 import Command
 from wpilib import DriverStation, Preferences
 from subsystems.drivesubsystem import DriveSubsystem
 
 
-class FieldRelativeDrive(CommandBase):
+class FieldRelativeDrive(Command):
     def __init__(
         self,
         drive: DriveSubsystem,
@@ -12,7 +12,7 @@ class FieldRelativeDrive(CommandBase):
         sideways: typing.Callable[[], float],
         rotation: typing.Callable[[], float],
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.drive = drive
@@ -20,7 +20,7 @@ class FieldRelativeDrive(CommandBase):
         self.sideways = sideways
         self.rotation = rotation
 
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
         self.setName(__class__.__name__)
         Preferences.initFloat("Robot Relative Sensitivity", 0.4)
 

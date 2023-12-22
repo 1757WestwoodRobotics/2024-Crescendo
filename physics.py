@@ -12,7 +12,6 @@
 import functools
 import operator
 import typing
-from photonvision import SimVisionSystem, SimVisionTarget
 from wpilib import RobotController, SmartDashboard
 from wpilib.simulation import EncoderSim, PWMSim, SimDeviceSim
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
@@ -112,28 +111,6 @@ class SwerveDriveSim:
         self.pose = newPose
 
 
-class VisionSim:
-    def __init__(self) -> None:
-        self.system = SimVisionSystem(
-            constants.kPhotonvisionCameraName,
-            constants.kPhotonvisionCameraDiagonalFOV,
-            constants.kLimelightRelativeToRobotTransform.inverse(),
-            9000,
-            *constants.kPhotonvisionCameraPixelDimensions,
-            0.1,
-        )
-
-        for tag_id, position in zip(
-            constants.kApriltagPositionDict.keys(),
-            constants.kApriltagPositionDict.values(),
-        ):
-            simTarget = SimVisionTarget(
-                position, constants.kApriltagWidth, constants.kApriltagHeight, tag_id
-            )
-            self.system.addSimVisionTarget(simTarget)
-
-    def update(self, robotPose: Pose2d) -> None:
-        self.system.processFrame(robotPose)
 
 
 class PhysicsEngine:
@@ -205,7 +182,6 @@ class PhysicsEngine:
 
         self.sim_initialized = False
 
-        self.vision = VisionSim()
 
         targets = []
         for target in constants.kApriltagPositionDict.values():
@@ -263,9 +239,6 @@ class PhysicsEngine:
 
         simRobotPose = self.driveSim.getPose()
         self.physics_controller.field.setRobotPose(simRobotPose)
-
-        # simulate the vision system
-        self.vision.update(simRobotPose)
 
         # publish the simulated robot pose to nt
         SmartDashboard.putNumberArray(

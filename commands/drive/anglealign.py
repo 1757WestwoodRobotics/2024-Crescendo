@@ -1,5 +1,5 @@
 import typing
-from commands2 import CommandBase
+from commands2 import Command
 from wpilib import DriverStation
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
@@ -10,14 +10,14 @@ from util.angleoptimize import optimizeAngle
 import constants
 
 
-class AngleAlignDrive(CommandBase):
+class AngleAlignDrive(Command):
     def __init__(
         self,
         drive: DriveSubsystem,
         forward: typing.Callable[[], float],
         sideways: typing.Callable[[], float],
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.drive = drive
@@ -27,7 +27,7 @@ class AngleAlignDrive(CommandBase):
             constants.kRotationPGain, constants.kRotationIGain, constants.kRotationDGain
         )
         self.targetRotation = Rotation2d()
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
         self.setName(__class__.__name__)
 
     def initialize(self) -> None:

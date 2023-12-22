@@ -1,5 +1,5 @@
 from math import pi
-from commands2 import CommandBase
+from commands2 import Command
 from wpilib import SmartDashboard
 from wpimath.trajectory import (
     TrapezoidProfile,
@@ -17,11 +17,11 @@ from subsystems.drivesubsystem import DriveSubsystem
 import constants
 
 
-class DriveWaypoint(CommandBase):
+class DriveWaypoint(Command):
     def __init__(
         self, drive: DriveSubsystem, xOffset: AnalogInput, yOffset: AnalogInput
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
 
         self.drive = drive
@@ -70,7 +70,7 @@ class DriveWaypoint(CommandBase):
         self.xoff = xOffset
         self.yoff = yOffset
 
-        self.addRequirements([self.drive])
+        self.addRequirements(self.drive)
         self.setName(__class__.__name__)
 
     def initialize(self) -> None:

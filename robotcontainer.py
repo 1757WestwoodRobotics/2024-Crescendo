@@ -12,7 +12,6 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
-from commands.auto.autonomousaction import AutonomousRoutine
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.loggingsubsystem import LoggingSubsystem
@@ -20,6 +19,8 @@ from subsystems.loggingsubsystem import LoggingSubsystem
 # from subsystems.visionsubsystem import VisionSubsystem
 
 from operatorinterface import OperatorInterface
+
+from pathplannerlib.auto import AutoBuilder
 
 
 class RobotContainer:
@@ -56,19 +57,20 @@ class RobotContainer:
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the autonomous command chooser
-        pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner")
-        for file in os.listdir(pathsPath):
-            relevantName = file.split(".")[0]
-            self.chooser.addOption(
-                relevantName,
-                commands2.SequentialCommandGroup(
-                    commands2.ParallelDeadlineGroup(
-                        commands2.WaitCommand(14.9),
-                        [AutonomousRoutine(self.drive, relevantName, [])],
-                    ),
-                    DefenseState(self.drive),
-                ),
-            )
+        
+        # pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner")
+        # for file in os.listdir(pathsPath):
+        #     relevantName = file.split(".")[0]
+        #     self.chooser.addOption(
+        #         relevantName,
+        #         commands2.SequentialCommandGroup(
+        #             commands2.ParallelDeadlineGroup(
+        #                 commands2.WaitCommand(14.9),
+        #                 [AutonomousRoutine(self.drive, relevantName, [])],
+        #             ),
+        #             DefenseState(self.drive),
+        #         ),
+        #     )
 
         self.chooser.setDefaultOption("Simple Auto", self.simpleAuto)
 
@@ -98,7 +100,7 @@ class RobotContainer:
         and then passing it to a JoystickButton.
         """
 
-        commands2.button.JoystickButton(*self.operatorInterface.turboSpeed).whileHeld(
+        commands2.button.JoystickButton(*self.operatorInterface.turboSpeed).whileTrue(
             FieldRelativeDrive(
                 self.drive,
                 lambda: self.operatorInterface.chassisControls.forwardsBackwards()
@@ -111,7 +113,7 @@ class RobotContainer:
 
         commands2.button.JoystickButton(
             *self.operatorInterface.fieldRelativeCoordinateModeControl
-        ).toggleWhenPressed(
+        ).toggleOnTrue(
             RobotRelativeDrive(
                 self.drive,
                 self.operatorInterface.chassisControls.forwardsBackwards,
@@ -122,7 +124,7 @@ class RobotContainer:
 
         commands2.button.JoystickButton(
             *self.operatorInterface.alignClosestWaypoint
-        ).whileHeld(
+        ).whileTrue(
             AngleAlignDrive(
                 self.drive,
                 lambda: self.operatorInterface.chassisControls.forwardsBackwards()
@@ -132,13 +134,13 @@ class RobotContainer:
             )
         )
 
-        commands2.button.JoystickButton(*self.operatorInterface.resetGyro).whenPressed(
+        commands2.button.JoystickButton(*self.operatorInterface.resetGyro).onTrue(
             ResetDrive(self.drive, Pose2d(0, 0, 0))
         )
 
         commands2.button.JoystickButton(
             *self.operatorInterface.defenseStateControl
-        ).whileHeld(DefenseState(self.drive))
+        ).whileTrue(DefenseState(self.drive))
 
     def getAutonomousCommand(self) -> commands2.Command:
         return self.chooser.getSelected()
