@@ -1,199 +1,32 @@
 from enum import Enum, auto
-from ctre import (
-    ControlMode,
-    ErrorCode,
-    LimitSwitchNormal,
-    LimitSwitchSource,
-    NeutralMode,
-    SupplyCurrentLimitConfiguration,
-    TalonFXSimCollection,
-    WPI_TalonFX,
-    DemandType,
+from phoenix6.configs.config_groups import CurrentLimitsConfigs, MotorOutputConfigs
+from phoenix6.signals.spn_enums import (
+    ForwardLimitValue,
+    InvertedValue,
+    NeutralModeValue,
+    ReverseLimitValue,
 )
-from wpilib import RobotBase, SmartDashboard
+from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 
-from wpimath.controller import PIDController
-from wpimath.system.plant import DCMotor
-from util.convenientmath import clamp
-from util.ctrecheck import ctreCheckError
-
-import constants
-
-
-def createMotor(
-    canID: int,
-    canbus: str = "",
-):
-    if RobotBase.isReal():
-        return WPI_TalonFX(canID, canbus)
-    else:
-        return SimFalcon(canID)
-
-
-# pylint: disable-next=too-many-public-methods
-class SimFalcon:  # a simulated Falcon 500
-    def __init__(
-        self,
-        canID: int,
-    ) -> None:
-        self.motor = WPI_TalonFX(canID)
-
-        self.pidController = PIDController(0, 0, 0)
-        self.motor.setSelectedSensorPosition(0)
-
-        SmartDashboard.putNumber(
-            f"{constants.kMotorBaseKey}/{self.motor.getDeviceID()}/encoder/value", 0
-        )
-        SmartDashboard.putNumber(
-            f"{constants.kMotorBaseKey}/{self.motor.getDeviceID()}/output/value", 0
-        )
-
-        SmartDashboard.putBoolean(
-            f"{constants.kMotorBaseKey}/{self.motor.getDeviceID()}/encoder/overwritten",
-            False,
-        )
-        SmartDashboard.putBoolean(
-            f"{constants.kMotorBaseKey}/{self.motor.getDeviceID()}/output/overwritten",
-            False,
-        )
-
-    def configFactoryDefault(self, timeoutMs: int = 50) -> ErrorCode:
-        return self.motor.configFactoryDefault(timeoutMs)
-
-    def configSupplyCurrentLimit(
-        self, limit: SupplyCurrentLimitConfiguration, timeoutMs: int = 50
-    ) -> ErrorCode:
-        return self.motor.configSupplyCurrentLimit(limit, timeoutMs)
-
-    def config_kP(self, slotIdx: int, value: float, timeoutMs: int = 0) -> ErrorCode:
-        self.pidController.setP(value)
-        return self.motor.config_kP(slotIdx, value, timeoutMs)
-
-    def config_kI(self, slotIdx: int, value: float, timeoutMs: int = 0) -> ErrorCode:
-        self.pidController.setI(value)
-        return self.motor.config_kP(slotIdx, value, timeoutMs)
-
-    def config_kD(self, slotIdx: int, value: float, timeoutMs: int = 0) -> ErrorCode:
-        self.pidController.setD(value)
-        return self.motor.config_kP(slotIdx, value, timeoutMs)
-
-    def configForwardSoftLimitThreshold(
-        self, reverseSensorLimit: float, timeoutMs: int = 0
-    ) -> ErrorCode:
-        return self.motor.configForwardSoftLimitThreshold(reverseSensorLimit, timeoutMs)
-
-    def configReverseSoftLimitThreshold(
-        self, reverseSensorLimit: float, timeoutMs: int = 0
-    ) -> ErrorCode:
-        return self.motor.configReverseSoftLimitThreshold(reverseSensorLimit, timeoutMs)
-
-    def configForwardSoftLimitEnable(
-        self, enable: bool, timeoutMs: int = 0
-    ) -> ErrorCode:
-        return self.motor.configForwardSoftLimitEnable(enable, timeoutMs)
-
-    def configReverseSoftLimitEnable(
-        self, enable: bool, timeoutMs: int = 0
-    ) -> ErrorCode:
-        return self.motor.configReverseSoftLimitEnable(enable, timeoutMs)
-
-    def configForwardLimitSwitchSource(
-        self,
-        limitSwitchSource: LimitSwitchSource,
-        normalOpenOrClose: LimitSwitchNormal,
-        timeoutMs: int = 0,
-    ) -> ErrorCode:
-        return self.motor.configForwardLimitSwitchSource(
-            limitSwitchSource, normalOpenOrClose, timeoutMs
-        )
-
-    def configReverseLimitSwitchSource(
-        self,
-        limitSwitchSource: LimitSwitchSource,
-        normalOpenOrClose: LimitSwitchNormal,
-        timeoutMs: int = 0,
-    ) -> ErrorCode:
-        return self.motor.configReverseLimitSwitchSource(
-            limitSwitchSource, normalOpenOrClose, timeoutMs
-        )
-
-    def isRevLimitSwitchClosed(self):
-        return self.motor.isRevLimitSwitchClosed()
-
-    def isFwdLimitSwitchClosed(self):
-        return self.motor.isFwdLimitSwitchClosed()
-
-    def setInverted(self, invert: bool) -> None:
-        self.motor.setInverted(invert)
-
-    def getSelectedSensorPosition(self, pidIdx: int = 0) -> float:
-        return self.motor.getSelectedSensorPosition(pidIdx)
-
-    def setNeutralMode(self, mode: NeutralMode) -> None:
-        self.motor.setNeutralMode(mode)
-
-    def setSelectedSensorPosition(
-        self, sensorPos: float, pidIdx: int = 0, timeoutMs: int = 50
-    ) -> ErrorCode:
-        return self.motor.setSelectedSensorPosition(sensorPos, pidIdx, timeoutMs)
-
-    def getSelectedSensorVelocity(self, pidIdx: int = 0) -> float:
-        return self.motor.getSelectedSensorVelocity(pidIdx)
-
-    def neutralOutput(self):
-        self.motor.neutralOutput()
-        self.set(
-            ControlMode.Velocity, 0
-        )  # neutral mode is supposed to coast/brake the motor instead of driving to 0 velocity but for sim this works for now
-
-    def get(self) -> float:
-        return self.motor.get()
-
-    def set(
-        self,
-        mode: ControlMode,
-        demand: float,
-        demandType: DemandType = DemandType.ArbitraryFeedForward,
-        demand1: float = 0,
-    ) -> None:
-        self.motor.set(mode, demand, demandType, demand1)
-        currentPosition = self.motor.getSelectedSensorPosition()
-        rawPercentOutput = 0
-        if mode == ControlMode.Velocity:
-            demandVelocity = demand / constants.kTalonVelocityPerAngularVelocity
-            rawPercentOutput = demandVelocity / DCMotor.falcon500().freeSpeed
-        elif mode == ControlMode.Position:
-            positionError = self.pidController.calculate(currentPosition, demand)
-            rawPercentOutput = (
-                positionError / constants.kTalonEncoderPulsesPerRevolution
-            )  # convert the change in encoder ticks into change into motor %
-
-        rawPercentOutput += demand1
-        clampedPercentOutput = clamp(rawPercentOutput, -1, 1)
-        self.motor.setSelectedSensorPosition(
-            currentPosition
-            + (
-                clampedPercentOutput
-                # * 2 * tau # radians per second
-                * DCMotor.falcon500().freeSpeed  # radians per second
-                * constants.kTalonEncoderPulsesPerRadian  # encoder ticks per radian
-                * constants.kRobotUpdatePeriod
-            )
-        )
-
-    def getSimCollection(self) -> TalonFXSimCollection:
-        return self.motor.getSimCollection()
+from phoenix6.controls.neutral_out import NeutralOut
+from phoenix6.controls.velocity_voltage import VelocityVoltage
+from phoenix6.controls.position_voltage import PositionVoltage
+from phoenix6.controls.duty_cycle_out import DutyCycleOut
+from phoenix6.hardware.talon_fx import TalonFX
+from phoenix6.configs.talon_fx_configs import TalonFXConfiguration
 
 
 class Falcon:
     class ControlMode(Enum):
         Position = auto()
+        """rotations"""
         Velocity = auto()
+        """rotations/s"""
         Percent = auto()
         Amps = auto()
 
     class NeutralMode(Enum):
-        Break = auto()
+        Brake = auto()
         Coast = auto()
 
     class LimitSwitch(Enum):
@@ -203,71 +36,82 @@ class Falcon:
     def __init__(
         self,
         canID: int,
-        pidSlot: int = 0,
         pGain: float = 1,
         iGain: float = 0,
         dGain: float = 0,
         isReversed: bool = False,
         canbus: str = "",
-        useDINSim: bool = True,
     ) -> None:
-        self.motor = createMotor(canID, canbus)
+        self.motor = TalonFX(canID, canbus)
 
-        if not ctreCheckError(
-            "configFactoryDefault", self.motor.configFactoryDefault()
-        ):
-            return
-        if not ctreCheckError("config_kP", self.motor.config_kP(pidSlot, pGain)):
-            return
-        if not ctreCheckError("config_kI", self.motor.config_kI(pidSlot, iGain)):
-            return
-        if RobotBase.isReal() or useDINSim:
-            if not ctreCheckError("config_kD", self.motor.config_kD(pidSlot, dGain)):
-                return
-        self.motor.setInverted(isReversed)
+        conf = TalonFXConfiguration()
+        conf.slot0.k_p = pGain
+        conf.slot0.k_i = iGain
+        conf.slot0.k_d = dGain
+        conf.motor_output.inverted = (
+            InvertedValue.COUNTER_CLOCKWISE_POSITIVE
+            if isReversed
+            else InvertedValue.CLOCKWISE_POSITIVE
+        )
+
+        self.motor.configurator.apply(conf)
+
+        self.velControl = VelocityVoltage(0)
+        self.posControl = PositionVoltage(0)
+        self.perControl = DutyCycleOut(0)
 
     def set(self, controlMode: ControlMode, demand: float, ff: float = 0) -> None:
         if controlMode == Falcon.ControlMode.Position:
-            self.motor.set(
-                ControlMode.Position, demand, DemandType.ArbitraryFeedForward, ff
+            self.motor.set_control(
+                self.posControl.with_velocity(demand).with_feed_forward(ff)
             )
         elif controlMode == Falcon.ControlMode.Velocity:
-            self.motor.set(ControlMode.Velocity, demand)
+            self.motor.set_control(
+                self.velControl.with_velocity(demand).with_feed_forward(ff)
+            )
         elif controlMode == Falcon.ControlMode.Percent:
-            self.motor.set(ControlMode.PercentOutput, demand)
+            self.motor.set_control(self.perControl.with_output(demand + ff / 12))
         elif controlMode == Falcon.ControlMode.Amps:
-            self.motor.set(ControlMode.Current, demand)
+            raise NotImplementedError("AMP control is currently not implemented")
 
-    def setCurrentLimit(self, lim: SupplyCurrentLimitConfiguration):
-        self.motor.configSupplyCurrentLimit(lim)
+    def setCurrentLimit(self, lim: CurrentLimitsConfigs):
+        self.motor.configurator.apply(lim)
 
     def neutralOutput(self):
-        self.motor.neutralOutput()
+        self.motor.set_control(NeutralOut())
 
     def setNeutralMode(self, mode: NeutralMode):
-        if mode == Falcon.NeutralMode.Coast:
-            self.motor.setNeutralMode(NeutralMode.Coast)
-        elif mode == Falcon.NeutralMode.Break:
-            self.motor.setNeutralMode(NeutralMode.Brake)
+        conf = MotorOutputConfigs().with_neutral_mode(
+            NeutralModeValue.COAST
+            if mode == Falcon.NeutralMode.Coast
+            else NeutralModeValue.BRAKE
+        )
+        self.motor.configurator.apply(conf)
 
     def getLimitSwitch(self, switch: LimitSwitch) -> bool:
         if switch == Falcon.LimitSwitch.Forwards:
-            return self.motor.isFwdLimitSwitchClosed() == 1
+            return (
+                self.motor.get_forward_limit().value
+                == ForwardLimitValue.CLOSED_TO_GROUND
+            )
         elif switch == Falcon.LimitSwitch.Backwards:
-            return self.motor.isRevLimitSwitchClosed() == 1
+            return (
+                self.motor.get_reverse_limit().value
+                == ReverseLimitValue.CLOSED_TO_GROUND
+            )
         return False
 
     def get(self, controlMode: ControlMode) -> float:
         if controlMode == Falcon.ControlMode.Position:
-            return self.motor.getSelectedSensorPosition()
+            return self.motor.get_position().value
         elif controlMode == Falcon.ControlMode.Velocity:
-            return self.motor.getSelectedSensorVelocity()
+            return self.motor.get_velocity().value
         elif controlMode == Falcon.ControlMode.Percent:
-            return self.motor.get()
+            return self.motor.get_motor_voltage().value / 12
         return 0
 
-    def setEncoderPosition(self, encoderPulses: float):
-        self.motor.setSelectedSensorPosition(encoderPulses)
+    def setEncoderPosition(self, rotations: float):
+        self.motor.set_position(rotations)
 
-    def getSimCollection(self) -> TalonFXSimCollection:
-        return self.motor.getSimCollection()
+    def getSimCollection(self) -> TalonFXSimState:
+        return self.motor.sim_state

@@ -24,7 +24,7 @@ Swerve Module Layout:
 """
 
 import math
-from ctre import SupplyCurrentLimitConfiguration
+from phoenix6.configs.config_groups import CurrentLimitsConfigs
 from wpimath.geometry import (
     Pose3d,
     Pose2d,
@@ -228,8 +228,12 @@ kBackLeftSteerMotorId = 15
 kBackRightDriveMotorId = 16
 kBackRightSteerMotorId = 17
 
-kDriveSupplyCurrentLimitConfiguration = SupplyCurrentLimitConfiguration(
-    enable=True, currentLimit=35, triggerThresholdCurrent=60, triggerThresholdTime=0.1
+kDriveCurrentLimit = (
+    CurrentLimitsConfigs()
+    .with_stator_current_limit(35)
+    .with_stator_current_limit_enable(True)
+    .with_supply_current_limit(35)
+    .with_supply_current_limit_enable(True)
 )
 
 # Encoders
@@ -303,14 +307,14 @@ kConfigurationTimeoutLimit = int(5 * kMillisecondsPerSecond)
 """milliseconds"""
 
 kDrivePIDSlot = 0
-kDrivePGain = 0.15
+kDrivePGain = 0.03002
 kDriveIGain = 0.0
-kDriveDGain = 2.0
+kDriveDGain = 0.0004
 
 kSteerPIDSlot = 0
-kSteerPGain = 0.6
+kSteerPGain = 1.2011
 kSteerIGain = 0.0
-kSteerDGain = 12.0
+kSteerDGain = 0.2402
 
 kFrontLeftDriveInverted = False
 kFrontRightDriveInverted = False
@@ -591,7 +595,7 @@ kArmPIDSlot = 0
 kArmEncoderToSprocketGearRatio = 60 / 12
 
 kElbowArmCANId = 30
-kElbowArmPGain = 0.02
+kElbowArmPGain = 0.04003
 kElbowArmIGain = 0.0
 kElbowArmDGain = 0
 kElbowArmInverted = False
@@ -623,7 +627,7 @@ kElbowMinAngle = Rotation2d.fromDegrees(0)
 kElbowMaxAngle = Rotation2d.fromDegrees(145)
 
 kShoulderArmCANId = 31
-kShoulderArmPGain = 0.03
+kShoulderArmPGain = 0.06005
 kShoulderArmIGain = 0.0
 kShoulderArmDGain = 0
 kShoulderArmInverted = True
@@ -641,7 +645,7 @@ kShoulderMinAngle = Rotation2d.fromDegrees(57)
 kShoulderMaxAngle = Rotation2d.fromDegrees(157)
 
 kWristArmCANId = 32
-kWristArmPGain = 0.03
+kWristArmPGain = 0.06005
 kWristArmIGain = 0.0
 kWristArmDGain = 0
 kWristArmInverted = True
