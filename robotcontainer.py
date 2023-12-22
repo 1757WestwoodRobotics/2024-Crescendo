@@ -52,6 +52,7 @@ class RobotContainer:
                 self.drive,
             ),
         )
+        self.nothingAuto = commands2.WaitCommand(constants.kAutoDuration)
 
         # Chooser
         self.chooser = wpilib.SendableChooser()
@@ -72,6 +73,7 @@ class RobotContainer:
         #         ),
         #     )
 
+        self.chooser.addOption("Do Nothing Auto", self.nothingAuto)
         self.chooser.setDefaultOption("Simple Auto", self.simpleAuto)
 
         # Put the chooser on the dashboard
