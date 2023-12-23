@@ -100,25 +100,19 @@ py -3 -m venv ./.venv
 
 #### Workflow
 
-1. **Activate virtualenv**
-   (Virtualenv activation may differ depending on your operating system and terminal)
-   - Git Bash (Windows)
+1. **Sync from pipenv**
      ```bash
-     source <path-to-mentorbot-repo>/.venv/Scripts/activate
+    pipenv sync
      ```
-   - normal bash (linux, macOS)
-     ```bash
-     source <path-to-mentorbot-repo>/.venv/bin/activate
-     ```
-1. **Update pip and wheel. Old versions of pip can prevent binary wheels from being installed. Installing wheel makes other installs faster**
+1. **Update Dependancies**
    (must have internet connection)
    ```bash
-   python -m pip install --upgrade pip wheel
+   pipenv update
    ```
-1. **Install / update robotpy**
+1. **Activate virtual environment**
    (must have internet connection)
    ```bash
-   python -m pip install -r requirements.txt
+   pipenv shell
    ```
    (examples: `robotpy`, `robotpy[ctre,navx]`, `robotpy[all]`) (see: [robotpy on pypi](https://pypi.org/project/robotpy/))
 1. **Download python for roboRIO**

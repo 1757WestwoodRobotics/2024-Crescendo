@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+robotpy-pathplannerlib = "==2024.0.0b6.post1"
+robotpy = {extras = ["all"], version = "==2024.0.0b4"}
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
