@@ -11,20 +11,20 @@ import constants
 
 class CTREEncoder:
     def __init__(self, canId: int, offset: float, canbus: str = "") -> None:
-        self.encoder = CANCoder(canId, canbus)
+        self.encoder = CANcoder(canId, canbus)
         self.offset = offset
 
-        config = CANCoderConfiguration().with_magnet_sensor(
+        config = CANcoderConfiguration().with_magnet_sensor(
             MagnetSensorConfigs()
             .with_absolute_sensor_range(AbsoluteSensorRangeValue.SIGNED_PLUS_MINUS_HALF)
             .with_magnet_offset(-1 * self.offset)
         )
 
     def getDeviceNumber(self) -> int:
-        return self.encoder.getDeviceNumber()
+        return self.encoder.device_id()
 
     def getPosition(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(self.encoder.getAbsolutePosition() * 360)
+        return Rotation2d.fromDegrees(self.encoder.get_absolute_position().value * 360)
 
-    def getSim(self) -> Callable[[],CANcoderSimState]:
-        return lambda: self.encoder.sim_state
+    def getSim(self) -> CANcoderSimState:
+        return self.encoder.sim_state

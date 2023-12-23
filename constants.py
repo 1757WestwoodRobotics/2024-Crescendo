@@ -308,14 +308,15 @@ kConfigurationTimeoutLimit = int(5 * kMillisecondsPerSecond)
 """milliseconds"""
 
 kDrivePIDSlot = 0
-kDrivePGain = 0.03002
+kDrivePGain = 0.001
 kDriveIGain = 0.0
-kDriveDGain = 0.0004
+kDriveDGain = 0.0
+kDriveVGain = 0.01
 
 kSteerPIDSlot = 0
 kSteerPGain = 1.2011
 kSteerIGain = 0.0
-kSteerDGain = 0.2402
+kSteerDGain = 0
 
 kFrontLeftDriveInverted = False
 kFrontRightDriveInverted = False
@@ -523,7 +524,9 @@ kNormalSpeedMultiplier = 0.80  # half full on normal
 kTurboSpeedMultiplier = 0.95  # full speed!!!
 
 # Simulation Parameters
+kSimulationRotationalInertia = 0.0002
 kSimTargetName = "SimTarget"
+kSimMotorResistance = 0.002
 kSimDefaultTargetLocation = Pose2d(
     kFieldLength / 2, kFieldWidth / 2, 180 * kRadiansPerDegree
 )

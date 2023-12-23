@@ -6,6 +6,8 @@ import commands2
 
 from robotcontainer import RobotContainer
 
+from phoenix6.signal_logger import SignalLogger
+
 
 class MentorBot(commands2.TimedCommandRobot):
     """
@@ -29,6 +31,7 @@ class MentorBot(commands2.TimedCommandRobot):
 
         # Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         # autonomous chooser on the dashboard.
+        SignalLogger.start()
         self.container = RobotContainer()
 
     def disabledInit(self) -> None:

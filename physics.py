@@ -12,37 +12,51 @@
 import functools
 import operator
 import typing
+from phoenix6.sim.cancoder_sim_state import CANcoderSimState
+from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
+from phoenix6.unmanaged import feed_enable
 from wpilib import RobotController, SmartDashboard
 from wpilib.simulation import EncoderSim, PWMSim, SimDeviceSim
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
 from wpimath.system.plant import DCMotor
+from wpilib.simulation import DCMotorSim
 import wpimath.kinematics
 from pyfrc.physics.core import PhysicsInterface
 import constants
+from subsystems.drivesubsystem import DriveSubsystem
 
 
 class SwerveModuleSim:
     def __init__(
         self,
         position: Translation2d,
-        wheelMotorSim: PWMSim,
         wheelMotorType: DCMotor,
+        wheelMotorSim: typing.Callable[[], TalonFXSimState],
         driveMotorGearing,
-        swerveMotorSim: PWMSim,
         swerveMotorType: DCMotor,
+        swerveMotorSim: typing.Callable[[], TalonFXSimState],
         steerMotorGearing,
-        wheelEncoderSim: EncoderSim,
-        swerveEncoderSim: EncoderSim,
+        swerveEncoderSim: typing.Callable[[], CANcoderSimState],
     ) -> None:
         self.position = position
         self.wheelMotorSim = wheelMotorSim
         self.wheelMotorType = wheelMotorType
         self.driveMotorGearing = driveMotorGearing
+        self.wheelMotorInternalSim = DCMotorSim(
+            self.wheelMotorType,
+            self.driveMotorGearing,
+            constants.kSimulationRotationalInertia,
+        )
         self.swerveMotorSim = swerveMotorSim
         self.swerveMotorType = swerveMotorType
         self.steerMotorGearing = steerMotorGearing
-        self.wheelEncoderSim = wheelEncoderSim
+        self.steerMotorIntenalSim = DCMotorSim(
+            self.swerveMotorType,
+            self.steerMotorGearing,
+            constants.kSimulationRotationalInertia,
+        )
         self.swerveEncoderSim = swerveEncoderSim
+        self.encoderPosition = 0
 
     def __str__(self) -> str:
         return f"pos: x={self.position.X():.2f} y={self.position.Y():.2f}"
@@ -67,36 +81,69 @@ class SwerveDriveSim:
         deltaT = tm_diff
         states = []
         for module in self.swerveModuleSims:
-            wheelVoltage = module.wheelMotorSim.getSpeed() * robotVoltage
-            wheelAngularVelocity = (
-                wheelVoltage
-                * module.wheelMotorType.Kv
-                / module.driveMotorGearing  # scale the wheel motor to get more reasonable wheel speeds
+            module.wheelMotorInternalSim.setInputVoltage(
+                module.wheelMotorSim().motor_voltage
             )
+            # print(module.wheelMotorSim().motor_voltage)
+            module.wheelMotorInternalSim.update(tm_diff)
+            wheel_position_rot = (
+                module.wheelMotorInternalSim.getAngularPosition()
+                / constants.kRadiansPerRevolution
+                * module.driveMotorGearing
+            )
+            wheel_velocity_rps = (
+                module.wheelMotorInternalSim.getAngularVelocity()
+                / constants.kRadiansPerRevolution
+                * module.driveMotorGearing
+            )
+            module.wheelMotorSim().set_raw_rotor_position(wheel_position_rot)
+            module.wheelMotorSim().set_rotor_velocity(wheel_velocity_rps)
+            module.wheelMotorSim().set_supply_voltage(
+                robotVoltage
+                - module.wheelMotorSim().supply_current * constants.kSimMotorResistance
+            )
+
+            module.steerMotorIntenalSim.setInputVoltage(
+                module.swerveMotorSim().motor_voltage
+            )
+            module.steerMotorIntenalSim.update(tm_diff)
+            swerve_position_rot = (
+                module.steerMotorIntenalSim.getAngularPosition()
+                / constants.kRadiansPerRevolution
+                * module.steerMotorGearing
+            )
+            swerve_velocity_rps = (
+                module.steerMotorIntenalSim.getAngularVelocity()
+                / constants.kRadiansPerRevolution
+                * module.steerMotorGearing
+            )
+            module.swerveMotorSim().set_raw_rotor_position(swerve_position_rot)
+            module.swerveMotorSim().set_rotor_velocity(swerve_velocity_rps)
+            module.swerveMotorSim().set_supply_voltage(
+                robotVoltage
+                - module.swerveMotorSim().supply_current * constants.kSimMotorResistance
+            )
+            module.swerveEncoderSim().set_raw_position(
+                swerve_position_rot / module.steerMotorGearing
+            )
+            module.swerveEncoderSim().set_velocity(
+                swerve_velocity_rps / module.steerMotorGearing
+            )
+
             wheelLinearVelocity = (
-                wheelAngularVelocity * constants.kWheelDistancePerRadian
+                wheel_velocity_rps
+                * constants.kWheelRadius
+                * constants.kRadiansPerRevolution
+                / constants.kDriveGearingRatio
             )
-            module.wheelEncoderSim.setRate(wheelLinearVelocity)
-
-            deltaWheelDistance = wheelLinearVelocity * deltaT
-            newWheelDistance = module.wheelEncoderSim.getDistance() + deltaWheelDistance
-            module.wheelEncoderSim.setDistance(newWheelDistance)
-
-            swerveVoltage = module.swerveMotorSim.getSpeed() * robotVoltage
-            swerveAngularVelocity = (
-                swerveVoltage
-                * module.swerveMotorType.Kv
-                / module.steerMotorGearing  # scale the swerve motor to get more reasonable swerve speeds
-            )
-            module.swerveEncoderSim.setRate(swerveAngularVelocity)
-
-            deltaSwerveAngle = swerveAngularVelocity * deltaT
-            newSwerveAngle = module.swerveEncoderSim.getDistance() + deltaSwerveAngle
-            module.swerveEncoderSim.setDistance(newSwerveAngle)
 
             state = wpimath.kinematics.SwerveModuleState(
                 wheelLinearVelocity,
-                Rotation2d(newSwerveAngle),
+                Rotation2d(
+                    swerve_position_rot
+                    / module.steerMotorGearing
+                    * constants.kRadiansPerRevolution
+                ),
             )
             states.append(state)
 
@@ -111,8 +158,6 @@ class SwerveDriveSim:
         self.pose = newPose
 
 
-
-
 class PhysicsEngine:
     """
     Simulates a drivetrain
@@ -122,49 +167,51 @@ class PhysicsEngine:
     def __init__(self, physics_controller: PhysicsInterface, robot: "MentorBot"):
         self.physics_controller = physics_controller
 
+        driveSubsystem: DriveSubsystem = robot.container.drive
+
+        frontLeftSim = driveSubsystem.frontLeftModule.getSimulator()
         self.frontLeftModuleSim = SwerveModuleSim(
             constants.kFrontLeftWheelPosition,
-            PWMSim(constants.kSimFrontLeftDriveMotorPort),
             DCMotor.falcon500(),
+            frontLeftSim[0],
             constants.kDriveGearingRatio,
-            PWMSim(constants.kSimFrontLeftSteerMotorPort),
             DCMotor.falcon500(),
+            frontLeftSim[1],
             constants.kSteerGearingRatio,
-            EncoderSim.createForChannel(constants.kSimFrontLeftDriveEncoderPorts[0]),
-            EncoderSim.createForChannel(constants.kSimFrontLeftSteerEncoderPorts[0]),
+            frontLeftSim[2],
         )
+        frontRightSim = driveSubsystem.frontRightModule.getSimulator()
         self.frontRightModuleSim = SwerveModuleSim(
             constants.kFrontRightWheelPosition,
-            PWMSim(constants.kSimFrontRightDriveMotorPort),
             DCMotor.falcon500(),
+            frontRightSim[0],
             constants.kDriveGearingRatio,
-            PWMSim(constants.kSimFrontRightSteerMotorPort),
             DCMotor.falcon500(),
+            frontRightSim[1],
             constants.kSteerGearingRatio,
-            EncoderSim.createForChannel(constants.kSimFrontRightDriveEncoderPorts[0]),
-            EncoderSim.createForChannel(constants.kSimFrontRightSteerEncoderPorts[0]),
+            frontRightSim[2],
         )
+        backLeftSim = driveSubsystem.backLeftModule.getSimulator()
         self.backSimLeftModule = SwerveModuleSim(
             constants.kBackLeftWheelPosition,
-            PWMSim(constants.kSimBackLeftDriveMotorPort),
             DCMotor.falcon500(),
+            backLeftSim[0],
             constants.kDriveGearingRatio,
-            PWMSim(constants.kSimBackLeftSteerMotorPort),
             DCMotor.falcon500(),
+            backLeftSim[1],
             constants.kSteerGearingRatio,
-            EncoderSim.createForChannel(constants.kSimBackLeftDriveEncoderPorts[0]),
-            EncoderSim.createForChannel(constants.kSimBackLeftSteerEncoderPorts[0]),
+            backLeftSim[2],
         )
+        backRightSim = driveSubsystem.backRightModule.getSimulator()
         self.backSimRightModule = SwerveModuleSim(
             constants.kBackRightWheelPosition,
-            PWMSim(constants.kSimBackRightDriveMotorPort),
             DCMotor.falcon500(),
+            backRightSim[0],
             constants.kDriveGearingRatio,
-            PWMSim(constants.kSimBackRightSteerMotorPort),
             DCMotor.falcon500(),
+            backRightSim[1],
             constants.kSteerGearingRatio,
-            EncoderSim.createForChannel(constants.kSimBackRightDriveEncoderPorts[0]),
-            EncoderSim.createForChannel(constants.kSimBackRightSteerEncoderPorts[0]),
+            backRightSim[2],
         )
 
         self.swerveModuleSims = [
@@ -181,7 +228,6 @@ class PhysicsEngine:
         self.gyroPitch = self.gyroSim.getDouble("Pitch")
 
         self.sim_initialized = False
-
 
         targets = []
         for target in constants.kApriltagPositionDict.values():
@@ -215,6 +261,7 @@ class PhysicsEngine:
         :param tm_diff: The amount of time that has passed since the last
                         time that this function was called
         """
+        feed_enable(1 / 50)
 
         if not self.sim_initialized:
             self.sim_initialized = True

@@ -2,7 +2,10 @@ from enum import Enum, auto
 from functools import partial
 
 from typing import Tuple
+import typing
 from commands2 import Subsystem
+from phoenix6.sim.cancoder_sim_state import CANcoderSimState
+from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from wpilib import (
     Encoder,
     PWMVictorSPX,
@@ -108,58 +111,6 @@ class SwerveModule:
             self.setSwerveAngleTarget(optimizedAngle)
 
 
-# pylint: disable-next=abstract-method
-class PWMSwerveModule(SwerveModule):
-    """
-    Implementation of SwerveModule designed for ease of simulation:
-        wheelMotor: 1:1 gearing with wheel
-        swerveMotor: 1:1 gearing with swerve
-        wheelEncoder: wheel distance (meters)
-        swerveEncoder: swerve angle (radians)
-    """
-
-    def __init__(
-        self,
-        name: str,
-        wheelMotor: PWMVictorSPX,
-        swerveMotor: PWMVictorSPX,
-        wheelEncoder: Encoder,
-        swerveEncoder: Encoder,
-    ) -> None:
-        SwerveModule.__init__(self, name)
-        self.wheelMotor = wheelMotor
-        self.swerveMotor = swerveMotor
-        self.wheelEncoder = wheelEncoder
-        self.swerveEncoder = swerveEncoder
-
-        self.wheelEncoder.setDistancePerPulse(1 / constants.kWheelEncoderPulsesPerMeter)
-        self.swerveEncoder.setDistancePerPulse(
-            1 / constants.kSwerveEncoderPulsesPerRadian
-        )
-
-    def getSwerveAngle(self) -> Rotation2d:
-        return Rotation2d(self.swerveEncoder.getDistance())
-
-    def setSwerveAngleTarget(self, swerveAngleTarget: Rotation2d) -> None:
-        swerveError = swerveAngleTarget.radians() - self.swerveEncoder.getDistance()
-        swerveErrorClamped = min(max(swerveError, -1), 1)
-        self.swerveMotor.set(swerveErrorClamped)
-
-    def getWheelLinearVelocity(self) -> float:
-        return self.wheelEncoder.getRate()
-
-    def getWheelTotalPosition(self) -> float:
-        return self.wheelEncoder.getDistance()
-
-    def setWheelLinearVelocityTarget(self, wheelLinearVelocityTarget: float) -> None:
-        speedFactor = wheelLinearVelocityTarget / constants.kMaxWheelLinearVelocity
-        speedFactorClamped = min(max(speedFactor, -1), 1)
-        self.wheelMotor.set(speedFactorClamped)
-
-    def reset(self) -> None:
-        pass
-
-
 class CTRESwerveModule(SwerveModule):
     """
     Implementation of SwerveModule for the SDS swerve modules
@@ -175,58 +126,72 @@ class CTRESwerveModule(SwerveModule):
         DataLogManager.log(f"   Configuring drive motor: CAN ID: {config.driveMotorID}")
         self.driveMotor = Falcon(
             config.driveMotorID,
-            constants.kDrivePIDSlot,
             constants.kDrivePGain,
             constants.kDriveIGain,
             constants.kDriveDGain,
             config.driveMotorInverted,
             config.canbus,
+            constants.kDriveVGain
         )
-        self.driveMotor.setCurrentLimit(constants.kDriveSupplyCurrentLimitConfiguration)
+        if RobotBase.isReal():
+            self.driveMotor.setCurrentLimit(constants.kDriveCurrentLimit)
         DataLogManager.log("   ... Done")
         DataLogManager.log(f"   Configuring steer motor: CAN ID: {config.steerMotorID}")
         self.steerMotor = Falcon(
             config.steerMotorID,
-            constants.kSteerPIDSlot,
             constants.kSteerPGain,
             constants.kSteerIGain,
             constants.kSteerDGain,
             config.steerMotorInverted,
+            config.canbus,
         )
         DataLogManager.log("   ... Done")
         DataLogManager.log(
             f"   Configuring swerve encoder: CAN ID: {config.swerveEncoderID}"
         )
         self.swerveEncoder = CTREEncoder(
-            config.swerveEncoderID, config.swerveEncoderOffset
+            config.swerveEncoderID, config.swerveEncoderOffset, config.canbus
         )
         DataLogManager.log("   ... Done")
         DataLogManager.log("... Done")
 
     def getSwerveAngle(self) -> Rotation2d:
-        steerEncoderPulses = self.steerMotor.get(Falcon.ControlMode.Position)
-        swerveAngle = steerEncoderPulses / constants.kSwerveEncoderPulsesPerRadian
+        steerRotation = self.steerMotor.get(Falcon.ControlMode.Position)
+        swerveAngle = (
+            steerRotation
+            / constants.kSteerGearingRatio
+            * constants.kRadiansPerRevolution
+        )
         return Rotation2d(swerveAngle)
 
     def setSwerveAngle(self, swerveAngle: Rotation2d) -> None:
         steerEncoderPulses = (
-            swerveAngle.radians()
-        ) * constants.kSwerveEncoderPulsesPerRadian
+            (swerveAngle.radians())
+            / constants.kRadiansPerRevolution
+            * constants.kSteerGearingRatio
+        )
         self.steerMotor.setEncoderPosition(steerEncoderPulses)
 
     def setSwerveAngleTarget(self, swerveAngleTarget: Rotation2d) -> None:
         steerEncoderPulsesTarget = (
-            swerveAngleTarget.radians() * constants.kSwerveEncoderPulsesPerRadian
+            swerveAngleTarget.radians()
+            / constants.kRadiansPerRevolution
+            * constants.kSteerGearingRatio
         )
+        # print(
+        #     f"Control: {steerEncoderPulsesTarget}, actual: {self.steerMotor.get(Falcon.ControlMode.Position)}"
+        # )
+        if steerEncoderPulsesTarget > 100:
+            print(f"what {swerveAngleTarget} {self.name}")
         self.steerMotor.set(Falcon.ControlMode.Position, steerEncoderPulsesTarget)
 
     def getWheelLinearVelocity(self) -> float:
-        driveEncoderPulsesPerSecond = (
-            self.driveMotor.get(Falcon.ControlMode.Velocity)
-            * constants.k100MillisecondsPerSecond
-        )
+        driveEncoderPulsesPerSecond = self.driveMotor.get(Falcon.ControlMode.Velocity)
         wheelLinearVelocity = (
-            driveEncoderPulsesPerSecond / constants.kWheelEncoderPulsesPerMeter
+            driveEncoderPulsesPerSecond
+            * constants.kWheelRadius
+            * constants.kRadiansPerRevolution
+            / constants.kDriveGearingRatio
         )
         return wheelLinearVelocity
 
@@ -234,22 +199,42 @@ class CTRESwerveModule(SwerveModule):
         driveEncoderPulses = self.driveMotor.get(Falcon.ControlMode.Position)
         driveDistance = (
             driveEncoderPulses
-            / constants.kWheelEncoderPulsesPerRadian
             * constants.kWheelRadius
+            * constants.kRadiansPerRevolution
+            / constants.kDriveGearingRatio
         )
         return driveDistance
 
     def setWheelLinearVelocityTarget(self, wheelLinearVelocityTarget: float) -> None:
         driveEncoderPulsesPerSecond = (
-            wheelLinearVelocityTarget * constants.kWheelEncoderPulsesPerMeter
+            wheelLinearVelocityTarget
+            / constants.kWheelRadius
+            / constants.kRadiansPerRevolution
+            * constants.kDriveGearingRatio
         )
+        # print(
+        #     f"Control: {driveEncoderPulsesPerSecond}, actual: {self.driveMotor.get(Falcon.ControlMode.Velocity)}"
+        # )
         self.driveMotor.set(
             Falcon.ControlMode.Velocity,
-            driveEncoderPulsesPerSecond / constants.k100MillisecondsPerSecond,
+            driveEncoderPulsesPerSecond,
         )
 
     def reset(self) -> None:
         self.setSwerveAngle(self.swerveEncoder.getPosition())
+
+    def getSimulator(
+        self,
+    ) -> tuple[
+        typing.Callable[[], TalonFXSimState],
+        typing.Callable[[], TalonFXSimState],
+        typing.Callable[[], CANcoderSimState],
+    ]:
+        return (
+            self.driveMotor.getSimCollection,
+            self.steerMotor.getSimCollection,
+            self.swerveEncoder.getSim,
+        )
 
 
 class DriveSubsystem(Subsystem):
@@ -265,84 +250,54 @@ class DriveSubsystem(Subsystem):
 
         self.rotationOffset = 0
 
-        if RobotBase.isReal():
-            self.frontLeftModule = CTRESwerveModule(
-                constants.kFrontLeftModuleName,
-                SwerveModuleConfigParams(
-                    constants.kFrontLeftDriveMotorId,
-                    constants.kFrontLeftDriveInverted,
-                    constants.kFrontLeftSteerMotorId,
-                    constants.kFrontLeftSteerInverted,
-                    constants.kFrontLeftSteerEncoderId,
-                    constants.kFrontLeftAbsoluteEncoderOffset,
-                    constants.kCANivoreName,
-                ),
-            )
-            self.frontRightModule = CTRESwerveModule(
-                constants.kFrontRightModuleName,
-                SwerveModuleConfigParams(
-                    constants.kFrontRightDriveMotorId,
-                    constants.kFrontRightDriveInverted,
-                    constants.kFrontRightSteerMotorId,
-                    constants.kFrontRightSteerInverted,
-                    constants.kFrontRightSteerEncoderId,
-                    constants.kFrontRightAbsoluteEncoderOffset,
-                    constants.kCANivoreName,
-                ),
-            )
-            self.backLeftModule = CTRESwerveModule(
-                constants.kBackLeftModuleName,
-                SwerveModuleConfigParams(
-                    constants.kBackLeftDriveMotorId,
-                    constants.kBackLeftDriveInverted,
-                    constants.kBackLeftSteerMotorId,
-                    constants.kBackLeftSteerInverted,
-                    constants.kBackLeftSteerEncoderId,
-                    constants.kBackLeftAbsoluteEncoderOffset,
-                    constants.kCANivoreName,
-                ),
-            )
-            self.backRightModule = CTRESwerveModule(
-                constants.kBackRightModuleName,
-                SwerveModuleConfigParams(
-                    constants.kBackRightDriveMotorId,
-                    constants.kBackRightDriveInverted,
-                    constants.kBackRightSteerMotorId,
-                    constants.kBackRightSteerInverted,
-                    constants.kBackRightSteerEncoderId,
-                    constants.kBackRightAbsoluteEncoderOffset,
-                    constants.kCANivoreName,
-                ),
-            )
-        else:
-            self.frontLeftModule = PWMSwerveModule(
-                constants.kFrontLeftModuleName,
-                PWMVictorSPX(constants.kSimFrontLeftDriveMotorPort),
-                PWMVictorSPX(constants.kSimFrontLeftSteerMotorPort),
-                Encoder(*constants.kSimFrontLeftDriveEncoderPorts),
-                Encoder(*constants.kSimFrontLeftSteerEncoderPorts),
-            )
-            self.frontRightModule = PWMSwerveModule(
-                constants.kFrontRightModuleName,
-                PWMVictorSPX(constants.kSimFrontRightDriveMotorPort),
-                PWMVictorSPX(constants.kSimFrontRightSteerMotorPort),
-                Encoder(*constants.kSimFrontRightDriveEncoderPorts),
-                Encoder(*constants.kSimFrontRightSteerEncoderPorts),
-            )
-            self.backLeftModule = PWMSwerveModule(
-                constants.kBackLeftModuleName,
-                PWMVictorSPX(constants.kSimBackLeftDriveMotorPort),
-                PWMVictorSPX(constants.kSimBackLeftSteerMotorPort),
-                Encoder(*constants.kSimBackLeftDriveEncoderPorts),
-                Encoder(*constants.kSimBackLeftSteerEncoderPorts),
-            )
-            self.backRightModule = PWMSwerveModule(
-                constants.kBackRightModuleName,
-                PWMVictorSPX(constants.kSimBackRightDriveMotorPort),
-                PWMVictorSPX(constants.kSimBackRightSteerMotorPort),
-                Encoder(*constants.kSimBackRightDriveEncoderPorts),
-                Encoder(*constants.kSimBackRightSteerEncoderPorts),
-            )
+        self.frontLeftModule = CTRESwerveModule(
+            constants.kFrontLeftModuleName,
+            SwerveModuleConfigParams(
+                constants.kFrontLeftDriveMotorId,
+                constants.kFrontLeftDriveInverted,
+                constants.kFrontLeftSteerMotorId,
+                constants.kFrontLeftSteerInverted,
+                constants.kFrontLeftSteerEncoderId,
+                constants.kFrontLeftAbsoluteEncoderOffset,
+                constants.kCANivoreName,
+            ),
+        )
+        self.frontRightModule = CTRESwerveModule(
+            constants.kFrontRightModuleName,
+            SwerveModuleConfigParams(
+                constants.kFrontRightDriveMotorId,
+                constants.kFrontRightDriveInverted,
+                constants.kFrontRightSteerMotorId,
+                constants.kFrontRightSteerInverted,
+                constants.kFrontRightSteerEncoderId,
+                constants.kFrontRightAbsoluteEncoderOffset,
+                constants.kCANivoreName,
+            ),
+        )
+        self.backLeftModule = CTRESwerveModule(
+            constants.kBackLeftModuleName,
+            SwerveModuleConfigParams(
+                constants.kBackLeftDriveMotorId,
+                constants.kBackLeftDriveInverted,
+                constants.kBackLeftSteerMotorId,
+                constants.kBackLeftSteerInverted,
+                constants.kBackLeftSteerEncoderId,
+                constants.kBackLeftAbsoluteEncoderOffset,
+                constants.kCANivoreName,
+            ),
+        )
+        self.backRightModule = CTRESwerveModule(
+            constants.kBackRightModuleName,
+            SwerveModuleConfigParams(
+                constants.kBackRightDriveMotorId,
+                constants.kBackRightDriveInverted,
+                constants.kBackRightSteerMotorId,
+                constants.kBackRightSteerInverted,
+                constants.kBackRightSteerEncoderId,
+                constants.kBackRightAbsoluteEncoderOffset,
+                constants.kCANivoreName,
+            ),
+        )
 
         self.modules = (
             self.frontLeftModule,
@@ -390,7 +345,7 @@ class DriveSubsystem(Subsystem):
                 coordinateMode=DriveSubsystem.CoordinateMode.RobotRelative,
             ),
             constants.kPathFollowingConfig,
-            self
+            self,
         )
 
     def getRobotRelativeSpeeds(self):
@@ -438,13 +393,13 @@ class DriveSubsystem(Subsystem):
         SmartDashboard.putNumberArray(
             constants.kSwerveExpectedStatesKey,
             [
-                frontLeftState.angle.degrees(),
+                frontLeftState.angle.radians(),
                 frontLeftState.speed,
-                frontRightState.angle.degrees(),
+                frontRightState.angle.radians(),
                 frontRightState.speed,
-                backLeftState.angle.degrees(),
+                backLeftState.angle.radians(),
                 backLeftState.speed,
-                backRightState.angle.degrees(),
+                backRightState.angle.radians(),
                 backRightState.speed,
             ],
         )
@@ -493,13 +448,13 @@ class DriveSubsystem(Subsystem):
         SmartDashboard.putNumberArray(
             constants.kSwerveActualStatesKey,
             [
-                self.frontLeftModule.getSwerveAngle().degrees(),
+                self.frontLeftModule.getSwerveAngle().radians(),
                 self.frontLeftModule.getWheelLinearVelocity(),
-                self.frontRightModule.getSwerveAngle().degrees(),
+                self.frontRightModule.getSwerveAngle().radians(),
                 self.frontRightModule.getWheelLinearVelocity(),
-                self.backLeftModule.getSwerveAngle().degrees(),
+                self.backLeftModule.getSwerveAngle().radians(),
                 self.backLeftModule.getWheelLinearVelocity(),
-                self.backRightModule.getSwerveAngle().degrees(),
+                self.backRightModule.getSwerveAngle().radians(),
                 self.backRightModule.getWheelLinearVelocity(),
             ],
         )
