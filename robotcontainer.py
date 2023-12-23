@@ -20,7 +20,7 @@ from subsystems.loggingsubsystem import LoggingSubsystem
 
 from operatorinterface import OperatorInterface
 
-from pathplannerlib.auto import AutoBuilder
+from pathplannerlib.auto import PathPlannerAuto
 
 
 class RobotContainer:
@@ -58,20 +58,11 @@ class RobotContainer:
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the autonomous command chooser
-        
-        # pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner")
-        # for file in os.listdir(pathsPath):
-        #     relevantName = file.split(".")[0]
-        #     self.chooser.addOption(
-        #         relevantName,
-        #         commands2.SequentialCommandGroup(
-        #             commands2.ParallelDeadlineGroup(
-        #                 commands2.WaitCommand(14.9),
-        #                 [AutonomousRoutine(self.drive, relevantName, [])],
-        #             ),
-        #             DefenseState(self.drive),
-        #         ),
-        #     )
+
+        pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
+        for file in os.listdir(pathsPath):
+            relevantName = file.split(".")[0]
+            self.chooser.addOption(relevantName, PathPlannerAuto(relevantName))
 
         self.chooser.addOption("Do Nothing Auto", self.nothingAuto)
         self.chooser.setDefaultOption("Simple Auto", self.simpleAuto)

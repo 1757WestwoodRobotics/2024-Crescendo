@@ -35,6 +35,7 @@ from wpimath.geometry import (
     Translation3d,
 )
 from wpimath.system.plant import DCMotor
+from pathplannerlib.config import HolonomicPathFollowerConfig, PIDConstants, ReplanningConfig
 
 from util.keyorganization import OptionalValueKeys
 
@@ -488,6 +489,14 @@ kTrajectoryPositionDGain = 0
 kTrajectoryAnglePGain = 8
 kTrajectoryAngleIGain = 0
 kTrajectoryAngleDGain = 0
+
+kPathFollowingConfig = HolonomicPathFollowerConfig(
+    PIDConstants(kTrajectoryPositionPGain, kTrajectoryPositionIGain, kTrajectoryPositionDGain),
+    PIDConstants(kTrajectoryAnglePGain, kTrajectoryAngleIGain, kTrajectoryAngleDGain),
+    kMaxForwardLinearVelocity,
+    kFrontLeftWheelPosition.norm(),
+    ReplanningConfig()
+)
 
 # Operator Interface
 kXboxJoystickDeadband = 0.1

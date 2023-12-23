@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from functools import partial
 
 from typing import Tuple
 from commands2 import Subsystem
@@ -27,6 +28,8 @@ from util import convenientmath
 from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
 from util.simfalcon import Falcon
+
+from pathplannerlib.auto import AutoBuilder
 
 
 class SwerveModuleConfigParams:
@@ -377,6 +380,29 @@ class DriveSubsystem(Subsystem):
         self.vyLimiter = SlewRateLimiter(constants.kDriveAccelLimit)
 
         self.visionEstimate = Pose2d()
+
+        AutoBuilder.configureHolonomic(
+            self.getPose,
+            self.resetGyro,
+            self.getRobotRelativeSpeeds,
+            partial(
+                self.arcadeDriveWithSpeeds,
+                coordinateMode=DriveSubsystem.CoordinateMode.RobotRelative,
+            ),
+            constants.kPathFollowingConfig,
+            self
+        )
+
+    def getRobotRelativeSpeeds(self):
+        return self.kinematics.toChassisSpeeds(*self.getModuleStates())
+
+    def getModuleStates(self):
+        return (
+            self.frontLeftModule.getState(),
+            self.frontRightModule.getState(),
+            self.backLeftModule.getState(),
+            self.backRightModule.getState(),
+        )
 
     def resetSwerveModules(self):
         for module in self.modules:
