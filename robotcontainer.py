@@ -72,7 +72,9 @@ class RobotContainer:
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
         for file in os.listdir(pathsPath):
             relevantName = file.split(".")[0]
-            self.chooser.addOption(relevantName, PathPlannerAuto(relevantName))
+            auton = PathPlannerAuto(relevantName)
+            wpilib.SmartDashboard.putData(f"autos/{relevantName}", auton)
+            self.chooser.addOption(relevantName, auton)
 
         self.chooser.addOption("Do Nothing Auto", self.nothingAuto)
         self.chooser.setDefaultOption("Simple Auto", self.simpleAuto)
