@@ -49,8 +49,14 @@ class LoggingSubsystem(Subsystem):
                 [controller.getPOV(i) for i in range(controller.getPOVCount())],
             )
 
-            self.dsTable.putBoolean("enabled", DriverStation.isEnabled())
+            self.dsTable.putBoolean("Enabled", DriverStation.isEnabled())
             self.dsTable.putBoolean("auto", DriverStation.isAutonomous())
-            self.dsTable.putString("alliance", str(DriverStation.getAlliance()))
+            alliance = DriverStation.getAlliance()
+            allianceNumber = (
+                0
+                if alliance == None
+                else (1 if alliance == DriverStation.Alliance.kRed else 2)
+            )
+            self.dsTable.putNumber("AllianceStation", allianceNumber)
             station = DriverStation.getLocation()
             self.dsTable.putNumber("location", 0.0 if station is None else station)
