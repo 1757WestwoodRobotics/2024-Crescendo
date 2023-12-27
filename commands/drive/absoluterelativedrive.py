@@ -40,9 +40,6 @@ class AbsoluteRelativeDrive(Command):
         if self.rotationX() == 0 and self.rotationY() == 0:
             return 0
 
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
-            targetRotation += pi
-
         optimizedDirection = optimizeAngle(
             self.drive.getRotation(), Rotation2d(targetRotation)
         ).radians()
@@ -51,18 +48,9 @@ class AbsoluteRelativeDrive(Command):
         )
 
     def execute(self) -> None:
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
-            # if we're on the other side, switch the controls around
-            self.drive.arcadeDriveWithFactors(
-                -self.forward(),
-                -self.sideways(),
-                self.rotation(),
-                DriveSubsystem.CoordinateMode.FieldRelative,
-            )
-        else:
-            self.drive.arcadeDriveWithFactors(
-                self.forward(),
-                self.sideways(),
-                self.rotation(),
-                DriveSubsystem.CoordinateMode.FieldRelative,
-            )
+        self.drive.arcadeDriveWithFactors(
+            self.forward(),
+            self.sideways(),
+            self.rotation(),
+            DriveSubsystem.CoordinateMode.FieldRelative,
+        )

@@ -45,17 +45,9 @@ class AngleAlignDrive(Command):
         )
 
     def execute(self) -> None:
-        if DriverStation.getAlliance() == DriverStation.Alliance.kRed:
-            self.drive.arcadeDriveWithFactors(
-                -self.forward(),
-                -self.sideways(),
-                self.rotation(),
-                DriveSubsystem.CoordinateMode.FieldRelative,
-            )
-        else:
-            self.drive.arcadeDriveWithFactors(
-                self.forward(),
-                self.sideways(),
-                self.rotation(),
-                DriveSubsystem.CoordinateMode.FieldRelative,
-            )
+        self.drive.arcadeDriveWithFactors(
+            self.forward(),
+            self.sideways(),
+            self.rotation(),
+            DriveSubsystem.CoordinateMode.FieldRelative,
+        )
