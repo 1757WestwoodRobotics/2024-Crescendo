@@ -137,7 +137,7 @@ class SwerveDriveSim:
             )
 
             state = wpimath.kinematics.SwerveModuleState(
-                wheelLinearVelocity,
+                -wheelLinearVelocity,
                 Rotation2d(
                     swerve_position_rot
                     / module.steerMotorGearing

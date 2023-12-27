@@ -53,7 +53,7 @@ class VisionSubsystem(Subsystem):
         self.estimatedPosition = self.drive.getPose()
         self.updateAdvantagescopePose()
 
-        botPose, _ = self.estimator.update()
+        botPose = self.estimator.update()
 
         self.drive.visionEstimate = botPose.toPose2d()
 

@@ -314,7 +314,7 @@ kDriveDGain = 0.0
 kDriveVGain = 0.01
 
 kSteerPIDSlot = 0
-kSteerPGain = 1.2011
+kSteerPGain = 1.5
 kSteerIGain = 0.0
 kSteerDGain = 0
 

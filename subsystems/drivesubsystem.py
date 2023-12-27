@@ -345,7 +345,7 @@ class DriveSubsystem(Subsystem):
         )
 
     def getRobotRelativeSpeeds(self):
-        return self.kinematics.toChassisSpeeds(*self.getModuleStates())
+        return self.kinematics.toChassisSpeeds(self.getModuleStates())
 
     def getModuleStates(self):
         return (
@@ -406,7 +406,7 @@ class DriveSubsystem(Subsystem):
 
     def getRotation(self) -> Rotation2d:
         return Rotation2d.fromDegrees(
-            ((self.gyro.getRotation2d().degrees() / 0.98801) % 360)
+            self.gyro.getRotation2d().degrees()
             + self.rotationOffset
         )
 

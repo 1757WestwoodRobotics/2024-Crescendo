@@ -1,9 +1,10 @@
 import os
+from commands2.functionalcommand import FunctionalCommand
 import wpilib
 from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
-from pathplannerlib.auto import PathPlannerAuto
+from pathplannerlib.auto import PathPlannerAuto, NamedCommands
 
 import constants
 
@@ -20,7 +21,6 @@ from subsystems.loggingsubsystem import LoggingSubsystem
 # from subsystems.visionsubsystem import VisionSubsystem
 
 from operatorinterface import OperatorInterface
-
 
 
 class RobotContainer:
@@ -58,6 +58,16 @@ class RobotContainer:
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the autonomous command chooser
+
+        NamedCommands.registerCommand(
+            "log",
+            FunctionalCommand(
+                (lambda: None),
+                (lambda: print("hello")),
+                (lambda _: None),
+                (lambda: True),
+            ),
+        )
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
         for file in os.listdir(pathsPath):
