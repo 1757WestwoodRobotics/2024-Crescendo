@@ -137,3 +137,5 @@ simgui.json
 networktables.json
 networktables.json.bck
 FRC*.wpilog
+logs
+ctre_sim

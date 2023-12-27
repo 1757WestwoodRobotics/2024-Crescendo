@@ -1,14 +1,14 @@
 from enum import Enum, auto
 
 from typing import Callable
-from commands2.button import Button
+from commands2.button import Trigger
 from wpilib import Joystick, SmartDashboard
 
 
 Axis = Callable[[], float]
 
 
-class AxisButton(Button):
+class AxisButton(Trigger):
     """a trigger that can be fired by an axis hitting a certain limit"""
 
     def __init__(self, axis: Axis, threshold: float) -> None:
@@ -17,12 +17,12 @@ class AxisButton(Button):
         super().__init__(lambda: self.axis() > self.threshold)
 
 
-class SmartDashboardButton(Button):
+class SmartDashboardButton(Trigger):
     def __init__(self, key: str) -> None:
         super().__init__(lambda: SmartDashboard.getBoolean(key, False))
 
 
-class DPadButton(Button):
+class DPadButton(Trigger):
     """a trigger that can be fired by a d pad button"""
 
     class DPad(Enum):

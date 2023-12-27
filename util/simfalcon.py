@@ -90,9 +90,9 @@ class Falcon:
         self.posControl.slot = 0
 
         if RobotBase.isSimulation():
-            self.motor.get_position().set_update_frequency(1000)
-            self.motor.get_velocity().set_update_frequency(1000)
-        print(f"...Done")
+            self.motor.get_position().set_update_frequency(100)
+            self.motor.get_velocity().set_update_frequency(100)
+        print("...Done")
 
     def set(
         self,

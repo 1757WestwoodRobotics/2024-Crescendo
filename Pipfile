@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-robotpy-pathplannerlib = "==2024.0.0b6.post1"
+robotpy-pathplannerlib = "==2024.0.0b6.post3"
 robotpy = {extras = ["all"], version = "==2024.0.0b4"}
 phoenix6 = "==24.0.0b5"
+black = "*"
+pylint = "*"
 
 [dev-packages]
 

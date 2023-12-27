@@ -1,6 +1,6 @@
 from math import pi
 from typing import Dict, List, Tuple
-from commands2 import Command, CommandBase
+from commands2 import Command
 from pathplannerlib import PathPlannerTrajectory
 from wpilib import DataLogManager, DriverStation, SmartDashboard, Timer
 from wpimath.controller import (
@@ -15,7 +15,7 @@ from subsystems.drivesubsystem import DriveSubsystem
 import constants
 
 
-class FollowTrajectory(CommandBase):
+class FollowTrajectory(Command):
     unpassedMarkers: List[PathPlannerTrajectory.EventMarker]
 
     def __init__(
@@ -25,7 +25,7 @@ class FollowTrajectory(CommandBase):
         markers: List[PathPlannerTrajectory.EventMarker],
         markerMap: Dict[str, Command],
     ) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
 
         self.drive = drive
         self.markers = markers

@@ -3,6 +3,7 @@ import wpilib
 from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
+from pathplannerlib.auto import PathPlannerAuto
 
 import constants
 
@@ -20,7 +21,6 @@ from subsystems.loggingsubsystem import LoggingSubsystem
 
 from operatorinterface import OperatorInterface
 
-from pathplannerlib.auto import PathPlannerAuto
 
 
 class RobotContainer:

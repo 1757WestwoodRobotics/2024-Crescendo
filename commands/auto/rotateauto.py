@@ -1,5 +1,5 @@
 import math
-from commands2 import CommandBase
+from commands2 import Command
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 from wpimath.geometry import Transform2d
@@ -9,7 +9,7 @@ from subsystems.drivesubsystem import DriveSubsystem
 import constants
 
 
-class RotateAuto(CommandBase):
+class RotateAuto(Command):
     def __init__(self, amount, speedFactor, drive: DriveSubsystem) -> None:
         CommandBase.__init__(self)
         self.setName(__class__.__name__)

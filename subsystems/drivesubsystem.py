@@ -7,8 +7,6 @@ from commands2 import Subsystem
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from wpilib import (
-    Encoder,
-    PWMVictorSPX,
     RobotBase,
     SmartDashboard,
     Timer,
@@ -25,6 +23,7 @@ from wpimath.kinematics import (
     SwerveDrive4Odometry,
     SwerveModulePosition,
 )
+from pathplannerlib.auto import AutoBuilder
 
 import constants
 from util import convenientmath
@@ -32,7 +31,6 @@ from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
 from util.simfalcon import Falcon
 
-from pathplannerlib.auto import AutoBuilder
 
 
 class SwerveModuleConfigParams:
@@ -131,7 +129,7 @@ class CTRESwerveModule(SwerveModule):
             constants.kDriveDGain,
             config.driveMotorInverted,
             config.canbus,
-            constants.kDriveVGain
+            constants.kDriveVGain,
         )
         if RobotBase.isReal():
             self.driveMotor.setCurrentLimit(constants.kDriveCurrentLimit)
@@ -181,8 +179,6 @@ class CTRESwerveModule(SwerveModule):
         # print(
         #     f"Control: {steerEncoderPulsesTarget}, actual: {self.steerMotor.get(Falcon.ControlMode.Position)}"
         # )
-        if steerEncoderPulsesTarget > 100:
-            print(f"what {swerveAngleTarget} {self.name}")
         self.steerMotor.set(Falcon.ControlMode.Position, steerEncoderPulsesTarget)
 
     def getWheelLinearVelocity(self) -> float:
@@ -420,11 +416,13 @@ class DriveSubsystem(Subsystem):
     def resetOdometryAtPosition(self, pose: Pose2d):
         self.odometry.resetPosition(
             self.getRotation(),
+            (
+                self.frontLeftModule.getPosition(),
+                self.frontRightModule.getPosition(),
+                self.backLeftModule.getPosition(),
+                self.backRightModule.getPosition(),
+            ),
             pose,
-            self.frontLeftModule.getPosition(),
-            self.frontRightModule.getPosition(),
-            self.backLeftModule.getPosition(),
-            self.backRightModule.getPosition(),
         )
 
     def periodic(self):
@@ -437,10 +435,12 @@ class DriveSubsystem(Subsystem):
 
         self.odometry.update(
             self.getRotation(),
-            self.frontLeftModule.getPosition(),
-            self.frontRightModule.getPosition(),
-            self.backLeftModule.getPosition(),
-            self.backRightModule.getPosition(),
+            (
+                self.frontLeftModule.getPosition(),
+                self.frontRightModule.getPosition(),
+                self.backLeftModule.getPosition(),
+                self.backRightModule.getPosition(),
+            ),
         )
         robotPose = self.getPose()
 

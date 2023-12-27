@@ -3,10 +3,10 @@
 import typing
 import wpilib
 import commands2
+from phoenix6.signal_logger import SignalLogger
 
 from robotcontainer import RobotContainer
 
-from phoenix6.signal_logger import SignalLogger
 
 
 class MentorBot(commands2.TimedCommandRobot):

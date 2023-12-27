@@ -16,10 +16,9 @@ from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
 from wpilib import RobotController, SmartDashboard
-from wpilib.simulation import EncoderSim, PWMSim, SimDeviceSim
+from wpilib.simulation import SimDeviceSim, DCMotorSim
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
 from wpimath.system.plant import DCMotor
-from wpilib.simulation import DCMotorSim
 import wpimath.kinematics
 from pyfrc.physics.core import PhysicsInterface
 import constants
@@ -147,7 +146,7 @@ class SwerveDriveSim:
             )
             states.append(state)
 
-        chassisSpeed = self.kinematics.toChassisSpeeds(*states)
+        chassisSpeed = self.kinematics.toChassisSpeeds(states)
         deltaHeading = chassisSpeed.omega * deltaT
         deltaX = chassisSpeed.vx * deltaT
         deltaY = chassisSpeed.vy * deltaT
