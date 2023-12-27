@@ -532,7 +532,7 @@ kSimDefaultTargetLocation = Pose2d(
 )
 """[meters, meters, radians]"""
 
-kSimDefaultRobotLocation = Pose2d(kFieldLength / 2, kFieldWidth / 2, 0)
+kSimDefaultRobotLocation = Pose2d(0,0,0)
 kSimDefaultTargetHeight = 8 * kMetersPerFoot + 8 * kMetersPerInch  # 8ft 8in
 kSimBallName = "SimBall"
 kSimDefaultBallLocation = Pose2d(kFieldLength / 4, kFieldWidth / 2, 0)

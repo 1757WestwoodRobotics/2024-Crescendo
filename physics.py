@@ -265,14 +265,6 @@ class PhysicsEngine:
         if not self.sim_initialized:
             self.sim_initialized = True
             # self.physics_controller.field, is not set until simulation_init
-            simTargetObject = self.physics_controller.field.getObject(
-                constants.kSimTargetName
-            )
-            simTargetObject.setPose(constants.kSimDefaultTargetLocation)
-            simBallObject = self.physics_controller.field.getObject(
-                constants.kSimBallName
-            )
-            simBallObject.setPose(constants.kSimDefaultBallLocation)
 
         self.gyroYaw.set(-self.driveSim.getHeading().degrees())
         x = float(SmartDashboard.getNumber("therealgyro", -30))
