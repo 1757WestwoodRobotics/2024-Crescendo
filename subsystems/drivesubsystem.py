@@ -551,15 +551,16 @@ class DriveSubsystem(Subsystem):
                 constants.kTargetAngleRelativeToRobotKeys.valueKey, 0
             )
         )
+        discritizedSpeeds = ChassisSpeeds.discretize(chassisSpeeds, constants.kRobotUpdatePeriod)
 
         robotChassisSpeeds = None
         if coordinateMode is DriveSubsystem.CoordinateMode.RobotRelative:
-            robotChassisSpeeds = chassisSpeeds
+            robotChassisSpeeds = discritizedSpeeds
         elif coordinateMode is DriveSubsystem.CoordinateMode.FieldRelative:
             robotChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                chassisSpeeds.vx,
-                chassisSpeeds.vy,
-                chassisSpeeds.omega,
+                discritizedSpeeds.vx,
+                discritizedSpeeds.vy,
+                discritizedSpeeds.omega,
                 self.getRotation(),
             )
         elif coordinateMode is DriveSubsystem.CoordinateMode.TargetRelative:
@@ -575,6 +576,7 @@ class DriveSubsystem(Subsystem):
                 )
             else:
                 robotChassisSpeeds = ChassisSpeeds()
+
 
         moduleStates = self.kinematics.toSwerveModuleStates(robotChassisSpeeds)
         self.applyStates(moduleStates)
