@@ -171,7 +171,7 @@ class PhysicsEngine:
         frontLeftSim = driveSubsystem.frontLeftModule.getSimulator()
         self.frontLeftModuleSim = SwerveModuleSim(
             constants.kFrontLeftWheelPosition,
-            DCMotor.falcon500(),
+            DCMotor.krakenX60(),
             frontLeftSim[0],
             constants.kDriveGearingRatio,
             DCMotor.falcon500(),
@@ -182,7 +182,7 @@ class PhysicsEngine:
         frontRightSim = driveSubsystem.frontRightModule.getSimulator()
         self.frontRightModuleSim = SwerveModuleSim(
             constants.kFrontRightWheelPosition,
-            DCMotor.falcon500(),
+            DCMotor.krakenX60(),
             frontRightSim[0],
             constants.kDriveGearingRatio,
             DCMotor.falcon500(),
@@ -193,7 +193,7 @@ class PhysicsEngine:
         backLeftSim = driveSubsystem.backLeftModule.getSimulator()
         self.backSimLeftModule = SwerveModuleSim(
             constants.kBackLeftWheelPosition,
-            DCMotor.falcon500(),
+            DCMotor.krakenX60(),
             backLeftSim[0],
             constants.kDriveGearingRatio,
             DCMotor.falcon500(),
@@ -204,7 +204,7 @@ class PhysicsEngine:
         backRightSim = driveSubsystem.backRightModule.getSimulator()
         self.backSimRightModule = SwerveModuleSim(
             constants.kBackRightWheelPosition,
-            DCMotor.falcon500(),
+            DCMotor.krakenX60(),
             backRightSim[0],
             constants.kDriveGearingRatio,
             DCMotor.falcon500(),
