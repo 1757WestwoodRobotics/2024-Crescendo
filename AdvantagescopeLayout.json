@@ -93,12 +93,12 @@
       ],
       "options": {
         "field": "2023 Field",
-        "alliance": "blue",
+        "alliance": "auto",
         "robot": "Crab Bot",
         "unitDistance": "meters",
         "unitRotation": "radians",
-        "cameraIndex": -1,
-        "fov": 50
+        "cameraIndex": -2,
+        "fov": 90
       },
       "configHidden": false,
       "title": "3D Field"
