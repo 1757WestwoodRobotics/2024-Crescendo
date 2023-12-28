@@ -23,6 +23,7 @@ import wpimath.kinematics
 from pyfrc.physics.core import PhysicsInterface
 import constants
 from subsystems.drivesubsystem import DriveSubsystem
+from util.convenientmath import clamp
 
 
 class SwerveModuleSim:
@@ -98,8 +99,13 @@ class SwerveDriveSim:
             module.wheelMotorSim().set_raw_rotor_position(wheel_position_rot)
             module.wheelMotorSim().set_rotor_velocity(wheel_velocity_rps)
             module.wheelMotorSim().set_supply_voltage(
-                robotVoltage
-                - module.wheelMotorSim().supply_current * constants.kSimMotorResistance
+                clamp(
+                    robotVoltage
+                    - module.wheelMotorSim().supply_current
+                    * constants.kSimMotorResistance,
+                    0,
+                    robotVoltage,
+                )
             )
 
             module.steerMotorIntenalSim.setInputVoltage(
@@ -119,8 +125,13 @@ class SwerveDriveSim:
             module.swerveMotorSim().set_raw_rotor_position(swerve_position_rot)
             module.swerveMotorSim().set_rotor_velocity(swerve_velocity_rps)
             module.swerveMotorSim().set_supply_voltage(
-                robotVoltage
-                - module.swerveMotorSim().supply_current * constants.kSimMotorResistance
+                clamp(
+                    robotVoltage
+                    - module.swerveMotorSim().supply_current
+                    * constants.kSimMotorResistance,
+                    0,
+                    robotVoltage,
+                )
             )
             module.swerveEncoderSim().set_raw_position(
                 swerve_position_rot / module.steerMotorGearing
