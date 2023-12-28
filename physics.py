@@ -294,13 +294,3 @@ class PhysicsEngine:
             constants.kSimRobotPoseArrayKey,
             [simRobotPose.X(), simRobotPose.Y(), simRobotPose.rotation().radians()],
         )
-
-        # publish the simulated target and ball pose to nt
-        simTargetObject = self.physics_controller.field.getObject(
-            constants.kSimTargetName
-        )
-        simTargetPose = simTargetObject.getPose()
-        SmartDashboard.putNumberArray(
-            constants.kSimTargetPoseArrayKey,
-            [simTargetPose.X(), simTargetPose.Y(), simTargetPose.rotation().radians()],
-        )
