@@ -20,7 +20,7 @@ from phoenix6.status_code import StatusCode
 from wpilib import RobotBase, SmartDashboard
 
 
-class Falcon:
+class Talon:
     class ControlMode(Enum):
         Position = auto()
         """rotations"""
@@ -105,20 +105,19 @@ class Falcon:
         SmartDashboard.putNumber(
             f"motors/{self.id}/target", demand
         )
-        if controlMode == Falcon.ControlMode.Position:
+        if controlMode == Talon.ControlMode.Position:
             c = self.motor.set_control(
                 self.posControl.with_position(demand).with_feed_forward(ff)
             )
-        elif controlMode == Falcon.ControlMode.Velocity:
+        elif controlMode == Talon.ControlMode.Velocity:
             c = self.motor.set_control(
                 self.velControl.with_velocity(demand).with_feed_forward(ff)
                 if not duty_cycle
                 else VelocityDutyCycle(demand, feed_forward=ff)
             )
-            # print(f"Target: {demand}, actual: {self.get(Falcon.ControlMode.Velocity)}")
-        elif controlMode == Falcon.ControlMode.Percent:
+        elif controlMode == Talon.ControlMode.Percent:
             c = self.motor.set_control(self.perControl.with_output(demand + ff / 12))
-        elif controlMode == Falcon.ControlMode.Amps:
+        elif controlMode == Talon.ControlMode.Amps:
             raise NotImplementedError("AMP control is currently not implemented")
 
         if c != StatusCode.OK:
@@ -161,18 +160,18 @@ class Falcon:
     def setNeutralMode(self, mode: NeutralMode):
         conf = MotorOutputConfigs().with_neutral_mode(
             NeutralModeValue.COAST
-            if mode == Falcon.NeutralMode.Coast
+            if mode == Talon.NeutralMode.Coast
             else NeutralModeValue.BRAKE
         )
         self.motor.configurator.apply(conf)
 
     def getLimitSwitch(self, switch: LimitSwitch) -> bool:
-        if switch == Falcon.LimitSwitch.Forwards:
+        if switch == Talon.LimitSwitch.Forwards:
             return (
                 self.motor.get_forward_limit().value
                 == ForwardLimitValue.CLOSED_TO_GROUND
             )
-        elif switch == Falcon.LimitSwitch.Backwards:
+        elif switch == Talon.LimitSwitch.Backwards:
             return (
                 self.motor.get_reverse_limit().value
                 == ReverseLimitValue.CLOSED_TO_GROUND
@@ -181,11 +180,11 @@ class Falcon:
 
     def get(self, controlMode: ControlMode) -> float:
         self.updateDashboard()
-        if controlMode == Falcon.ControlMode.Position:
+        if controlMode == Talon.ControlMode.Position:
             return self.motor.get_position().value
-        elif controlMode == Falcon.ControlMode.Velocity:
+        elif controlMode == Talon.ControlMode.Velocity:
             return self.motor.get_velocity().value
-        elif controlMode == Falcon.ControlMode.Percent:
+        elif controlMode == Talon.ControlMode.Percent:
             return self.motor.get_motor_voltage().value / 12
         return 0
 

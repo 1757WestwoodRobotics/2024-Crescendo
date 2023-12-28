@@ -30,7 +30,7 @@ import constants
 from util import convenientmath
 from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
-from util.simfalcon import Falcon
+from util.simtalon import Talon
 
 
 class SwerveModuleConfigParams:
@@ -113,7 +113,7 @@ class CTRESwerveModule(SwerveModule):
     """
     Implementation of SwerveModule for the SDS swerve modules
     https://www.swervedrivespecialties.com/collections/kits/products/mk4-swerve-module
-        driveMotor: Falcon 500 Motor (with built-in encoder) attached to wheel through gearing
+        driveMotor: Kraken X60 Motor (with built-in encoder) attached to wheel through gearing
         steerMotor: Falcon 500 Motor (with built-in encoder) attached to swerve through gearing
         swerveEncoder: CANCoder
     """
@@ -122,7 +122,7 @@ class CTRESwerveModule(SwerveModule):
         SwerveModule.__init__(self, name)
         DataLogManager.log(f"Initializing swerve module: {self.name}")
         DataLogManager.log(f"   Configuring drive motor: CAN ID: {config.driveMotorID}")
-        self.driveMotor = Falcon(
+        self.driveMotor = Talon(
             config.driveMotorID,
             constants.kDrivePGain,
             constants.kDriveIGain,
@@ -135,7 +135,7 @@ class CTRESwerveModule(SwerveModule):
             self.driveMotor.setCurrentLimit(constants.kDriveCurrentLimit)
         DataLogManager.log("   ... Done")
         DataLogManager.log(f"   Configuring steer motor: CAN ID: {config.steerMotorID}")
-        self.steerMotor = Falcon(
+        self.steerMotor = Talon(
             config.steerMotorID,
             constants.kSteerPGain,
             constants.kSteerIGain,
@@ -154,7 +154,7 @@ class CTRESwerveModule(SwerveModule):
         DataLogManager.log("... Done")
 
     def getSwerveAngle(self) -> Rotation2d:
-        steerRotation = self.steerMotor.get(Falcon.ControlMode.Position)
+        steerRotation = self.steerMotor.get(Talon.ControlMode.Position)
         swerveAngle = (
             steerRotation
             / constants.kSteerGearingRatio
@@ -176,13 +176,10 @@ class CTRESwerveModule(SwerveModule):
             / constants.kRadiansPerRevolution
             * constants.kSteerGearingRatio
         )
-        # print(
-        #     f"Control: {steerEncoderPulsesTarget}, actual: {self.steerMotor.get(Falcon.ControlMode.Position)}"
-        # )
-        self.steerMotor.set(Falcon.ControlMode.Position, steerEncoderPulsesTarget)
+        self.steerMotor.set(Talon.ControlMode.Position, steerEncoderPulsesTarget)
 
     def getWheelLinearVelocity(self) -> float:
-        driveEncoderPulsesPerSecond = self.driveMotor.get(Falcon.ControlMode.Velocity)
+        driveEncoderPulsesPerSecond = self.driveMotor.get(Talon.ControlMode.Velocity)
         wheelLinearVelocity = (
             driveEncoderPulsesPerSecond
             * constants.kWheelRadius
@@ -192,7 +189,7 @@ class CTRESwerveModule(SwerveModule):
         return wheelLinearVelocity
 
     def getWheelTotalPosition(self) -> float:
-        driveEncoderPulses = self.driveMotor.get(Falcon.ControlMode.Position)
+        driveEncoderPulses = self.driveMotor.get(Talon.ControlMode.Position)
         driveDistance = (
             driveEncoderPulses
             * constants.kWheelRadius
@@ -208,11 +205,8 @@ class CTRESwerveModule(SwerveModule):
             / constants.kRadiansPerRevolution
             * constants.kDriveGearingRatio
         )
-        # print(
-        #     f"Control: {driveEncoderPulsesPerSecond}, actual: {self.driveMotor.get(Falcon.ControlMode.Velocity)}"
-        # )
         self.driveMotor.set(
-            Falcon.ControlMode.Velocity,
+            Talon.ControlMode.Velocity,
             driveEncoderPulsesPerSecond,
         )
 
