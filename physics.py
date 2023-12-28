@@ -22,6 +22,7 @@ from wpimath.system.plant import DCMotor
 import wpimath.kinematics
 from pyfrc.physics.core import PhysicsInterface
 import constants
+from robot import MentorBot
 from subsystems.drivesubsystem import DriveSubsystem
 from util.convenientmath import clamp
 
@@ -162,6 +163,11 @@ class SwerveDriveSim:
         deltaX = chassisSpeed.vx * deltaT
         deltaY = chassisSpeed.vy * deltaT
 
+        SmartDashboard.putNumberArray(
+            constants.kSimRobotVelocityArrayKey,
+            [chassisSpeed.vx, chassisSpeed.vy, chassisSpeed.omega],
+        )
+
         deltaTrans = Transform2d(deltaX, deltaY, deltaHeading)
 
         newPose = self.pose + deltaTrans
@@ -174,7 +180,7 @@ class PhysicsEngine:
     """
 
     # pylint: disable-next=unused-argument
-    def __init__(self, physics_controller: PhysicsInterface, robot: "MentorBot"):
+    def __init__(self, physics_controller: PhysicsInterface, robot: MentorBot):
         self.physics_controller = physics_controller
 
         driveSubsystem: DriveSubsystem = robot.container.drive

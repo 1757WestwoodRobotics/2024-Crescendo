@@ -33,7 +33,6 @@ from util.simcoder import CTREEncoder
 from util.simfalcon import Falcon
 
 
-
 class SwerveModuleConfigParams:
     swerveEncoderOffset: float
     swerveEncoderID: int
@@ -410,10 +409,13 @@ class DriveSubsystem(Subsystem):
         self.backRightModule.applyState(backRightState)
 
     def getRotation(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(
-            self.gyro.get_yaw().value
-            + self.rotationOffset
-        )
+        return Rotation2d.fromDegrees(self.gyro.get_yaw().value + self.rotationOffset)
+
+    def getAngularVelocity(self) -> float:
+        """radians"""
+        if RobotBase.isSimulation():
+            return SmartDashboard.getNumberArray(constants.kSimRobotVelocityArrayKey,[0,0,0])[2]
+        return self.gyro.get_angular_velocity_z_world().value * constants.kRadiansPerDegree
 
     def getPitch(self) -> Rotation2d:
         return Rotation2d.fromDegrees(-self.gyro.get_pitch() + 180)
@@ -469,7 +471,7 @@ class DriveSubsystem(Subsystem):
                 deltaPose.X()
                 / constants.kRobotUpdatePeriod,  # velocity is delta pose / delta time
                 deltaPose.Y() / constants.kRobotUpdatePeriod,
-                deltaPose.rotation().radians() / constants.kRobotUpdatePeriod,
+                self.getAngularVelocity(),
             ],
         )
 
@@ -556,7 +558,9 @@ class DriveSubsystem(Subsystem):
                 constants.kTargetAngleRelativeToRobotKeys.valueKey, 0
             )
         )
-        discritizedSpeeds = ChassisSpeeds.discretize(chassisSpeeds, constants.kRobotUpdatePeriod)
+        discritizedSpeeds = ChassisSpeeds.discretize(
+            chassisSpeeds, constants.kRobotUpdatePeriod
+        )
 
         robotChassisSpeeds = None
         if coordinateMode is DriveSubsystem.CoordinateMode.RobotRelative:
@@ -566,7 +570,10 @@ class DriveSubsystem(Subsystem):
                 discritizedSpeeds.vx,
                 discritizedSpeeds.vy,
                 discritizedSpeeds.omega,
-                self.getRotation(),
+                self.getRotation()
+                + Rotation2d(
+                    self.getAngularVelocity() * constants.kDriveAngularVelocityCoeff
+                ),
             )
         elif coordinateMode is DriveSubsystem.CoordinateMode.TargetRelative:
             if SmartDashboard.getBoolean(
@@ -581,7 +588,6 @@ class DriveSubsystem(Subsystem):
                 )
             else:
                 robotChassisSpeeds = ChassisSpeeds()
-
 
         moduleStates = self.kinematics.toSwerveModuleStates(robotChassisSpeeds)
         self.applyStates(moduleStates)

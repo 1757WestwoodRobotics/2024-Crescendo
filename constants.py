@@ -237,6 +237,8 @@ kDriveCurrentLimit = (
     .with_supply_current_limit_enable(True)
 )
 
+kDriveAngularVelocityCoeff = 0.04 # while translating and rotating, need a bit extra motion to compensate for moving reference frame
+
 # Pigeon
 kPigeonCANId = 44
 
@@ -317,7 +319,7 @@ kDriveDGain = 0.0
 kDriveVGain = 0.01
 
 kSteerPIDSlot = 0
-kSteerPGain = 10
+kSteerPGain = 4
 kSteerIGain = 0.0
 kSteerDGain = 0
 
@@ -535,6 +537,7 @@ kSimDefaultRobotLocation = Pose2d(0,0,0)
 kSimDefaultTargetHeight = 8 * kMetersPerFoot + 8 * kMetersPerInch  # 8ft 8in
 
 kSimRobotPoseArrayKey = "SimRobotPoseArray"
+kSimRobotVelocityArrayKey = "SimRobotVelocityArray"
 
 """meters"""
 
