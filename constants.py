@@ -237,6 +237,9 @@ kDriveCurrentLimit = (
     .with_supply_current_limit_enable(True)
 )
 
+# Pigeon
+kPigeonCANId = 44
+
 # Encoders
 kFrontLeftSteerEncoderId = 40
 kFrontRightSteerEncoderId = 41

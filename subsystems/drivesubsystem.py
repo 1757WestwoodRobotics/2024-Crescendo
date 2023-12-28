@@ -4,6 +4,8 @@ from functools import partial
 from typing import Tuple
 import typing
 from commands2 import Subsystem
+from phoenix6.configs.pigeon2_configs import Pigeon2Configuration
+from phoenix6.hardware.pigeon2 import Pigeon2
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from wpilib import (
@@ -13,7 +15,6 @@ from wpilib import (
     DataLogManager,
 )
 
-from navx import AHRS
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.filter import SlewRateLimiter
 from wpimath.kinematics import (
@@ -311,7 +312,11 @@ class DriveSubsystem(Subsystem):
 
         # Create the gyro, a sensor which can indicate the heading of the robot relative
         # to a customizable position.
-        self.gyro = AHRS.create_spi()
+        self.gyro = Pigeon2(constants.kPigeonCANId, constants.kCANivoreName)
+
+        toApply = Pigeon2Configuration()
+        self.gyro.configurator.apply(toApply)
+        self.gyro.get_yaw().set_update_frequency(100)
 
         # Create the an object for our odometry, which will utilize sensor data to
         # keep a record of our position on the field.
@@ -366,7 +371,7 @@ class DriveSubsystem(Subsystem):
         self.resetOdometryAtPosition(pose)
 
     def resetGyro(self, pose: Pose2d):
-        self.gyro.reset()
+        self.gyro.set_yaw(0)
         # self.gyro.setAngleAdjustment(pose.rotation().degrees())
         self.rotationOffset = pose.rotation().degrees()
         self.resetOdometryAtPosition(pose)
@@ -406,12 +411,12 @@ class DriveSubsystem(Subsystem):
 
     def getRotation(self) -> Rotation2d:
         return Rotation2d.fromDegrees(
-            self.gyro.getRotation2d().degrees()
+            self.gyro.get_yaw().value
             + self.rotationOffset
         )
 
     def getPitch(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(-self.gyro.getPitch() + 180)
+        return Rotation2d.fromDegrees(-self.gyro.get_pitch() + 180)
 
     def resetOdometryAtPosition(self, pose: Pose2d):
         self.odometry.resetPosition(
