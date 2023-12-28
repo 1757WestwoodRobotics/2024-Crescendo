@@ -414,11 +414,15 @@ class DriveSubsystem(Subsystem):
     def getAngularVelocity(self) -> float:
         """radians"""
         if RobotBase.isSimulation():
-            return SmartDashboard.getNumberArray(constants.kSimRobotVelocityArrayKey,[0,0,0])[2]
-        return self.gyro.get_angular_velocity_z_world().value * constants.kRadiansPerDegree
+            return SmartDashboard.getNumberArray(
+                constants.kSimRobotVelocityArrayKey, [0, 0, 0]
+            )[2]
+        return (
+            self.gyro.get_angular_velocity_z_world().value * constants.kRadiansPerDegree
+        )
 
     def getPitch(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(-self.gyro.get_pitch() + 180)
+        return Rotation2d.fromDegrees(-self.gyro.get_pitch().value + 180)
 
     def resetOdometryAtPosition(self, pose: Pose2d):
         self.odometry.resetPosition(

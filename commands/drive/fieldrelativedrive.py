@@ -1,6 +1,6 @@
 import typing
 from commands2 import Command
-from wpilib import DriverStation, Preferences
+from wpilib import Preferences
 from subsystems.drivesubsystem import DriveSubsystem
 
 

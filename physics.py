@@ -16,7 +16,7 @@ from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
 from wpilib import RobotController, SmartDashboard
-from wpilib.simulation import SimDeviceSim, DCMotorSim
+from wpilib.simulation import DCMotorSim
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
 from wpimath.system.plant import DCMotor
 import wpimath.kinematics

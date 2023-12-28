@@ -8,7 +8,6 @@ from phoenix6.signal_logger import SignalLogger
 from robotcontainer import RobotContainer
 
 
-
 class MentorBot(commands2.TimedCommandRobot):
     """
     Our default robot class, pass it to wpilib.run

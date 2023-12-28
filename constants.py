@@ -32,10 +32,13 @@ from wpimath.geometry import (
     Rotation3d,
     Transform3d,
     Translation2d,
-    Translation3d,
 )
 from wpimath.system.plant import DCMotor
-from pathplannerlib.config import HolonomicPathFollowerConfig, PIDConstants, ReplanningConfig
+from pathplannerlib.config import (
+    HolonomicPathFollowerConfig,
+    PIDConstants,
+    ReplanningConfig,
+)
 
 from util.keyorganization import OptionalValueKeys
 
@@ -237,7 +240,7 @@ kDriveCurrentLimit = (
     .with_supply_current_limit_enable(True)
 )
 
-kDriveAngularVelocityCoeff = 0.04 # while translating and rotating, need a bit extra motion to compensate for moving reference frame
+kDriveAngularVelocityCoeff = 0.04  # while translating and rotating, need a bit extra motion to compensate for moving reference frame
 
 # Pigeon
 kPigeonCANId = 44
@@ -497,11 +500,13 @@ kTrajectoryAngleIGain = 0
 kTrajectoryAngleDGain = 0
 
 kPathFollowingConfig = HolonomicPathFollowerConfig(
-    PIDConstants(kTrajectoryPositionPGain, kTrajectoryPositionIGain, kTrajectoryPositionDGain),
+    PIDConstants(
+        kTrajectoryPositionPGain, kTrajectoryPositionIGain, kTrajectoryPositionDGain
+    ),
     PIDConstants(kTrajectoryAnglePGain, kTrajectoryAngleIGain, kTrajectoryAngleDGain),
     kMaxForwardLinearVelocity,
     kFrontLeftWheelPosition.norm(),
-    ReplanningConfig()
+    ReplanningConfig(),
 )
 
 # Operator Interface
@@ -533,7 +538,7 @@ kSimulationRotationalInertia = 0.0002
 kSimMotorResistance = 0.002
 """[meters, meters, radians]"""
 
-kSimDefaultRobotLocation = Pose2d(0,0,0)
+kSimDefaultRobotLocation = Pose2d(0, 0, 0)
 kSimDefaultTargetHeight = 8 * kMetersPerFoot + 8 * kMetersPerInch  # 8ft 8in
 
 kSimRobotPoseArrayKey = "SimRobotPoseArray"
@@ -547,8 +552,7 @@ kMotorBaseKey = "motors"
 kMaxWaypointTranslationalVelocity = kMaxForwardLinearVelocity
 kMaxWaypointTranslationalAcceleration = kMaxWaypointTranslationalVelocity * 3
 
-kPossibleWaypoints = [
-]
+kPossibleWaypoints = []
 kWaypointJoystickVariation = 0.1
 """meters"""
 

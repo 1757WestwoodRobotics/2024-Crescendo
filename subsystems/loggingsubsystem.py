@@ -54,7 +54,7 @@ class LoggingSubsystem(Subsystem):
             alliance = DriverStation.getAlliance()
             allianceNumber = (
                 0
-                if alliance == None
+                if alliance is None
                 else (1 if alliance == DriverStation.Alliance.kRed else 2)
             )
             self.dsTable.putNumber("AllianceStation", allianceNumber)

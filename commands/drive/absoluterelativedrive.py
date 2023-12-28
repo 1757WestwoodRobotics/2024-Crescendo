@@ -1,7 +1,6 @@
-from math import atan2, pi
+from math import atan2
 import typing
 from commands2 import Command
-from wpilib import DriverStation
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
 from subsystems.drivesubsystem import DriveSubsystem

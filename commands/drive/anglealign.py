@@ -1,6 +1,5 @@
 import typing
 from commands2 import Command
-from wpilib import DriverStation
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
 
