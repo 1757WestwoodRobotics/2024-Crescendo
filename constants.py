@@ -314,9 +314,9 @@ kDriveDGain = 0.0
 kDriveVGain = 0.01
 
 kSteerPIDSlot = 0
-kSteerPGain = 1.5
+kSteerPGain = 4
 kSteerIGain = 0.0
-kSteerDGain = 0
+kSteerDGain = 0.02
 
 kFrontLeftDriveInverted = False
 kFrontRightDriveInverted = False
