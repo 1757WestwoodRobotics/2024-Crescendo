@@ -1,10 +1,8 @@
 from typing import List, Tuple
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
-from photonvision import PoseStrategy, RobotPoseEstimator, PhotonCamera
-from robotpy_apriltag import AprilTagField
-import robotpy_apriltag
-from wpilib import SmartDashboard
+from photonlibpy.photonCamera import PhotonCamera
+from wpilib import SmartDashboard, RobotBase
 from wpimath.geometry import Pose2d, Transform3d, Pose3d
 
 import constants
@@ -20,27 +18,25 @@ class VisionSubsystem(Subsystem):
         self.drive = drive
         self.estimatedPosition = Pose2d()
 
-        self.camera = PhotonCamera(
-            NetworkTableInstance.getDefault(), constants.kPhotonvisionCameraName
-        )
-        field = robotpy_apriltag.loadAprilTagLayoutField(AprilTagField.k2023ChargedUp)
-        field.setOrigin(Pose3d())
-        self.estimator = RobotPoseEstimator(
-            field,
-            PoseStrategy.LOWEST_AMBIGUITY,
-            [(self.camera, constants.kLimelightRelativeToRobotTransform)],
-        )
+        self.camera = PhotonCamera(constants.kPhotonvisionCameraName)
+
+        # if RobotBase.isSimulation():
+        #     inst = NetworkTableInstance.getDefault()
+        #     inst.stopServer()
+        #     inst.setServer("localhost")
+        #     inst.startClient4("Robot Sim")
 
     def getCameraToTargetTransforms(
         self,
     ) -> Tuple[List[Tuple[int, Transform3d]], float]:
         """this function returns a list of the type (target_id, transformCameraToTarget) for every target"""
         photonResult = self.camera.getLatestResult()
-        if photonResult.hasTargets():
+        targets = photonResult.getTargets()
+        if len(targets) > 0:
             return (
                 [
                     (target.getFiducialId(), target.getBestCameraToTarget())
-                    for target in photonResult.getTargets()
+                    for target in targets
                     if target.getPoseAmbiguity()
                     < constants.kPhotonvisionAmbiguityCutoff
                 ],
@@ -53,17 +49,26 @@ class VisionSubsystem(Subsystem):
         self.estimatedPosition = self.drive.getPose()
         self.updateAdvantagescopePose()
 
-        botPose = self.estimator.update()
+        photonResult = self.camera.getLatestResult()
+        hasTargets = len(photonResult.getTargets()) > 0
+        multitagresult = photonResult.multiTagResult
+
+        bestRelativeTransform = multitagresult.estimatedPose.best
+
+        botPose = (
+            Pose3d()
+            + bestRelativeTransform
+            + constants.kLimelightRelativeToRobotTransform.inverse()
+        )
 
         self.drive.visionEstimate = botPose.toPose2d()
 
         SmartDashboard.putBoolean(
-            constants.kRobotVisionPoseArrayKeys.validKey, self.camera.hasTargets()
+            constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
         )
         SmartDashboard.putNumberArray(
             constants.kRobotVisionPoseArrayKeys.valueKey,
             [
-                self.drive.visionEstimate.X(),
                 self.drive.visionEstimate.Y(),
                 self.drive.visionEstimate.rotation().radians(),
             ],

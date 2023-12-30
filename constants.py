@@ -219,6 +219,9 @@ kLimelightRelativeToRobotTransform = Transform3d(
 
 kLimelightPoseKey = "vision/limelight"
 
+# Photonvision related
+kPhotonvisionCameraName = "camcam"
+
 # CANivore
 kCANivoreName = "canivore"
 

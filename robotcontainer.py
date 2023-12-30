@@ -17,8 +17,7 @@ from commands.defensestate import DefenseState
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.loggingsubsystem import LoggingSubsystem
-
-# from subsystems.visionsubsystem import VisionSubsystem
+from subsystems.visionsubsystem import VisionSubsystem
 
 from operatorinterface import OperatorInterface
 
@@ -37,7 +36,7 @@ class RobotContainer:
 
         # The robot's subsystems
         self.drive = DriveSubsystem()
-        # self.vision = VisionSubsystem(self.drive)
+        self.vision = VisionSubsystem(self.drive)
         self.log = LoggingSubsystem(self.operatorInterface)
 
         # Autonomous routines
@@ -58,7 +57,6 @@ class RobotContainer:
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the autonomous command chooser
-
         NamedCommands.registerCommand(
             "log",
             FunctionalCommand(
