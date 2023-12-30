@@ -25,6 +25,7 @@ import constants
 from robot import MentorBot
 from subsystems.drivesubsystem import DriveSubsystem
 from util.convenientmath import clamp
+from util.motorsimulator import MotorSimulator
 
 
 class SwerveModuleSim:
@@ -71,6 +72,7 @@ class SwerveDriveSim:
         )
         self.pose = constants.kSimDefaultRobotLocation
         self.outputs = None
+        self.motorsim = MotorSimulator()
 
     def getPose(self) -> Pose2d:
         return self.pose
@@ -80,6 +82,8 @@ class SwerveDriveSim:
 
     def update(self, tm_diff: float, robotVoltage: float) -> None:
         deltaT = tm_diff
+
+        self.motorsim.update(tm_diff, robotVoltage)
         states = []
         for module in self.swerveModuleSims:
             module.wheelMotorInternalSim.setInputVoltage(
