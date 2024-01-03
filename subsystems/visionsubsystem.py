@@ -1,3 +1,4 @@
+from ctypes import resize
 from typing import List, Tuple
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
@@ -55,6 +56,15 @@ class VisionSubsystem(Subsystem):
 
         bestRelativeTransform = multitagresult.estimatedPose.best
 
+        if not multitagresult.estimatedPose.isPresent:
+            ambiguity = 10
+            for result in photonResult.targets:
+                if result.poseAmbiguity < ambiguity:
+                    bestRelativeTransform = Transform3d(
+                        Pose3d(), constants.kApriltagPositionDict[result.fiducialId]
+                    ) + result.bestCameraToTarget
+                    ambiguity = result.poseAmbiguity
+
         botPose = (
             Pose3d()
             + bestRelativeTransform
@@ -69,6 +79,7 @@ class VisionSubsystem(Subsystem):
         SmartDashboard.putNumberArray(
             constants.kRobotVisionPoseArrayKeys.valueKey,
             [
+                self.drive.visionEstimate.X(),
                 self.drive.visionEstimate.Y(),
                 self.drive.visionEstimate.rotation().radians(),
             ],
