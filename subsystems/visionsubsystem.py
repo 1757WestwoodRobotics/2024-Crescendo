@@ -1,9 +1,8 @@
-from ctypes import resize
 from typing import List, Tuple
 from commands2 import Subsystem
-from ntcore import NetworkTableInstance
 from photonlibpy.photonCamera import PhotonCamera
-from wpilib import SmartDashboard, RobotBase
+from robotpy_apriltag import AprilTagField, loadAprilTagLayoutField
+from wpilib import SmartDashboard
 from wpimath.geometry import Pose2d, Transform3d, Pose3d
 
 import constants
@@ -19,6 +18,8 @@ class VisionSubsystem(Subsystem):
         self.drive = drive
         self.estimatedPosition = Pose2d()
 
+        self.field = loadAprilTagLayoutField(AprilTagField.k2023ChargedUp)
+
         self.camera = PhotonCamera(constants.kPhotonvisionCameraName)
 
         # if RobotBase.isSimulation():
@@ -26,25 +27,6 @@ class VisionSubsystem(Subsystem):
         #     inst.stopServer()
         #     inst.setServer("localhost")
         #     inst.startClient4("Robot Sim")
-
-    def getCameraToTargetTransforms(
-        self,
-    ) -> Tuple[List[Tuple[int, Transform3d]], float]:
-        """this function returns a list of the type (target_id, transformCameraToTarget) for every target"""
-        photonResult = self.camera.getLatestResult()
-        targets = photonResult.getTargets()
-        if len(targets) > 0:
-            return (
-                [
-                    (target.getFiducialId(), target.getBestCameraToTarget())
-                    for target in targets
-                    if target.getPoseAmbiguity()
-                    < constants.kPhotonvisionAmbiguityCutoff
-                ],
-                photonResult.getTimestamp(),
-            )
-        else:
-            return ([], 0)
 
     def periodic(self) -> None:
         self.estimatedPosition = self.drive.getPose()
@@ -61,7 +43,7 @@ class VisionSubsystem(Subsystem):
             for result in photonResult.targets:
                 if result.poseAmbiguity < ambiguity:
                     bestRelativeTransform = Transform3d(
-                        Pose3d(), constants.kApriltagPositionDict[result.fiducialId]
+                        Pose3d(),  self.field.getTagPose(result.fiducialId)
                     ) + result.bestCameraToTarget
                     ambiguity = result.poseAmbiguity
 
