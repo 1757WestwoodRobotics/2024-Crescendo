@@ -45,7 +45,7 @@ class Talon:
         dGain: float = 0,
         isReversed: bool = False,
         canbus: str = "",
-            kV: float = 0,
+        kV: float = 0,
     ) -> None:
         print(f"Init TalonFX with port {canID} on {canbus}")
         self.id = canID
@@ -61,30 +61,18 @@ class Talon:
             if isReversed
             else InvertedValue.CLOCKWISE_POSITIVE
         )
-        SmartDashboard.putNumber(
-            f"motors/{self.id}/gains/p", pGain
-        )
-        SmartDashboard.putNumber(
-            f"motors/{self.id}/gains/i", iGain
-        )
-        SmartDashboard.putNumber(
-            f"motors/{self.id}/gains/d", dGain
-        )
-        SmartDashboard.putNumber(
-            f"motors/{self.id}/gains/v", kV
-        )
-        SmartDashboard.putBoolean(
-            f"motors/{self.id}/inverted", isReversed
-        )
-        SmartDashboard.putString(
-            f"motors/{self.id}/canbus", canbus
-        )
+        SmartDashboard.putNumber(f"motors/{self.id}/gains/p", pGain)
+        SmartDashboard.putNumber(f"motors/{self.id}/gains/i", iGain)
+        SmartDashboard.putNumber(f"motors/{self.id}/gains/d", dGain)
+        SmartDashboard.putNumber(f"motors/{self.id}/gains/v", kV)
+        SmartDashboard.putBoolean(f"motors/{self.id}/inverted", isReversed)
+        SmartDashboard.putString(f"motors/{self.id}/canbus", canbus)
 
         self.motor.configurator.apply(conf)
 
-        self.velControl = VelocityVoltage(0,0,False,0,0,False,False,False)
-        self.posControl = PositionVoltage(0,0,False,0,0,False,False,False)
-        self.perControl = DutyCycleOut(0,False,False,False,False)
+        self.velControl = VelocityVoltage(0, 0, False, 0, 0, False, False, False)
+        self.posControl = PositionVoltage(0, 0, False, 0, 0, False, False, False)
+        self.perControl = DutyCycleOut(0, False, False, False, False)
 
         self.velControl.slot = 0
         self.posControl.slot = 0
@@ -102,9 +90,7 @@ class Talon:
         duty_cycle: bool = True,
     ) -> None:
         self.updateDashboard()
-        SmartDashboard.putNumber(
-            f"motors/{self.id}/target", demand
-        )
+        SmartDashboard.putNumber(f"motors/{self.id}/target", demand)
         if controlMode == Talon.ControlMode.Position:
             c = self.motor.set_control(
                 self.posControl.with_position(demand).with_feed_forward(ff)

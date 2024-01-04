@@ -42,9 +42,10 @@ class VisionSubsystem(Subsystem):
             ambiguity = 10
             for result in photonResult.targets:
                 if result.poseAmbiguity < ambiguity:
-                    bestRelativeTransform = Transform3d(
-                        Pose3d(),  self.field.getTagPose(result.fiducialId)
-                    ) + result.bestCameraToTarget
+                    bestRelativeTransform = (
+                        Transform3d(Pose3d(), self.field.getTagPose(result.fiducialId))
+                        + result.bestCameraToTarget
+                    )
                     ambiguity = result.poseAmbiguity
 
         botPose = (

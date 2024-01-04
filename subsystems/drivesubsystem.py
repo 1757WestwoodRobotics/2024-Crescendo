@@ -170,6 +170,9 @@ class CTRESwerveModule(SwerveModule):
         )
         self.steerMotor.setEncoderPosition(steerEncoderPulses)
 
+    def getSwerveEncoderAngle(self) -> Rotation2d:
+        return self.swerveEncoder.getPosition()
+
     def setSwerveAngleTarget(self, swerveAngleTarget: Rotation2d) -> None:
         steerEncoderPulsesTarget = (
             swerveAngleTarget.radians()
@@ -453,13 +456,13 @@ class DriveSubsystem(Subsystem):
         SmartDashboard.putNumberArray(
             constants.kSwerveActualStatesKey,
             [
-                self.frontLeftModule.getSwerveAngle().radians(),
+                self.frontLeftModule.getSwerveEncoderAngle().radians(),
                 self.frontLeftModule.getWheelLinearVelocity(),
-                self.frontRightModule.getSwerveAngle().radians(),
+                self.frontRightModule.getSwerveEncoderAngle().radians(),
                 self.frontRightModule.getWheelLinearVelocity(),
-                self.backLeftModule.getSwerveAngle().radians(),
+                self.backLeftModule.getSwerveEncoderAngle().radians(),
                 self.backLeftModule.getWheelLinearVelocity(),
-                self.backRightModule.getSwerveAngle().radians(),
+                self.backRightModule.getSwerveEncoderAngle().radians(),
                 self.backRightModule.getWheelLinearVelocity(),
             ],
         )

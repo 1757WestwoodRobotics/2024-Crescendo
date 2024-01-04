@@ -334,10 +334,10 @@ kFrontRightDriveInverted = False
 kBackLeftDriveInverted = False
 kBackRightDriveInverted = False
 
-kFrontLeftSteerInverted = True
-kFrontRightSteerInverted = True
-kBackLeftSteerInverted = True
-kBackRightSteerInverted = True
+kFrontLeftSteerInverted = False
+kFrontRightSteerInverted = False
+kBackLeftSteerInverted = False
+kBackRightSteerInverted = False
 
 """
 To determine encoder offsets (with robot ON and DISABLED):

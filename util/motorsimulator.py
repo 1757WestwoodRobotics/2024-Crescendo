@@ -73,9 +73,9 @@ class MotorSimulator:
             talon.simstate.set_supply_voltage(
                 clamp(
                     robotVoltage
-                    - talon.simstate.supply_current * constants.kSimMotorResistance, # simulate voltage drop due to resistance
+                    - talon.simstate.supply_current
+                    * constants.kSimMotorResistance,  # simulate voltage drop due to resistance
                     0,
                     robotVoltage,
                 )
             )
-
