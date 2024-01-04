@@ -124,6 +124,7 @@ class CTRESwerveModule(SwerveModule):
         DataLogManager.log(f"   Configuring drive motor: CAN ID: {config.driveMotorID}")
         self.driveMotor = Talon(
             config.driveMotorID,
+            f"Drive Motor {name}",
             constants.kDrivePGain,
             constants.kDriveIGain,
             constants.kDriveDGain,
@@ -137,6 +138,7 @@ class CTRESwerveModule(SwerveModule):
         DataLogManager.log(f"   Configuring steer motor: CAN ID: {config.steerMotorID}")
         self.steerMotor = Talon(
             config.steerMotorID,
+            f"Steer Motor {name}",
             constants.kSteerPGain,
             constants.kSteerIGain,
             constants.kSteerDGain,

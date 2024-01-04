@@ -40,6 +40,7 @@ class Talon:
     def __init__(
         self,
         canID: int,
+        name: str,
         pGain: float = 1,
         iGain: float = 0,
         dGain: float = 0,
@@ -47,8 +48,9 @@ class Talon:
         canbus: str = "",
         kV: float = 0,
     ) -> None:
-        print(f"Init TalonFX with port {canID} on {canbus}")
+        print(f"Init TalonFX with port {canID} on {canbus} with name {name}")
         self.id = canID
+        self.name = name
         self.motor = TalonFX(canID, canbus)
 
         conf = TalonFXConfiguration()
@@ -61,12 +63,13 @@ class Talon:
             if isReversed
             else InvertedValue.CLOCKWISE_POSITIVE
         )
-        SmartDashboard.putNumber(f"motors/{self.id}/gains/p", pGain)
-        SmartDashboard.putNumber(f"motors/{self.id}/gains/i", iGain)
-        SmartDashboard.putNumber(f"motors/{self.id}/gains/d", dGain)
-        SmartDashboard.putNumber(f"motors/{self.id}/gains/v", kV)
-        SmartDashboard.putBoolean(f"motors/{self.id}/inverted", isReversed)
-        SmartDashboard.putString(f"motors/{self.id}/canbus", canbus)
+        self._nettableidentifier = f"motors/{self.name}({self.id})"
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/p", pGain)
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/i", iGain)
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/d", dGain)
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/v", kV)
+        SmartDashboard.putBoolean(f"{self._nettableidentifier}/inverted", isReversed)
+        SmartDashboard.putString(f"{self._nettableidentifier}/canbus", canbus)
 
         self.motor.configurator.apply(conf)
 
@@ -90,7 +93,7 @@ class Talon:
         duty_cycle: bool = True,
     ) -> None:
         self.updateDashboard()
-        SmartDashboard.putNumber(f"motors/{self.id}/target", demand)
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/target", demand)
         if controlMode == Talon.ControlMode.Position:
             c = self.motor.set_control(
                 self.posControl.with_position(demand).with_feed_forward(ff)
@@ -113,28 +116,32 @@ class Talon:
 
     def updateDashboard(self):
         SmartDashboard.putNumber(
-            f"motors/{self.id}/position", self.motor.get_position().value
+            f"{self._nettableidentifier}/position", self.motor.get_position().value
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/velocity", self.motor.get_velocity().value
+            f"{self._nettableidentifier}/velocity", self.motor.get_velocity().value
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/acceleration", self.motor.get_acceleration().value
+            f"{self._nettableidentifier}/acceleration",
+            self.motor.get_acceleration().value,
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/outvoltage", self.motor.get_motor_voltage().value
+            f"{self._nettableidentifier}/outvoltage",
+            self.motor.get_motor_voltage().value,
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/supplyvoltage", self.motor.get_supply_voltage().value
+            f"{self._nettableidentifier}/supplyvoltage",
+            self.motor.get_supply_voltage().value,
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/temp", self.motor.get_device_temp().value
+            f"{self._nettableidentifier}/temp", self.motor.get_device_temp().value
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/dutycycle", self.motor.get_duty_cycle().value
+            f"{self._nettableidentifier}/dutycycle", self.motor.get_duty_cycle().value
         )
         SmartDashboard.putNumber(
-            f"motors/{self.id}/current", self.motor.get_torque_current().value
+            f"{self._nettableidentifier}/current",
+            self.motor.get_torque_current().value,
         )
 
     def setCurrentLimit(self, lim: CurrentLimitsConfigs):
