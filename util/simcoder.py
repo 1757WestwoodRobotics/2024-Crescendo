@@ -15,7 +15,7 @@ class CTREEncoder:
         config = CANcoderConfiguration().with_magnet_sensor(
             MagnetSensorConfigs()
             .with_absolute_sensor_range(AbsoluteSensorRangeValue.SIGNED_PLUS_MINUS_HALF)
-            .with_magnet_offset(-1 * self.offset / constants.kDegeersPerRevolution)
+            .with_magnet_offset(-1 * self.offset)
         )
         self.encoder.configurator.apply(config)
 

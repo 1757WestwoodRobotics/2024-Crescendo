@@ -353,17 +353,17 @@ To determine encoder offsets (with robot ON and DISABLED):
   7. Click "Self-Test Snapshot"
   8. Record value from line: "Absolute Position (unsigned):"
 """
-kFrontLeftAbsoluteEncoderOffset = 256.113
-"""degrees"""
+kFrontLeftAbsoluteEncoderOffset = 256.113 / kRadiansPerDegree
+"""rotations"""
 
-kFrontRightAbsoluteEncoderOffset = 125.420
-"""degrees"""
+kFrontRightAbsoluteEncoderOffset = 125.420 / kDegeersPerRevolution
+"""rotations"""
 
-kBackLeftAbsoluteEncoderOffset = 341.719
-"""degrees"""
+kBackLeftAbsoluteEncoderOffset = 341.719 / kDegeersPerRevolution
+"""rotations"""
 
-kBackRightAbsoluteEncoderOffset = 331.260
-"""degrees"""
+kBackRightAbsoluteEncoderOffset = 331.260 / kDegeersPerRevolution
+"""rotations"""
 
 kRobotPoseArrayKeys = OptionalValueKeys("RobotPoseArray")
 
