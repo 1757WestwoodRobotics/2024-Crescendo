@@ -34,7 +34,7 @@ class SwerveModuleSim:
         position: Translation2d,
         wheelMotorType: DCMotor,
         wheelMotorSim: typing.Callable[[], TalonFXSimState],
-        driveMotorGearing :float,
+        driveMotorGearing: float,
         swerveMotorType: DCMotor,
         swerveMotorSim: typing.Callable[[], TalonFXSimState],
         steerMotorGearing: float,
@@ -73,7 +73,6 @@ class SwerveDriveSim:
         )
         self.pose = constants.kSimDefaultRobotLocation
         self.outputs = None
-        self.motorsim = MotorSimulator()
 
     def getPose(self) -> Pose2d:
         return self.pose
@@ -84,7 +83,6 @@ class SwerveDriveSim:
     def update(self, tm_diff: float, robotVoltage: float) -> None:
         deltaT = tm_diff
 
-        self.motorsim.update(tm_diff, robotVoltage)
         states = []
         for module in self.swerveModuleSims:
             module.wheelMotorInternalSim.setInputVoltage(
@@ -200,7 +198,7 @@ class PhysicsEngine:
             frontLeftSim[1],
             constants.kSteerGearingRatio,
             frontLeftSim[2],
-            constants.kFrontLeftAbsoluteEncoderOffset
+            constants.kFrontLeftAbsoluteEncoderOffset,
         )
         frontRightSim = driveSubsystem.frontRightModule.getSimulator()
         self.frontRightModuleSim = SwerveModuleSim(
@@ -212,7 +210,7 @@ class PhysicsEngine:
             frontRightSim[1],
             constants.kSteerGearingRatio,
             frontRightSim[2],
-            constants.kFrontRightAbsoluteEncoderOffset
+            constants.kFrontRightAbsoluteEncoderOffset,
         )
         backLeftSim = driveSubsystem.backLeftModule.getSimulator()
         self.backSimLeftModule = SwerveModuleSim(
@@ -224,7 +222,7 @@ class PhysicsEngine:
             backLeftSim[1],
             constants.kSteerGearingRatio,
             backLeftSim[2],
-            constants.kBackLeftAbsoluteEncoderOffset
+            constants.kBackLeftAbsoluteEncoderOffset,
         )
         backRightSim = driveSubsystem.backRightModule.getSimulator()
         self.backSimRightModule = SwerveModuleSim(
@@ -236,7 +234,7 @@ class PhysicsEngine:
             backRightSim[1],
             constants.kSteerGearingRatio,
             backRightSim[2],
-            constants.kBackRightAbsoluteEncoderOffset
+            constants.kBackRightAbsoluteEncoderOffset,
         )
 
         self.swerveModuleSims = [
@@ -251,6 +249,11 @@ class PhysicsEngine:
         self.gyroSim = driveSubsystem.gyro.sim_state
 
         self.sim_initialized = False
+
+        self.motorsim = MotorSimulator()
+        self.motorsim.addFalcon(
+            robot.container.velocity.motor, 1, constants.kSimulationRotationalInertia
+        )
 
         targets = []
         for target in constants.kApriltagPositionDict.values():
@@ -295,6 +298,7 @@ class PhysicsEngine:
         # Simulate the drivetrain
         voltage = RobotController.getInputVoltage()
 
+        self.motorsim.update(tm_diff, voltage)
         self.driveSim.update(tm_diff, voltage)
 
         simRobotPose = self.driveSim.getPose()

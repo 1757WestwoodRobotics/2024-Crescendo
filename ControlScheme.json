@@ -61,5 +61,26 @@
       "Button": 2
     },
     "bottom button on top of joystick (ThrustmasterT16000M)"
+  ],
+  "offVelocity": [
+    1,
+    {
+      "Button": 1
+    },
+    "placeholder"
+  ],
+  "setpoint1velocity": [
+    1,
+    {
+      "Button": 2
+    },
+    "placeholder"
+  ],
+  "setpoint2velocity": [
+    1,
+    {
+      "Button": 3
+    },
+    "placeholder"
   ]
 }

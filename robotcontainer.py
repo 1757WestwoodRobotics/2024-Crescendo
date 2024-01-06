@@ -4,6 +4,7 @@ import wpilib
 from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
+from commands.velocitysetpoint import VelocitySetpoint
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
 
 import constants
@@ -16,6 +17,7 @@ from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
 
 from subsystems.drivesubsystem import DriveSubsystem
+from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
 
@@ -39,6 +41,9 @@ class RobotContainer:
         self.drive = DriveSubsystem()
         self.vision = VisionSubsystem(self.drive)
         self.log = LoggingSubsystem(self.operatorInterface)
+
+        # Robot demo subsystems
+        self.velocity = VelocityControl()
 
         # Autonomous routines
 
@@ -142,6 +147,16 @@ class RobotContainer:
 
         ModifiableJoystickButton(self.operatorInterface.defenseStateControl).whileTrue(
             DefenseState(self.drive)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
+            VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
+        )
+        ModifiableJoystickButton(self.operatorInterface.velocitySetpoint1).onTrue(
+            VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint1)
+        )
+        ModifiableJoystickButton(self.operatorInterface.velocitySetpoint2).onTrue(
+            VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint2)
         )
 
     def getAutonomousCommand(self) -> commands2.Command:

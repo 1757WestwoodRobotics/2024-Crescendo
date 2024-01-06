@@ -145,6 +145,10 @@ class OperatorInterface:
         self.turboSpeed = getButtonBindingOfName(constants.kTurboSpeedButtonName)
         self.alignClosestWaypoint = getButtonBindingOfName("alignClosestWaypoint")
 
+        self.offVelocity = getButtonBindingOfName("offVelocity")
+        self.velocitySetpoint1 = getButtonBindingOfName("setpoint1velocity")
+        self.velocitySetpoint2 = getButtonBindingOfName("setpoint2velocity")
+
         self.chassisControls = HolonomicInput(
             SignSquare(
                 Invert(
