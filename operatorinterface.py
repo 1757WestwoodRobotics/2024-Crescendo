@@ -3,7 +3,7 @@ import typing
 import json
 
 from os import path
-from wpilib import Joystick, DataLogManager
+from wpilib import Joystick, DataLogManager, Preferences
 
 import constants
 from util.convenientmath import map_range, number
@@ -94,6 +94,19 @@ class OperatorInterface:
 
         self.controllers = {}
 
+        self.prefs = Preferences
+
+        for control in controlScheme:
+            binding = controlScheme[control]
+            self.prefs.setInt(f"OI/{control}/controller", binding[0])
+            if "Button" in binding[1].keys():
+                self.prefs.setInt(f"OI/{control}/button", binding[1]["Button"])
+            elif "Axis" in binding[1].keys():
+                self.prefs.setInt(f"OI/{control}/axis", binding[1]["Axis"])
+            elif "POV" in binding[1].keys():
+                self.prefs.setInt(f"OI/{control}/angle", binding[1]["POV"][1])
+                self.prefs.setInt(f"OI/{control}/pov", binding[1]["POV"][0])
+
         for num in controllerNumbers:
             controller = Joystick(num)
             DataLogManager.log(
@@ -101,13 +114,18 @@ class OperatorInterface:
             )
             self.controllers[num] = controller
 
-        def getButtonBindingOfName(name: str) -> typing.Tuple[Joystick, int]:
-            binding = controlScheme[name]
-            return (self.controllers[binding[0]], binding[1]["Button"])
+        def getButtonBindingOfName(
+            name: str,
+        ) -> typing.Callable[[], typing.Tuple[Joystick, int]]:
+            return lambda: (
+                self.controllers[self.prefs.getInt(f"OI/{name}/controller")],
+                self.prefs.getInt(f"OI/{name}/button"),
+            )
 
         def getAxisBindingOfName(name: str) -> AnalogInput:
-            binding = controlScheme[name]
-            return lambda: self.controllers[binding[0]].getRawAxis(binding[1]["Axis"])
+            return lambda: self.controllers[
+                self.prefs.getInt(f"OI/{name}/controller")
+            ].getRawAxis(self.prefs.getInt(f"OI/{name}/axis"))
 
         # pylint: disable-next=unused-variable
         def getPOVBindingOfName(name: str) -> typing.Tuple[Joystick, int, int]:

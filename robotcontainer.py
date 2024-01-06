@@ -20,6 +20,7 @@ from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
 
 from operatorinterface import OperatorInterface
+from util.helpfultriggerwrappers import ModifiableJoystickButton
 
 
 class RobotContainer:
@@ -103,7 +104,7 @@ class RobotContainer:
         and then passing it to a JoystickButton.
         """
 
-        commands2.button.JoystickButton(*self.operatorInterface.turboSpeed).whileTrue(
+        ModifiableJoystickButton(self.operatorInterface.turboSpeed).whileTrue(
             FieldRelativeDrive(
                 self.drive,
                 lambda: self.operatorInterface.chassisControls.forwardsBackwards()
@@ -114,8 +115,8 @@ class RobotContainer:
             )
         )
 
-        commands2.button.JoystickButton(
-            *self.operatorInterface.fieldRelativeCoordinateModeControl
+        ModifiableJoystickButton(
+            self.operatorInterface.fieldRelativeCoordinateModeControl
         ).toggleOnTrue(
             RobotRelativeDrive(
                 self.drive,
@@ -125,9 +126,7 @@ class RobotContainer:
             )
         )
 
-        commands2.button.JoystickButton(
-            *self.operatorInterface.alignClosestWaypoint
-        ).whileTrue(
+        ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
             AngleAlignDrive(
                 self.drive,
                 lambda: self.operatorInterface.chassisControls.forwardsBackwards()
@@ -137,13 +136,13 @@ class RobotContainer:
             )
         )
 
-        commands2.button.JoystickButton(*self.operatorInterface.resetGyro).onTrue(
+        ModifiableJoystickButton(self.operatorInterface.resetGyro).onTrue(
             ResetDrive(self.drive, Pose2d(0, 0, 0))
         )
 
-        commands2.button.JoystickButton(
-            *self.operatorInterface.defenseStateControl
-        ).whileTrue(DefenseState(self.drive))
+        ModifiableJoystickButton(self.operatorInterface.defenseStateControl).whileTrue(
+            DefenseState(self.drive)
+        )
 
     def getAutonomousCommand(self) -> commands2.Command:
         return self.chooser.getSelected()

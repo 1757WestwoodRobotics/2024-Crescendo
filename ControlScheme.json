@@ -6,76 +6,6 @@
     },
     "replace me"
   ],
-  "armDemo": [
-    2,
-    {
-      "Button": 7
-    },
-    "replace me"
-  ],
-  "armDoubleSubstation": [
-    2,
-    {
-      "Button": 4
-    },
-    "replace me"
-  ],
-  "armFudgeFactorIncrease": [
-    2,
-    {
-      "Button": 11
-    },
-    "POV up"
-  ],
-  "armFudgeFactorDecrease": [
-    2,
-    {
-      "Button": 13
-    },
-    "POV down"
-  ],
-  "armGroundCone": [
-    2,
-    {
-      "POV": [0, 90]
-    },
-    "replace me"
-  ],
-  "armGroundIntake": [
-    2,
-    {
-      "POV": [0, 180]
-    },
-    "replace me"
-  ],
-  "armMid": [
-    2,
-    {
-      "POV": [0, 270]
-    },
-    "replace me"
-  ],
-  "armOverride": [
-    2,
-    {
-      "Button": 1
-    },
-    "replace me"
-  ],
-  "armSingleSubstation": [
-    2,
-    {
-      "Button": 5
-    },
-    "replace me"
-  ],
-  "armTop": [
-    2,
-    {
-      "POV": [0, 0]
-    },
-    "replace me"
-  ],
   "chassisForwardsBackwards": [
     0,
     {
@@ -118,27 +48,6 @@
     },
     "Middle Down (ThrustmasterTWCSThrottle)"
   ],
-  "lightsCone": [
-    0,
-    {
-      "POV": [0, 90]
-    },
-    "replace me"
-  ],
-  "lightsCube": [
-    0,
-    {
-      "POV": [0, 270]
-    },
-    "replace me"
-  ],
-  "resetArm": [
-    2,
-    {
-      "Button": 8
-    },
-    "replace me"
-  ],
   "resetGyro": [
     0,
     {
@@ -152,26 +61,5 @@
       "Button": 2
     },
     "bottom button on top of joystick (ThrustmasterT16000M)"
-  ],
-  "intakeGamepiece": [
-    0,
-    {
-      "Button": 2
-    },
-    "PLACEHOLDER"
-  ],
-  "outtakeGamepiece": [
-    0,
-    {
-      "Button": 1
-    },
-    "PLACEHOLDER"
-  ],
-  "AutoBalance": [
-    0,
-    {
-      "Button": 5
-    },
-    "left bumper(xbox)"
   ]
 }
