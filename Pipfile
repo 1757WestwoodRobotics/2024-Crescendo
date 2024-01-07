@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 robotpy-pathplannerlib = "==2024.0.0b6.post3"
-phoenix6 = "==24.0.0b5"
+phoenix6 = "==24.0.0b7"
 black = "*"
 pylint = "*"
 robotpy = {extras = ["all"], version = "==2024.0.0b4"}
