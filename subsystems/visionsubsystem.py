@@ -18,8 +18,6 @@ class VisionSubsystem(Subsystem):
         self.drive = drive
         self.estimatedPosition = Pose2d()
 
-        self.field = loadAprilTagLayoutField(AprilTagField.k2023ChargedUp)
-
         self.camera = PhotonCamera(constants.kPhotonvisionCameraName)
 
         # if RobotBase.isSimulation():
@@ -43,7 +41,9 @@ class VisionSubsystem(Subsystem):
             for result in photonResult.targets:
                 if result.poseAmbiguity < ambiguity:
                     bestRelativeTransform = (
-                        Transform3d(Pose3d(), self.field.getTagPose(result.fiducialId))
+                        Transform3d(
+                            Pose3d(), constants.kApriltagPositionDict[result.fiducialId]
+                        )
                         + result.bestCameraToTarget
                     )
                     ambiguity = result.poseAmbiguity
