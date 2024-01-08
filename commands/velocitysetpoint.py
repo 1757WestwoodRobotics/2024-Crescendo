@@ -5,7 +5,9 @@ from subsystems.dynamicvelocitycontrol import VelocityControl
 
 
 class VelocitySetpoint(Command):
-    def __init__(self, velocity: VelocityControl, control: VelocityControl.ControlState) -> None:
+    def __init__(
+        self, velocity: VelocityControl, control: VelocityControl.ControlState
+    ) -> None:
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.vel = velocity
