@@ -4,7 +4,6 @@ import wpilib
 from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
-from commands.velocitysetpoint import VelocitySetpoint
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
 
 import constants
@@ -15,6 +14,7 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
+from commands.velocitysetpoint import VelocitySetpoint
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.dynamicvelocitycontrol import VelocityControl

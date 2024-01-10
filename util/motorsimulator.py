@@ -1,4 +1,4 @@
-from typing import List, overload
+from typing import List
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from wpimath.system.plant import DCMotor
 from wpilib.simulation import DCMotorSim

@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-timeout --preserve-status 10s python robot.py sim --nogui
+timeout --preserve-status 10s python -m robotpy sim --nogui
 
 # exit code 143 is exited by SIGTERM which means simulator was killed by timeout but otherwise started
 if [ $? -eq 143 ] 

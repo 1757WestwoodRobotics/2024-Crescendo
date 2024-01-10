@@ -21,11 +21,13 @@ class SmartDashboardButton(Trigger):
     def __init__(self, key: str) -> None:
         super().__init__(lambda: SmartDashboard.getBoolean(key, False))
 
+
 class ModifiableJoystickButton(Trigger):
     def _active(self):
         joystick, button = self.call()
         return joystick.getRawButton(button)
-    def __init__(self, call: Callable[[],Tuple[Joystick,int]]):
+
+    def __init__(self, call: Callable[[], Tuple[Joystick, int]]):
         self.call = call
         super().__init__(self._active)
 

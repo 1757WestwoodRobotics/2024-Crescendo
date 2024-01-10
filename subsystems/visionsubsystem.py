@@ -1,4 +1,3 @@
-from typing import List, Tuple
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
 from robotpy_apriltag import AprilTagField, loadAprilTagLayoutField
