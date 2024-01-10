@@ -4,13 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-phoenix6 = "==24.0.0b7"
 black = "*"
 pylint = "*"
 photonlibpy = "*"
-robotpy-commands-v2 = "==2024.0.0b4"
-robotpy = {extras = ["all"], version = "*"}
 robotpy-cli = "*"
+robotpy = {extras = ["all"], version = "==2024.1.1.2"}
 
 [dev-packages]
 
