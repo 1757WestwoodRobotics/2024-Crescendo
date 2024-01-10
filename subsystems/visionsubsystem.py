@@ -1,6 +1,5 @@
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
-from robotpy_apriltag import AprilTagField, loadAprilTagLayoutField
 from wpilib import SmartDashboard
 from wpimath.geometry import Pose2d, Transform3d, Pose3d
 

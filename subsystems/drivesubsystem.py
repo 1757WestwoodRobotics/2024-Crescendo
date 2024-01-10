@@ -13,6 +13,7 @@ from wpilib import (
     SmartDashboard,
     Timer,
     DataLogManager,
+    DriverStation,
 )
 
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
@@ -344,6 +345,7 @@ class DriveSubsystem(Subsystem):
                 coordinateMode=DriveSubsystem.CoordinateMode.RobotRelative,
             ),
             constants.kPathFollowingConfig,
+            (lambda: DriverStation.getAlliance() == DriverStation.Alliance.kRed),
             self,
         )
 
