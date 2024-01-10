@@ -4,14 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-robotpy-pathplannerlib = "==2024.0.0b6.post3"
-phoenix6 = "==24.0.0b5"
+phoenix6 = "==24.0.0b7"
 black = "*"
 pylint = "*"
-robotpy = {extras = ["all"], version = "==2024.0.0b4"}
 photonlibpy = "*"
+robotpy-commands-v2 = "==2024.0.0b4"
+robotpy = {extras = ["all"], version = "*"}
+robotpy-cli = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.10"
