@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.30332641955348,
+      "y": 5.489271925759397
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndFire"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Leave wing 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndFire"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
