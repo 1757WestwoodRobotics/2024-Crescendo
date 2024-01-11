@@ -16,8 +16,11 @@ class VisionSubsystem(Subsystem):
         self.drive = drive
         self.estimatedPosition = Pose2d()
 
-        self.camera = PhotonCamera(constants.kPhotonvisionCameraName)
+        # self.camera = PhotonCamera(constants.kPhotonvisionCameraName)
 
+        self.cameras = [
+            PhotonCamera(camera) for camera in constants.kPhotonvisionCameraArray
+        ]
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
         #     inst.stopServer()
@@ -27,44 +30,46 @@ class VisionSubsystem(Subsystem):
     def periodic(self) -> None:
         self.estimatedPosition = self.drive.getPose()
         self.updateAdvantagescopePose()
+        poseList = []
+        for camera in self.cameras:
+            photonResult = camera.getLatestResult()
+            hasTargets = len(photonResult.getTargets()) > 0
+            multitagresult = photonResult.multiTagResult
+            bestRelativeTransform = multitagresult.estimatedPose.best
 
-        photonResult = self.camera.getLatestResult()
-        hasTargets = len(photonResult.getTargets()) > 0
-        multitagresult = photonResult.multiTagResult
-
-        bestRelativeTransform = multitagresult.estimatedPose.best
-
-        if not multitagresult.estimatedPose.isPresent:
-            ambiguity = 10
-            for result in photonResult.targets:
-                if result.poseAmbiguity < ambiguity:
-                    bestRelativeTransform = (
-                        Transform3d(
-                            Pose3d(), constants.kApriltagPositionDict[result.fiducialId]
+            if not multitagresult.estimatedPose.isPresent:
+                ambiguity = 10
+                for result in photonResult.targets:
+                    if result.poseAmbiguity < ambiguity:
+                        bestRelativeTransform = (
+                            Transform3d(
+                                Pose3d(),
+                                constants.kApriltagPositionDict[result.fiducialId],
+                            )
+                            + result.bestCameraToTarget.inverse()
                         )
-                        + result.bestCameraToTarget.inverse()
-                    )
-                    ambiguity = result.poseAmbiguity
+                        ambiguity = result.poseAmbiguity
 
-        botPose = (
-            Pose3d()
-            + bestRelativeTransform
-            + constants.kLimelightRelativeToRobotTransform.inverse()
-        )
+            botPose = (
+                Pose3d()
+                + bestRelativeTransform
+                + constants.kLimelightRelativeToRobotTransform.inverse()
+            )
+            poseList.append([botPose, hasTargets])
 
-        self.drive.visionEstimate = botPose.toPose2d()
+        # self.drive.visionEstimate = botPose.toPose2d()
 
-        SmartDashboard.putBoolean(
-            constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
-        )
-        SmartDashboard.putNumberArray(
-            constants.kRobotVisionPoseArrayKeys.valueKey,
-            [
-                self.drive.visionEstimate.X(),
-                self.drive.visionEstimate.Y(),
-                self.drive.visionEstimate.rotation().radians(),
-            ],
-        )
+        # SmartDashboard.putBoolean(
+        #     constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
+        # )
+        # SmartDashboard.putNumberArray(
+        #     constants.kRobotVisionPoseArrayKeys.valueKey,
+        #     [
+        #         self.drive.visionEstimate.X(),
+        #         self.drive.visionEstimate.Y(),
+        #         self.drive.visionEstimate.rotation().radians(),
+        #     ],
+        # )
 
     def updateAdvantagescopePose(self) -> None:
         limelightPose3d = (

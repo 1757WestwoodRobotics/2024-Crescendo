@@ -221,7 +221,7 @@ kLimelightPoseKey = "vision/limelight"
 
 # Photonvision related
 kPhotonvisionCameraName = "camcam"
-
+kPhotonvisionCameraArray = ["frontLeft", "frontRight", "backLeft", "backRight"]
 # CANivore
 kCANivoreName = "canivore"
 
