@@ -43,7 +43,7 @@ class VisionSubsystem(Subsystem):
                         Transform3d(
                             Pose3d(), constants.kApriltagPositionDict[result.fiducialId]
                         )
-                        + result.bestCameraToTarget
+                        + result.bestCameraToTarget.inverse()
                     )
                     ambiguity = result.poseAmbiguity
 
