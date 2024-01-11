@@ -1,0 +1,71 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0689916668294874,
+        "y": 4.618803293295689
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.7830535969565533,
+        "y": 2.1665513119187296
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.217310612906482,
+        "y": 0.8393048957071466
+      },
+      "prevControl": {
+        "x": 4.9774727193685155,
+        "y": 0.8735925219747068
+      },
+      "nextControl": {
+        "x": 7.457148506444449,
+        "y": 0.8050172694395864
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.874823390271781,
+        "y": 0.8393048957071466
+      },
+      "prevControl": {
+        "x": 7.7175766977735885,
+        "y": 0.8769653333827893
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "piece5pickup"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

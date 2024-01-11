@@ -2,19 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 4.819070749110045
+      "x": 1.0689916668294874,
+      "y": 4.618803293295689
     },
-    "rotation": 0
+    "rotation": -53.615838059189954
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "aimAndFire"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Source to piece 5"
           }
         }
       ]
