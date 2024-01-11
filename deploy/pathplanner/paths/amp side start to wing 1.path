@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.813964211576251,
+        "y": 6.677089476859078
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3893706503815806,
+        "y": 7.1752238670996356
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.358255868709463,
+        "y": 7.007072366102303
+      },
+      "prevControl": {
+        "x": 1.7172494637690885,
+        "y": 7.013505450981743
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "wing1amppickup"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
