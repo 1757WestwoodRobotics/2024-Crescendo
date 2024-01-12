@@ -1,6 +1,6 @@
 import typing
 from commands2 import Command
-from wpilib import Preferences
+from wpilib import Preferences, DriverStation
 from subsystems.drivesubsystem import DriveSubsystem
 
 
@@ -29,7 +29,7 @@ class FieldRelativeDrive(Command):
             self.drive.arcadeDriveWithFactors(
                 -self.forward(),
                 -self.sideways(),
-                self.rotation()
+                -self.rotation()
                 * Preferences.getFloat("Robot Relative Sensitivity"),  # better control
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )
@@ -37,7 +37,7 @@ class FieldRelativeDrive(Command):
             self.drive.arcadeDriveWithFactors(
                 self.forward(),
                 self.sideways(),
-                self.rotation()
+                -self.rotation()
                 * Preferences.getFloat("Robot Relative Sensitivity"),  # better control
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )

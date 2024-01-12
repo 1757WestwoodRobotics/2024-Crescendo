@@ -243,7 +243,7 @@ kDriveCurrentLimit = (
     .with_supply_current_limit_enable(True)
 )
 
-kDriveAngularVelocityCoeff = 0.04  # while translating and rotating, need a bit extra motion to compensate for moving reference frame
+kDriveAngularVelocityCoeff = 0.01  # while translating and rotating, need a bit extra motion to compensate for moving reference frame
 
 # Pigeon
 kPigeonCANId = 44
@@ -325,11 +325,11 @@ kDriveDGain = 0.0
 kDriveVGain = 0.01
 
 kSteerPIDSlot = 0
-kSteerPGain = 4
+kSteerPGain = 2
 kSteerIGain = 0.0
 kSteerDGain = 0
 
-kFrontLeftDriveInverted = False
+kFrontLeftDriveInverted = True
 kFrontRightDriveInverted = False
 kBackLeftDriveInverted = False
 kBackRightDriveInverted = False
@@ -518,7 +518,7 @@ kTargetRelativeDriveAngleDGain = 0
 
 kRotationPGain = 0.8
 kRotationIGain = 0
-kRotationDGain = 0
+kRotationDGain = 0.02
 
 # Drive to Target
 kDriveToTargetDistancePGain = 0.5

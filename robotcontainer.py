@@ -14,10 +14,12 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
-from commands.velocitysetpoint import VelocitySetpoint
+
+# from commands.velocitysetpoint import VelocitySetpoint
 
 from subsystems.drivesubsystem import DriveSubsystem
-from subsystems.dynamicvelocitycontrol import VelocityControl
+
+# from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
 
@@ -43,7 +45,7 @@ class RobotContainer:
         self.log = LoggingSubsystem(self.operatorInterface)
 
         # Robot demo subsystems
-        self.velocity = VelocityControl()
+        # self.velocity = VelocityControl()
 
         # Autonomous routines
 
@@ -149,15 +151,15 @@ class RobotContainer:
             DefenseState(self.drive)
         )
 
-        ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
-            VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
-        )
-        ModifiableJoystickButton(self.operatorInterface.velocitySetpoint1).onTrue(
-            VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint1)
-        )
-        ModifiableJoystickButton(self.operatorInterface.velocitySetpoint2).onTrue(
-            VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint2)
-        )
+        # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
+        #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
+        # )
+        # ModifiableJoystickButton(self.operatorInterface.velocitySetpoint1).onTrue(
+        #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint1)
+        # )
+        # ModifiableJoystickButton(self.operatorInterface.velocitySetpoint2).onTrue(
+        #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint2)
+        # )
 
     def getAutonomousCommand(self) -> commands2.Command:
         return self.chooser.getSelected()
