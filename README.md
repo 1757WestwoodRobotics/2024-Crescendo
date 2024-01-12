@@ -101,9 +101,9 @@ py -3 -m venv ./.venv
 #### Workflow
 
 1. **Sync from pipenv**
-     ```bash
-    pipenv sync
-     ```
+   ```bash
+   pipenv sync
+   ```
 1. **Update Dependancies**
    (must have internet connection)
    ```bash
@@ -114,39 +114,43 @@ py -3 -m venv ./.venv
    ```bash
    pipenv shell
    ```
-   (examples: `robotpy`, `robotpy[ctre,navx]`, `robotpy[all]`) (see: [robotpy on pypi](https://pypi.org/project/robotpy/))
-1. **Download python for roboRIO**
+1. **download required robotpy packages**
+   This also includes the python image, as well as all packages defined in pyproject.toml
    (must have internet connection)
+
    ```bash
-   python -m robotpy_installer download-python
+   pipenv run robotpy sync
    ```
-1. **Download robotpy modules for roboRIO**
-   (must have internet connection)
+
+   alternatively you can run the installer directly
+   (to download the python image)
+
    ```bash
-   python -m robotpy_installer download robotpy
+   pipenv run robotpy installer download-python
    ```
+
+   (to download the python dependancies)
    (examples: `robotpy`, `robotpy[ctre,navx]`, `robotpy[all]`) (see: [robotpy on pypi](https://pypi.org/project/robotpy/))
-1. **Install python on roboRIO**
-   (must be connected to roboRIO)
+
    ```bash
-   python -m robotpy_installer install-python
+   pipenv run robotpy installer download robotpy[all]
    ```
-1. **Upload robotpy modules to roboRIO**
-   (must be connected to roboRIO)
-   ```bash
-   python -m robotpy_installer install robotpy
-   ```
-   (examples: `robotpy`, `robotpy[ctre,navx]`, `robotpy[all]`) (see: [robotpy on pypi](https://pypi.org/project/robotpy/))
+
 1. **Deploy robotpy program**
 
    - To robot
      (must be connected to roboRIO)
      ```bash
-     python robot.py deploy
+     pipenv run robotpy deploy
+     ```
+     to add other packages run the following
+     (examples: `robotpy`, `robotpy[ctre,navx]`, `robotpy[all]`) (see: [robotpy on pypi](https://pypi.org/project/robotpy/))
+     ```bash
+     pipenv run robotpy installer install robotpy[all]
      ```
    - To simulator
      ```bash
-     python robot.py sim
+     pipenv run robotpy sim
      ```
 
 ### Steps to take when commiting
