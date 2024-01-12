@@ -2,6 +2,7 @@ import typing
 from commands2 import Command
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
+from wpilib import DriverStation
 
 from subsystems.drivesubsystem import DriveSubsystem
 from util.angleoptimize import optimizeAngle
@@ -48,13 +49,13 @@ class AngleAlignDrive(Command):
             self.drive.arcadeDriveWithFactors(
                 -self.forward(),
                 -self.sideways(),
-                self.rotation(),
+                -self.rotation(),
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )
         else:
             self.drive.arcadeDriveWithFactors(
                 self.forward(),
                 self.sideways(),
-                self.rotation(),
+                -self.rotation(),
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )

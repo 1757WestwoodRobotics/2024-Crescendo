@@ -405,7 +405,9 @@ class DriveSubsystem(Subsystem):
         self.backRightModule.applyState(backRightState)
 
     def getRotation(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(self.gyro.getRotation2d().degrees() + self.rotationOffset)
+        return Rotation2d.fromDegrees(
+            self.gyro.getRotation2d().degrees() + self.rotationOffset
+        )
 
     def getAngularVelocity(self) -> float:
         """radians"""
@@ -413,9 +415,7 @@ class DriveSubsystem(Subsystem):
             return SmartDashboard.getNumberArray(
                 constants.kSimRobotVelocityArrayKey, [0, 0, 0]
             )[2]
-        return (
-            self.gyro.getRawGyroZ() * constants.kRadiansPerDegree
-        )
+        return self.gyro.getRawGyroZ() * constants.kRadiansPerDegree
 
     def getPitch(self) -> Rotation2d:
         return Rotation2d.fromDegrees(-self.gyro.getPitch() + 180)
