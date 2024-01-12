@@ -558,8 +558,6 @@ class DriveSubsystem(Subsystem):
             ],
         )
 
-        self.updateAdvantagescopePose()
-
         if SmartDashboard.getBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, False
         ):
@@ -573,16 +571,6 @@ class DriveSubsystem(Subsystem):
                 robotPose.rotation(),
             )
             self.resetOdometryAtPosition(weightedPose)
-
-    def updateAdvantagescopePose(self) -> None:
-        visionEstimatePose3d = (
-            pose3dFrom2d(self.visionEstimate)
-            + constants.kLimelightRelativeToRobotTransform
-        )
-        visionEstimatePose = advantagescopeconvert.convertToSendablePoses(
-            [visionEstimatePose3d]
-        )
-        SmartDashboard.putNumberArray(constants.kEstimatedPoseKey, visionEstimatePose)
 
     def arcadeDriveWithFactors(
         self,

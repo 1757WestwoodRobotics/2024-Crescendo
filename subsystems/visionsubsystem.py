@@ -36,6 +36,7 @@ class VisionSubsystem(Subsystem):
     def periodic(self) -> None:
         # self.estimatedPosition = self.drive.getPose()
         # self.updateAdvantagescopePose()
+        self.poseList = []
         for camera in self.cameras:
             photonResult = camera.getLatestResult()
             hasTargets = len(photonResult.getTargets()) > 0
@@ -54,6 +55,8 @@ class VisionSubsystem(Subsystem):
                             + result.bestCameraToTarget.inverse()
                         )
                         ambiguity = result.poseAmbiguity
+
+            self.updateAdvantagescopePose(Pose3d() + bestRelativeTransform, camera)
 
             cameraTransforms = {
                 "frontLeft": constants.kRobotToFrontLeftCameraTransform,
@@ -74,28 +77,15 @@ class VisionSubsystem(Subsystem):
                 )
             )
 
-        # SmartDashboard.putData(constants.kPhotonvisionCamerasKey, poseList)
+    def updateAdvantagescopePose(
+        self, cameraPose3d: Pose3d, camera: PhotonCamera
+    ) -> None:
+        cameraKeys = {
+            "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
+            "frontRight": constants.kPhotonvisionFrontRightCameraKey,
+            "backLeft": constants.kPhotonvisionBackLeftCameraKey,
+            "backRight": constants.kPhotonvisionBackRightCameraKey,
+        }
 
-        # self.drive.visionEstimate = botPose.toPose2d()
-
-        # SmartDashboard.putBoolean(
-        #     constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
-        # )
-        # SmartDashboard.putNumberArray(
-        #     constants.kRobotVisionPoseArrayKeys.valueKey,
-        #     [
-        #         self.drive.visionEstimate.X(),
-        #         self.drive.visionEstimate.Y(),
-        #         self.drive.visionEstimate.rotation().radians(),
-        #     ],
-        # )
-
-    # move to drive subsystem
-    # def updateAdvantagescopePose(self) -> None:
-    #     limelightPose3d = (
-    #         pose3dFrom2d(self.estimatedPosition)
-    #         + constants.kLimelightRelativeToRobotTransform
-    #     )
-    #     limelightPose = advantagescopeconvert.convertToSendablePoses([limelightPose3d])
-
-    #     SmartDashboard.putNumberArray(constants.kLimelightPoseKey, limelightPose)
+        cameraPose = advantagescopeconvert.convertToSendablePoses([cameraPose3d])
+        SmartDashboard.putNumberArray(cameraKeys[camera.getName()], cameraPose)

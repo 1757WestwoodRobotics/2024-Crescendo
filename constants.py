@@ -222,7 +222,12 @@ kEstimatedPoseKey = "vision/estimatedPose"
 # Photonvision related
 kPhotonvisionCameraName = "camcam"
 kPhotonvisionCameraArray = ["frontLeft", "frontRight", "backLeft", "backRight"]
-kPhotonvisionCamerasKey = "estimatedCameraPoses"
+
+kPhotonvisionFrontLeftCameraKey = "frontLeftCamera"
+kPhotonvisionFrontRightCameraKey = "frontRightCamera"
+kPhotonvisionBackLeftCameraKey = "backLeftCamera"
+kPhotonvisionBackRightCameraKey = "backRightCamera"
+
 
 kRobotToFrontLeftCameraTransform = Transform3d(
     Pose3d(),
