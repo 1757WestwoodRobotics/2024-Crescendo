@@ -246,7 +246,9 @@ class PhysicsEngine:
 
         self.driveSim = SwerveDriveSim(tuple(self.swerveModuleSims))
 
-        self.gyroSim = driveSubsystem.gyro.sim_state
+        self.gyroSim = SimDeviceSim("navX-Sensor[4]")
+        self.gyroYaw = self.gyroSim.getDouble("Yaw")
+        self.gyroPitch = self.gyroSim.getDouble("Pitch")
 
         self.sim_initialized = False
 
@@ -293,7 +295,9 @@ class PhysicsEngine:
             self.sim_initialized = True
             # self.physics_controller.field, is not set until simulation_init
 
-        self.gyroSim.set_raw_yaw(self.driveSim.getHeading().degrees())
+        self.gyroYaw.set(-self.driveSim.getHeading().degrees())
+        x = float(SmartDashboard.getNumber("therealgyro", -30))
+        self.gyroPitch.set(SmartDashboard.getNumber("thegyronumbies", x))
 
         # Simulate the drivetrain
         voltage = RobotController.getInputVoltage()
