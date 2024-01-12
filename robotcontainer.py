@@ -38,8 +38,8 @@ class RobotContainer:
         self.operatorInterface = OperatorInterface()
 
         # The robot's subsystems
-        self.drive = DriveSubsystem()
-        self.vision = VisionSubsystem(self.drive)
+        self.vision = VisionSubsystem()
+        self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
 
         # Robot demo subsystems
