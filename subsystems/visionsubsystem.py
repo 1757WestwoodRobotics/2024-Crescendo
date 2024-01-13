@@ -15,6 +15,30 @@ class EstimatedPose:
         self.timestamp = timestamp
 
 
+class VisionCamera:
+    def __init__(self, camera: PhotonCamera):
+        self.camera = camera
+        self.name = camera.getName()
+
+        cameraKeys = {
+            "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
+            "frontRight": constants.kPhotonvisionFrontRightCameraKey,
+            "backLeft": constants.kPhotonvisionBackLeftCameraKey,
+            "backRight": constants.kPhotonvisionBackRightCameraKey,
+        }
+
+        self.key = cameraKeys[self.name]
+
+        cameraTransforms = {
+            "frontLeft": constants.kRobotToFrontLeftCameraTransform,
+            "frontRight": constants.kRobotToFrontRightCameraTransform,
+            "backLeft": constants.kRobotToBackLeftCameraTransform,
+            "backRight": constants.kRobotToBackRightCameraTransform,
+        }
+
+        self.cameraToRobotTransform = cameraTransforms[self.name].inverse()
+
+
 class VisionSubsystem(Subsystem):
     def __init__(self) -> None:
         Subsystem.__init__(self)
@@ -42,6 +66,8 @@ class VisionSubsystem(Subsystem):
             multitagresult = photonResult.multiTagResult
             bestRelativeTransform = multitagresult.estimatedPose.best
 
+            currentCamera = VisionCamera(camera)
+
             if not multitagresult.estimatedPose.isPresent:
                 ambiguity = 10
                 for result in photonResult.targets:
@@ -55,19 +81,12 @@ class VisionSubsystem(Subsystem):
                         )
                         ambiguity = result.poseAmbiguity
 
-            self.updateAdvantagescopePose(Pose3d() + bestRelativeTransform, camera)
-
-            cameraTransforms = {
-                "frontLeft": constants.kRobotToFrontLeftCameraTransform,
-                "frontRight": constants.kRobotToFrontRightCameraTransform,
-                "backLeft": constants.kRobotToBackLeftCameraTransform,
-                "backRight": constants.kRobotToBackRightCameraTransform,
-            }
+            self.updateAdvantagescopePose(
+                Pose3d() + bestRelativeTransform, currentCamera
+            )
 
             botPose = (
-                Pose3d()
-                + bestRelativeTransform
-                + cameraTransforms[camera.getName()].inverse()
+                Pose3d() + bestRelativeTransform + currentCamera.cameraToRobotTransform
             )
 
             self.poseList.append(
@@ -75,14 +94,7 @@ class VisionSubsystem(Subsystem):
             )
 
     def updateAdvantagescopePose(
-        self, cameraPose3d: Pose3d, camera: PhotonCamera
+        self, cameraPose3d: Pose3d, camera: VisionCamera
     ) -> None:
-        cameraKeys = {
-            "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
-            "frontRight": constants.kPhotonvisionFrontRightCameraKey,
-            "backLeft": constants.kPhotonvisionBackLeftCameraKey,
-            "backRight": constants.kPhotonvisionBackRightCameraKey,
-        }
-
         cameraPose = advantagescopeconvert.convertToSendablePoses([cameraPose3d])
-        SmartDashboard.putNumberArray(cameraKeys[camera.getName()], cameraPose)
+        SmartDashboard.putNumberArray(camera.key, cameraPose)
