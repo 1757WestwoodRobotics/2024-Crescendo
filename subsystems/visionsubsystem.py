@@ -72,9 +72,7 @@ class VisionSubsystem(Subsystem):
             )
 
             self.poseList.append(
-                EstimatedPose(
-                    botPose, hasTargets, photonResult.getTimestamp()
-                )
+                EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
             )
 
     def updateAdvantagescopePose(

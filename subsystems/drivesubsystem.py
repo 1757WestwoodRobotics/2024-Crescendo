@@ -397,7 +397,7 @@ class DriveSubsystem(Subsystem):
         self.resetOdometryAtPosition(pose)
 
     def getPose(self) -> Pose2d:
-        translation = self.odometry.getPose().translation()
+        translation = self.estimator.getPose().translation()
         rotation = self.getRotation()
         return Pose2d(translation, rotation)
 
