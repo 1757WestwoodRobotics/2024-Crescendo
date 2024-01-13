@@ -217,8 +217,6 @@ kLimelightRelativeToRobotTransform = Transform3d(
     Pose3d(0.236, 0.206, 0.197, Rotation3d()),
 )
 
-kEstimatedPoseKey = "vision/estimatedPose"
-
 # Photonvision related
 kPhotonvisionCameraName = "camcam"
 kPhotonvisionCameraArray = ["frontLeft", "frontRight", "backLeft", "backRight"]
@@ -235,15 +233,15 @@ kRobotToFrontLeftCameraTransform = Transform3d(
 )
 kRobotToFrontRightCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(0.25, 0.25, 0.18, Rotation3d()),
+    Pose3d(0.25, -0.25, 0.18, Rotation3d()),
 )
 kRobotToBackLeftCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(0.25, 0.25, 0.18, Rotation3d()),
+    Pose3d(-0.25, 0.25, 0.18, Rotation3d()),
 )
 kRobotToBackRightCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(0.25, 0.25, 0.18, Rotation3d()),
+    Pose3d(-0.25, -0.25, 0.18, Rotation3d()),
 )
 # CANivore
 kCANivoreName = "canivore"
