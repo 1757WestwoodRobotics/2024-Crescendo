@@ -313,6 +313,14 @@ class DriveSubsystem(Subsystem):
             constants.kBackRightWheelPosition,
         )
 
+        # Create the gyro, a sensor which can indicate the heading of the robot relative
+        # to a customizable position.
+        self.gyro = Pigeon2(constants.kPigeonCANId, constants.kCANivoreName)
+
+        toApply = Pigeon2Configuration()
+        self.gyro.configurator.apply(toApply)
+        self.gyro.get_yaw().set_update_frequency(100)
+
         self.estimator = SwerveDrive4PoseEstimator(
             self.kinematics,
             self.getRotation(),
@@ -327,14 +335,6 @@ class DriveSubsystem(Subsystem):
             [0.5, 0.5, 0.5],
         )
         # standard deviations stolen from 2910
-
-        # Create the gyro, a sensor which can indicate the heading of the robot relative
-        # to a customizable position.
-        self.gyro = Pigeon2(constants.kPigeonCANId, constants.kCANivoreName)
-
-        toApply = Pigeon2Configuration()
-        self.gyro.configurator.apply(toApply)
-        self.gyro.get_yaw().set_update_frequency(100)
 
         # Create the an object for our odometry, which will utilize sensor data to
         # keep a record of our position on the field.
@@ -396,7 +396,7 @@ class DriveSubsystem(Subsystem):
         self.resetOdometryAtPosition(pose)
 
     def getPose(self) -> Pose2d:
-        translation = self.estimator.getPose().translation()
+        translation = self.estimator.getEstimatedPosition().translation()
         rotation = self.getRotation()
         return Pose2d(translation, rotation)
 
