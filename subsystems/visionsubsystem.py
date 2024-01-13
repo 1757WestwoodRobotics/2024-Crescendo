@@ -1,3 +1,4 @@
+from collections import deque
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
 from wpilib import SmartDashboard
@@ -26,7 +27,7 @@ class VisionSubsystem(Subsystem):
         self.cameras = [
             PhotonCamera(camera) for camera in constants.kPhotonvisionCameraArray
         ]
-        self.poseList = []
+        self.poseList = deque([])
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
         #     inst.stopServer()
@@ -36,7 +37,6 @@ class VisionSubsystem(Subsystem):
     def periodic(self) -> None:
         # self.estimatedPosition = self.drive.getPose()
         # self.updateAdvantagescopePose()
-        self.poseList = []
         for camera in self.cameras:
             photonResult = camera.getLatestResult()
             hasTargets = len(photonResult.getTargets()) > 0
@@ -73,7 +73,7 @@ class VisionSubsystem(Subsystem):
 
             self.poseList.append(
                 EstimatedPose(
-                    botPose, hasTargets, camera.getLatestResult().getTimestamp()
+                    botPose, hasTargets, photonResult.getTimestamp()
                 )
             )
 

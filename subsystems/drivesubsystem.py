@@ -526,6 +526,7 @@ class DriveSubsystem(Subsystem):
             )
 
         estimatedCameraPoses = self.vision.poseList
+        self.vision.poseList.clear()
         hasTargets = False
 
         for estimatedCameraPose in estimatedCameraPoses:
@@ -534,6 +535,7 @@ class DriveSubsystem(Subsystem):
                     estimatedCameraPose.pose.toPose2d(), estimatedCameraPose.timestamp
                 )
                 hasTargets = True
+
         self.estimator.update(
             self.odometry.getPose().rotation(),
             [
