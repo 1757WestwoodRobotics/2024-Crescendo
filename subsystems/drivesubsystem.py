@@ -520,7 +520,6 @@ class DriveSubsystem(Subsystem):
             )
 
         estimatedCameraPoses = self.vision.poseList
-        self.vision.poseList.clear()
         hasTargets = False
 
         for estimatedCameraPose in estimatedCameraPoses:
@@ -539,6 +538,7 @@ class DriveSubsystem(Subsystem):
                 self.backRightModule.getPosition(),
             ],
         )
+        self.vision.poseList.clear()
 
         self.visionEstimate = self.estimator.getEstimatedPosition()
 
