@@ -30,11 +30,10 @@ from wpimath.estimator import SwerveDrive4PoseEstimator
 from pathplannerlib.auto import AutoBuilder
 
 import constants
-from util import convenientmath, advantagescopeconvert
+from util import convenientmath
 from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
 from util.simtalon import Talon
-from util.convenientmath import pose3dFrom2d
 from subsystems.visionsubsystem import VisionSubsystem
 
 

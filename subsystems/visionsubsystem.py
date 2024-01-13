@@ -2,11 +2,10 @@ from collections import deque
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
 from wpilib import SmartDashboard
-from wpimath.geometry import Pose2d, Transform3d, Pose3d
+from wpimath.geometry import Transform3d, Pose3d
 
 import constants
 from util import advantagescopeconvert
-from util.convenientmath import pose3dFrom2d
 
 
 class EstimatedPose:
