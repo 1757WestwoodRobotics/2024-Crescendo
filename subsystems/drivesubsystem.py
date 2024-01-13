@@ -24,6 +24,8 @@ from wpimath.kinematics import (
     SwerveDrive4Odometry,
     SwerveModulePosition,
 )
+from wpimath.estimator import SwerveDrive4PoseEstimator
+
 from pathplannerlib.auto import AutoBuilder
 
 import constants
@@ -31,6 +33,7 @@ from util import convenientmath
 from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
 from util.simtalon import Talon
+from subsystems.visionsubsystem import VisionSubsystem
 
 
 class SwerveModuleConfigParams:
@@ -238,11 +241,12 @@ class DriveSubsystem(Subsystem):
         FieldRelative = auto()
         TargetRelative = auto()
 
-    def __init__(self) -> None:
+    def __init__(self, vision: VisionSubsystem) -> None:
         Subsystem.__init__(self)
         self.setName(__class__.__name__)
         SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, False)
 
+        self.vision = vision
         self.rotationOffset = 0
 
         self.frontLeftModule = CTRESwerveModule(
@@ -312,6 +316,21 @@ class DriveSubsystem(Subsystem):
         # to a customizable position.
         self.gyro = AHRS.create_spi()
 
+        self.estimator = SwerveDrive4PoseEstimator(
+            self.kinematics,
+            self.getRotation(),
+            [
+                self.frontLeftModule.getPosition(),
+                self.frontRightModule.getPosition(),
+                self.backLeftModule.getPosition(),
+                self.backRightModule.getPosition(),
+            ],
+            Pose2d(),
+            [0.1, 0.1, 0.1],
+            [0.5, 0.5, 0.5],
+        )
+        # standard deviations stolen from 2910
+
         # Create the an object for our odometry, which will utilize sensor data to
         # keep a record of our position on the field.
         self.odometry = SwerveDrive4Odometry(
@@ -372,7 +391,7 @@ class DriveSubsystem(Subsystem):
         self.resetOdometryAtPosition(pose)
 
     def getPose(self) -> Pose2d:
-        translation = self.odometry.getPose().translation()
+        translation = self.estimator.getEstimatedPosition().translation()
         rotation = self.getRotation()
         return Pose2d(translation, rotation)
 
@@ -477,20 +496,6 @@ class DriveSubsystem(Subsystem):
 
         robotPoseArray = [robotPose.X(), robotPose.Y(), robotPose.rotation().radians()]
 
-        if SmartDashboard.getBoolean(
-            constants.kRobotVisionPoseArrayKeys.validKey, False
-        ):
-            visionPose = self.visionEstimate
-
-            weightedPose = Pose2d(
-                visionPose.X() * constants.kRobotVisionPoseWeight
-                + robotPose.X() * (1 - constants.kRobotVisionPoseWeight),
-                visionPose.Y() * constants.kRobotVisionPoseWeight
-                + robotPose.Y() * (1 - constants.kRobotVisionPoseWeight),
-                robotPose.rotation(),
-            )
-            self.resetOdometryAtPosition(weightedPose)
-
         SmartDashboard.putNumberArray(
             constants.kRobotPoseArrayKeys.valueKey, robotPoseArray
         )
@@ -513,6 +518,41 @@ class DriveSubsystem(Subsystem):
                     self.backRightModule.getWheelLinearVelocity(),
                 )
             )
+
+        estimatedCameraPoses = self.vision.poseList
+        self.vision.poseList.clear()
+        hasTargets = False
+
+        for estimatedCameraPose in estimatedCameraPoses:
+            if estimatedCameraPose.hasTargets:
+                self.estimator.addVisionMeasurement(
+                    estimatedCameraPose.pose.toPose2d(), estimatedCameraPose.timestamp
+                )
+                hasTargets = True
+
+        self.estimator.update(
+            self.odometry.getPose().rotation(),
+            [
+                self.frontLeftModule.getPosition(),
+                self.frontRightModule.getPosition(),
+                self.backLeftModule.getPosition(),
+                self.backRightModule.getPosition(),
+            ],
+        )
+
+        self.visionEstimate = self.estimator.getEstimatedPosition()
+
+        SmartDashboard.putBoolean(
+            constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
+        )
+        SmartDashboard.putNumberArray(
+            constants.kRobotVisionPoseArrayKeys.valueKey,
+            [
+                self.visionEstimate.X(),
+                self.visionEstimate.Y(),
+                self.visionEstimate.rotation().radians(),
+            ],
+        )
 
     def arcadeDriveWithFactors(
         self,

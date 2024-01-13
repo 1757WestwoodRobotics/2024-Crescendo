@@ -217,11 +217,32 @@ kLimelightRelativeToRobotTransform = Transform3d(
     Pose3d(0.236, 0.206, 0.197, Rotation3d()),
 )
 
-kLimelightPoseKey = "vision/limelight"
-
 # Photonvision related
 kPhotonvisionCameraName = "camcam"
+kPhotonvisionCameraArray = ["frontLeft", "frontRight", "backLeft", "backRight"]
 
+kPhotonvisionFrontLeftCameraKey = "frontLeftCamera"
+kPhotonvisionFrontRightCameraKey = "frontRightCamera"
+kPhotonvisionBackLeftCameraKey = "backLeftCamera"
+kPhotonvisionBackRightCameraKey = "backRightCamera"
+
+
+kRobotToFrontLeftCameraTransform = Transform3d(
+    Pose3d(),
+    Pose3d(0.25, 0.25, 0.18, Rotation3d()),
+)
+kRobotToFrontRightCameraTransform = Transform3d(
+    Pose3d(),
+    Pose3d(0.25, -0.25, 0.18, Rotation3d()),
+)
+kRobotToBackLeftCameraTransform = Transform3d(
+    Pose3d(),
+    Pose3d(-0.25, 0.25, 0.18, Rotation3d()),
+)
+kRobotToBackRightCameraTransform = Transform3d(
+    Pose3d(),
+    Pose3d(-0.25, -0.25, 0.18, Rotation3d()),
+)
 # CANivore
 kCANivoreName = "canivore"
 
@@ -365,7 +386,7 @@ kBackLeftAbsoluteEncoderOffset = 341.719 / kDegeersPerRevolution
 kBackRightAbsoluteEncoderOffset = 331.260 / kDegeersPerRevolution
 """rotations"""
 
-kRobotPoseArrayKeys = OptionalValueKeys("RobotPoseArray")
+kRobotPoseArrayKeys = OptionalValueKeys("RobotOdometryPose")
 
 kRobotVisionPoseWeight = 0.00  # 5% vision data
 
@@ -383,7 +404,7 @@ kTargetFacingAngleRelativeToRobotKeys = OptionalValueKeys(
     "TargetFacingAngleRelativeToRobot"
 )
 kTargetPoseArrayKeys = OptionalValueKeys("TargetPoseArray")
-kRobotVisionPoseArrayKeys = OptionalValueKeys("VisionRobotPose")
+kRobotVisionPoseArrayKeys = OptionalValueKeys("EstimatedRobotPose")
 
 kTargetName = "Target"
 
