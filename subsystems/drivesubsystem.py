@@ -315,7 +315,7 @@ class DriveSubsystem(Subsystem):
 
         self.estimator = SwerveDrive4PoseEstimator(
             self.kinematics,
-            Rotation2d(),
+            self.getRotation(),
             [
                 self.frontLeftModule.getPosition(),
                 self.frontRightModule.getPosition(),
