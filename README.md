@@ -129,7 +129,7 @@ py -3 -m venv ./.venv
    pipenv run robotpy installer download-python
    ```
 
-   (to download the python dependancies)
+   (to download the python dependencies)
    (examples: `robotpy`, `robotpy[ctre,navx]`, `robotpy[all]`) (see: [robotpy on pypi](https://pypi.org/project/robotpy/))
 
    ```bash
