@@ -388,7 +388,7 @@ kBackLeftAbsoluteEncoderOffset = 341.719 / kDegeersPerRevolution
 kBackRightAbsoluteEncoderOffset = 331.260 / kDegeersPerRevolution
 """rotations"""
 
-kRobotPoseArrayKeys = OptionalValueKeys("RobotPoseArray")
+kRobotPoseArrayKeys = OptionalValueKeys("RobotOdometryPose")
 
 kRobotVisionPoseWeight = 0.00  # 5% vision data
 
@@ -406,7 +406,7 @@ kTargetFacingAngleRelativeToRobotKeys = OptionalValueKeys(
     "TargetFacingAngleRelativeToRobot"
 )
 kTargetPoseArrayKeys = OptionalValueKeys("TargetPoseArray")
-kRobotVisionPoseArrayKeys = OptionalValueKeys("VisionRobotPose")
+kRobotVisionPoseArrayKeys = OptionalValueKeys("EstimatedRobotPose")
 
 kTargetName = "Target"
 
