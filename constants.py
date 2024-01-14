@@ -229,7 +229,19 @@ kPhotonvisionBackRightCameraKey = "backRightCamera"
 
 kRobotToFrontLeftCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(0.25, 0.25, 0.18, Rotation3d()),
+    Pose3d(
+        -10.698 * kMetersPerInch,
+        9.707 * kMetersPerInch,
+        6.063 * kMetersPerInch,
+        Rotation3d(),
+    ),
+) + Transform3d(
+    0.006,
+    -0.006,
+    0.051,
+    Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
+        Rotation3d(0.0, 0.0, (90 - 82.829) * kRadiansPerDegree)
+    ),
 )
 kRobotToFrontRightCameraTransform = Transform3d(
     Pose3d(),

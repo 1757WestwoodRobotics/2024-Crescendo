@@ -2,10 +2,11 @@ from collections import deque
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
 from wpilib import SmartDashboard
-from wpimath.geometry import Transform3d, Pose3d
+from wpimath.geometry import Transform3d, Pose3d, Rotation3d, Pose2d
 
 import constants
 from util import advantagescopeconvert
+from util.convenientmath import pose3dFrom2d
 
 
 class EstimatedPose:
@@ -60,6 +61,13 @@ class VisionSubsystem(Subsystem):
     def periodic(self) -> None:
         # self.estimatedPosition = self.drive.getPose()
         # self.updateAdvantagescopePose()
+        visionPose = SmartDashboard.getNumberArray(
+            constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0]
+        )
+        robotPose = SmartDashboard.getNumberArray(
+            constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
+        )
+        combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         for camera in self.cameras:
             photonResult = camera.getLatestResult()
             hasTargets = len(photonResult.getTargets()) > 0
@@ -82,7 +90,7 @@ class VisionSubsystem(Subsystem):
                         ambiguity = result.poseAmbiguity
 
             self.updateAdvantagescopePose(
-                Pose3d() + bestRelativeTransform, currentCamera
+                Pose3d() + bestRelativeTransform, currentCamera, combinedPose
             )
 
             botPose = (
@@ -93,8 +101,12 @@ class VisionSubsystem(Subsystem):
                 EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
             )
 
+
+
     def updateAdvantagescopePose(
-        self, cameraPose3d: Pose3d, camera: VisionCamera
+            self, cameraPose3d: Pose3d, camera: VisionCamera, botPose: Pose3d
     ) -> None:
-        cameraPose = advantagescopeconvert.convertToSendablePoses([cameraPose3d])
+        cameraPose = advantagescopeconvert.convertToSendablePoses(
+            [cameraPose3d, botPose + camera.cameraToRobotTransform.inverse()]
+        )
         SmartDashboard.putNumberArray(camera.key, cameraPose)
