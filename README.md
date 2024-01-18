@@ -67,11 +67,11 @@
    - To robot
      (must be connected to roboRIO)
      ```bash
-     python -m robotpy deploy
+     pipenv run robotpy deploy
      ```
    - To simulator
      ```bash
-     python -m robotpy sim
+     pipenv run robotpy sim
 
 
 ### Steps to take when commiting
