@@ -219,7 +219,7 @@ kLimelightRelativeToRobotTransform = Transform3d(
 
 # Photonvision related
 kPhotonvisionCameraName = "camcam"
-kPhotonvisionCameraArray = ["frontLeft", "frontRight", "backLeft", "backRight"]
+kPhotonvisionCameraArray = ["frontLeft", "backRight"]
 
 kPhotonvisionFrontLeftCameraKey = "frontLeftCamera"
 kPhotonvisionFrontRightCameraKey = "frontRightCamera"
@@ -230,7 +230,7 @@ kPhotonvisionBackRightCameraKey = "backRightCamera"
 kRobotToFrontLeftCameraTransform = Transform3d(
     Pose3d(),
     Pose3d(
-        -10.698 * kMetersPerInch,
+        10.698 * kMetersPerInch,
         9.707 * kMetersPerInch,
         6.063 * kMetersPerInch,
         Rotation3d(),
@@ -240,7 +240,7 @@ kRobotToFrontLeftCameraTransform = Transform3d(
     -0.006,
     0.051,
     Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-        Rotation3d(0.0, 0.0, (90 - 82.829) * kRadiansPerDegree)
+        Rotation3d(0.0, 0.0, (270 + 82.829) * kRadiansPerDegree)
     ),
 )
 kRobotToFrontRightCameraTransform = Transform3d(
@@ -253,8 +253,21 @@ kRobotToBackLeftCameraTransform = Transform3d(
 )
 kRobotToBackRightCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(-0.25, -0.25, 0.18, Rotation3d()),
+    Pose3d(
+        -10.698 * kMetersPerInch,
+        -9.707 * kMetersPerInch,
+        6.063 * kMetersPerInch,
+        Rotation3d(0, 0, math.pi),
+    ),
+) + Transform3d(
+    0.006,
+    -0.006,
+    0.051,
+    Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
+        Rotation3d(0.0, 0.0, (270 + 82.829) * kRadiansPerDegree)
+    ),
 )
+
 # CANivore
 kCANivoreName = "canivore"
 
@@ -362,10 +375,10 @@ kSteerPGain = 2
 kSteerIGain = 0.0
 kSteerDGain = 0
 
-kFrontLeftDriveInverted = True
-kFrontRightDriveInverted = False
-kBackLeftDriveInverted = False
-kBackRightDriveInverted = False
+kFrontLeftDriveInverted = False
+kFrontRightDriveInverted = True
+kBackLeftDriveInverted = True
+kBackRightDriveInverted = True
 
 kFrontLeftSteerInverted = False
 kFrontRightSteerInverted = False

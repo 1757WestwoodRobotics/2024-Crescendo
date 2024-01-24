@@ -2,7 +2,7 @@ from collections import deque
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
 from wpilib import SmartDashboard
-from wpimath.geometry import Transform3d, Pose3d, Rotation3d, Pose2d
+from wpimath.geometry import Transform3d, Pose3d, Pose2d
 
 import constants
 from util import advantagescopeconvert
@@ -23,8 +23,8 @@ class VisionCamera:
 
         cameraKeys = {
             "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
-            "frontRight": constants.kPhotonvisionFrontRightCameraKey,
-            "backLeft": constants.kPhotonvisionBackLeftCameraKey,
+            # "frontRight": constants.kPhotonvisionFrontRightCameraKey,
+            # "backLeft": constants.kPhotonvisionBackLeftCameraKey,
             "backRight": constants.kPhotonvisionBackRightCameraKey,
         }
 
@@ -32,8 +32,8 @@ class VisionCamera:
 
         cameraTransforms = {
             "frontLeft": constants.kRobotToFrontLeftCameraTransform,
-            "frontRight": constants.kRobotToFrontRightCameraTransform,
-            "backLeft": constants.kRobotToBackLeftCameraTransform,
+            # "frontRight": constants.kRobotToFrontRightCameraTransform,
+            # "backLeft": constants.kRobotToBackLeftCameraTransform,
             "backRight": constants.kRobotToBackRightCameraTransform,
         }
 
@@ -101,10 +101,8 @@ class VisionSubsystem(Subsystem):
                 EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
             )
 
-
-
     def updateAdvantagescopePose(
-            self, cameraPose3d: Pose3d, camera: VisionCamera, botPose: Pose3d
+        self, cameraPose3d: Pose3d, camera: VisionCamera, botPose: Pose3d
     ) -> None:
         cameraPose = advantagescopeconvert.convertToSendablePoses(
             [cameraPose3d, botPose + camera.cameraToRobotTransform.inverse()]
