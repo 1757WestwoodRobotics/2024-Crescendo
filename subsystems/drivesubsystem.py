@@ -550,7 +550,7 @@ class DriveSubsystem(Subsystem):
             [
                 self.visionEstimate.X(),
                 self.visionEstimate.Y(),
-                self.visionEstimate.rotation().radians()
+                self.visionEstimate.rotation().radians(),
             ],
         )
 
