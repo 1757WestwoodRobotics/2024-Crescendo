@@ -16,7 +16,7 @@ from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
 from wpilib import RobotController, SmartDashboard
-from wpilib.simulation import DCMotorSim, SimDeviceSim
+from wpilib.simulation import DCMotorSim
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
 from wpimath.system.plant import DCMotor
 import wpimath.kinematics
@@ -246,9 +246,7 @@ class PhysicsEngine:
 
         self.driveSim = SwerveDriveSim(tuple(self.swerveModuleSims))
 
-        self.gyroSim = SimDeviceSim("navX-Sensor[4]")
-        self.gyroYaw = self.gyroSim.getDouble("Yaw")
-        self.gyroPitch = self.gyroSim.getDouble("Pitch")
+        self.gyroSim = driveSubsystem.gyro.sim_state
 
         self.sim_initialized = False
 
@@ -295,9 +293,7 @@ class PhysicsEngine:
             self.sim_initialized = True
             # self.physics_controller.field, is not set until simulation_init
 
-        self.gyroYaw.set(-self.driveSim.getHeading().degrees())
-        x = float(SmartDashboard.getNumber("therealgyro", -30))
-        self.gyroPitch.set(SmartDashboard.getNumber("thegyronumbies", x))
+        self.gyroSim.set_raw_yaw(self.driveSim.getHeading().degrees())
 
         # Simulate the drivetrain
         voltage = RobotController.getInputVoltage()

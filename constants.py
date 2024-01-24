@@ -562,9 +562,9 @@ kTargetRelativeDriveAnglePGain = 1
 kTargetRelativeDriveAngleIGain = 0
 kTargetRelativeDriveAngleDGain = 0
 
-kRotationPGain = 0.8
+kRotationPGain = 0.1
 kRotationIGain = 0
-kRotationDGain = 0.02
+kRotationDGain = 0.00
 
 # Drive to Target
 kDriveToTargetDistancePGain = 0.5
