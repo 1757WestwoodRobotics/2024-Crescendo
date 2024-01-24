@@ -49,13 +49,13 @@ class AngleAlignDrive(Command):
             self.drive.arcadeDriveWithFactors(
                 -self.forward(),
                 -self.sideways(),
-                -self.rotation(),
+                self.rotation(),
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )
         else:
             self.drive.arcadeDriveWithFactors(
                 self.forward(),
                 self.sideways(),
-                -self.rotation(),
+                self.rotation(),
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )
