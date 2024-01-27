@@ -332,7 +332,7 @@ class DriveSubsystem(Subsystem):
             ],
             Pose2d(),
             [0.1, 0.1, 0.1],
-            [0.5, 0.5, 0.5],
+            [0.2, 0.2, 0.2],
         )
         # standard deviations stolen from 2910
 
@@ -530,11 +530,13 @@ class DriveSubsystem(Subsystem):
         for estimatedCameraPose in estimatedCameraPoses:
             if estimatedCameraPose.hasTargets:
                 self.estimator.addVisionMeasurement(
-                    estimatedCameraPose.pose.toPose2d(), estimatedCameraPose.timestamp
+                    estimatedCameraPose.pose.toPose2d(),
+                    estimatedCameraPose.timestamp / 1e12,
                 )
                 hasTargets = True
 
-        self.estimator.update(
+        self.estimator.updateWithTime(
+            self.printTimer.getFPGATimestamp(),
             self.odometry.getPose().rotation(),
             [
                 self.frontLeftModule.getPosition(),
