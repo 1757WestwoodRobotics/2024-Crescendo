@@ -30,7 +30,7 @@ from wpilib import(
     RobotOdometryPose
 )
 
-from wpimath.gemoetry import Pose2d, Rotation2d, Translation2d
+from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.filter import SlewRateLimiter
 from wpimath.kinematics import ChassisSpeeds
 
@@ -40,21 +40,29 @@ from wpimath.kinematics import ChassisSpeeds
 
 
 class SetElevatorParameters:
-    def __init__(self,elevateMotorID,deelevateMotorID,encoderID,PIDVoltage,elevationOffset,elevatorState)
+    def __init__(self,elevateMotorID,deelevateMotorID,encoderID,PIDVoltage,elevationOffset,elevatorState,elevatorHeight,motor1,motor2)
         self.elevateMotorID = elevateMotorID
-        self.deelevateMotorID: deelevateMotorID
+        self.deelevateMotorID = deelevateMotorID
         self.encoderID =  encoderID
         self.PIDVoltage = PIDVoltage
         self.elevationOffset = elevationOffset
         self.elevatorState = elevatorState
+        self.elevatorHeight = elevatorHeight
+        self.motor1 = motor1 #motor wheels can be defined later, IDK what to do with this for now
+        self.motor2 = motor2 #motor1 is the bigger one, motor2 1:11 ratio
 
 
 class ElevatorSubsystem(Subsystem):
-    class SetElevatorStates(Enum):
+    class ElevatorModes(Enum):
         Bottom = auto()
         ClimbingToAmp = auto()
         Amp = auto()
         Trap = auto()
+
+    class ElevatorStates(Enum):
+        Climbing = auto()
+        Stopped = auto()
+        Off = auto()
     
     def __init__(self,vision: VisionSubsystem) -> None:
         Subsystem.__init__(self)
@@ -82,12 +90,43 @@ class ElevatorSubsystem(Subsystem):
             )
         )
 
-        def get_robot_relative_speeds(self):
+        def get_elevator_speed(self):
             return self.kinematics.toChassisSpeeds()
         
         def get_pose(self):
             movement = self.estimator.getEstimatedPosition().movement()
             return Pose2d(movement)
         
+        def get_elevator_state(self):
+            return CANcoderSimState(
+                self.getWheelLinearVelocity(),
+                self.get_angular_velocity_z_world()
+            )
+        
+        def get_elevator_mode_state(self):
+            return (
+                self.ElevatorModes.Bottom.get_elevator_state(),
+                self.ElevatorModes.Amp.get_elevator_state(),
+                self.ElevatorModes.ClimbingToAmp.get_elevator_state(),
+                self.ElevatorModes.Trap.get_elevator_state()
+            )
+            
+        def apply_elevator_state(self):
+            current_state = get_elevator_mode_state()
+
+            self.setWheelLinearVelocityTarget(current_state.speed)
+
+            if int(current_state.speed) >= constants.kMinWheelLinearVelocity:
+                ElevatorSubsystem.stop_motor_current()
+        
+        def stop_motor_current(self):
+            if constants.kMaxForwardLinearVelocity <= constants.kMinWheelLinearVelocity:
+                self.motor.stop_motor_current()
+
         def PID_control(self):
+            self.elevateMotorID.set_elevator_state()
+            self.elevateMotorID.PID(self.PIDVoltage,self.kinematics)
+        
+        def set_dynamic_driving_gears(motor1=,motor2=):
+            pass
             
