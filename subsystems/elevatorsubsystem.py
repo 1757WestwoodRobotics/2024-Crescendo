@@ -127,6 +127,7 @@ class ElevatorSubsystem(Subsystem):
             self.elevateMotorID.set_elevator_state()
             self.elevateMotorID.PID(self.PIDVoltage,self.kinematics)
         
-        def set_dynamic_driving_gears(motor1=,motor2=):
-            pass
+        def set_dynamic_driving_gears(motor1=,motor2=): #IDK what to set for these values
+            motor1.VelocityControl()#formula for gear ratio
+            motor2.VelocityControl() * #motor1.velocity / (pi*11 squared)
             
