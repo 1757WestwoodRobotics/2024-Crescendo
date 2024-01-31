@@ -22,17 +22,17 @@
           "fields": [
             {
               "key": "NT:/DriverStation/alliance",
-              "color": "#80588e",
+              "color": "#e5b31b",
               "show": true
             },
             {
               "key": "NT:/DriverStation/auto",
-              "color": "#e48b32",
+              "color": "#af2437",
               "show": true
             },
             {
               "key": "NT:/DriverStation/enabled",
-              "color": "#aacaee",
+              "color": "#80588e",
               "show": true
             }
           ]
@@ -46,12 +46,12 @@
           "fields": [
             {
               "key": "NT:/PathPlanner/targetPose/0",
-              "color": "#e5b31b",
+              "color": "#e48b32",
               "show": true
             },
             {
               "key": "NT:/PathPlanner/currentPose/0",
-              "color": "#af2437",
+              "color": "#aacaee",
               "show": true
             }
           ]
@@ -63,14 +63,21 @@
       "type": 6,
       "fields": [],
       "listFields": [
-        [],
         [
           {
-            "type": "Robot",
-            "key": "NT:/SmartDashboard/RobotPoseArray/value",
+            "type": "Axes",
+            "key": "NT:/SmartDashboard/frontLeftCamera",
             "sourceTypeIndex": 0,
             "sourceType": 5
           },
+          {
+            "type": "Axes",
+            "key": "NT:/SmartDashboard/backRightCamera",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
+          }
+        ],
+        [
           {
             "type": "Trajectory",
             "key": "NT:/PathPlanner/activePath",
@@ -88,16 +95,28 @@
             "key": "NT:/PathPlanner/targetPose",
             "sourceTypeIndex": 0,
             "sourceType": 5
+          },
+          {
+            "type": "Yellow Ghost",
+            "key": "NT:/SmartDashboard/RobotOdometryPose/value",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
+          },
+          {
+            "type": "Robot",
+            "key": "NT:/SmartDashboard/EstimatedRobotPose/value",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
           }
         ]
       ],
       "options": {
-        "field": "2023 Field",
-        "alliance": "auto",
+        "field": "2024 Field",
+        "alliance": "blue",
         "robot": "Crab Bot",
         "unitDistance": "meters",
         "unitRotation": "radians",
-        "cameraIndex": -2,
+        "cameraIndex": -1,
         "fov": 90
       },
       "configHidden": false,
