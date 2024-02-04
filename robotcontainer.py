@@ -22,6 +22,15 @@ from subsystems.drivesubsystem import DriveSubsystem
 # from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
+from subsystems.intakesubsystem import IntakeSubsystem
+
+from commands.intakesetting import (
+    IntakeFloor,
+    IntakeTrap,
+    IntakeHold,
+    IntakeFeed,
+    IntakeIdle
+)
 
 from operatorinterface import OperatorInterface
 from util.helpfultriggerwrappers import ModifiableJoystickButton
@@ -43,6 +52,7 @@ class RobotContainer:
         self.vision = VisionSubsystem()
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
+        self.intake = IntakeSubsystem()
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
@@ -104,6 +114,8 @@ class RobotContainer:
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
+        self.ball.setDefaultCommand(IntakeIdle(self.intake))
+
     def configureButtonBindings(self):
         """
         Use this method to define your button->command mappings. Buttons can be created by
@@ -149,6 +161,20 @@ class RobotContainer:
 
         ModifiableJoystickButton(self.operatorInterface.defenseStateControl).whileTrue(
             DefenseState(self.drive)
+        )
+
+        # intake subsystem related calls
+        commands2.button.JoystickButton(*self.operatorInterface.floor).whileHeld(
+            IntakeFloor(self.intake)
+        )
+        commands2.button.JoystickButton(*self.operatorInterface.trap).whileHeld(
+            IntakeTrap(self.intake)
+        )
+        commands2.button.JoystickButton(*self.operatorInterface.hold).whileHeld(
+            IntakeHold(self.intake)
+        )
+        commands2.button.JoystickButton(*self.operatorInterface.feed).whileHeld(
+            IntakeFeed(self.intake)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
