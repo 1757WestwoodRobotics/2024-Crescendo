@@ -688,14 +688,14 @@ kVelocityControlkV = 0.01
 
 # Intake Mechanism, need to replace values
 kIntakeCANID = 60
-kIntakePIDSlot = 0
+kIntakeName = "IntakeMotor"
 kIntakePGain = 0.12
 kIntakeIGain = 0
 kIntakeDGain = 0
 kIntakeRotationAmount = 3000
 
 kPivotCANID = 61
-kPivotPIDSlot = 0
+kPivotName = "PivotMotor"
 kPivotPGain = 0.7
 kPivotIGain = 0
 kPivotDGain = 0
