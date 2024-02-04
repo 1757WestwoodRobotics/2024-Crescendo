@@ -25,11 +25,12 @@ from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 
 from commands.intakesetting import (
-    IntakeFloor,
-    IntakeTrap,
-    IntakeHold,
-    IntakeFeed,
-    IntakeIdle
+    FloorIntake,
+    HoldIntakeAtHandoff,
+    FeedIntakeToShooter,
+    StageIntake,
+    ScoreAmp,
+    ScoreTrap,
 )
 
 from operatorinterface import OperatorInterface
@@ -114,7 +115,7 @@ class RobotContainer:
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
-        self.ball.setDefaultCommand(IntakeIdle(self.intake))
+        # self.ball.setDefaultCommand(IntakeIdle(self.intake))
 
     def configureButtonBindings(self):
         """
@@ -164,18 +165,6 @@ class RobotContainer:
         )
 
         # intake subsystem related calls
-        commands2.button.JoystickButton(*self.operatorInterface.floor).whileHeld(
-            IntakeFloor(self.intake)
-        )
-        commands2.button.JoystickButton(*self.operatorInterface.trap).whileHeld(
-            IntakeTrap(self.intake)
-        )
-        commands2.button.JoystickButton(*self.operatorInterface.hold).whileHeld(
-            IntakeHold(self.intake)
-        )
-        commands2.button.JoystickButton(*self.operatorInterface.feed).whileHeld(
-            IntakeFeed(self.intake)
-        )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
