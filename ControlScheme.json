@@ -82,5 +82,33 @@
       "Button": 3
     },
     "placeholder"
+  ],
+  "floor": [
+    1,
+    {
+      "Button": 1
+    },
+    "Replace"
+  ],
+  "hold": [
+    1,
+    {
+      "Button": 1
+    },
+    "Replace"
+  ],
+  "feed": [
+    1,
+    {
+      "Button": 1
+    },
+    "Replace"
+  ],
+  "trap": [
+    1,
+    {
+      "Button": 1
+    },
+    "Replace"
   ]
 }

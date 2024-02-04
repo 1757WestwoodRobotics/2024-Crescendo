@@ -685,3 +685,18 @@ kVelocityControlDGain = 0
 
 kVelocityControlMotorType = DCMotor.falcon500()
 kVelocityControlkV = 0.01
+
+# Intake Mechanism, need to replace values
+kIntakeCANID = 60
+kIntakePIDSlot = 0
+kIntakePGain = 0.12
+kIntakeIGain = 0
+kIntakeDGain = 0
+kIntakeRotationAmount = 3000
+
+kArmCANID = 61
+kArmPIDSlot = 0
+kArmPGain = 0.7
+kArmIGain = 0
+kArmDGain = 0
+
