@@ -704,7 +704,9 @@ kIntakeInverted = False
 kPivotInverted = False
 
 kPivotEncoderID = 0
-kHandoffFromGroundDegrees = -7.761653
-kIntakePositionFromHandoffDegrees = 225.045433
-kStagingPositionFromHandoffDegrees = 69.939031
-kAmpScoringPositionFromHandoffDegrees = kStagingPositionFromHandoffDegrees + 5
+kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
+# all angles are relative to handoff angle
+kHandoffAngle = Rotation2d(0)
+kFloorPositionAngle = Rotation2d.fromDegrees(225.045433)
+kStagingPositionAngle = Rotation2d.fromDegrees(69.939031)
+kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)

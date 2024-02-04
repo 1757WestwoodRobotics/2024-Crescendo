@@ -23,7 +23,7 @@ class IntakeSubsystem(SubsystemBase):
 
         self.pivotEncoder = CTREEncoder(
             constants.kPivotEncoderID,
-            constants.kHandoffFromGroundDegrees,
+            constants.kIntakeAngleOffset.degrees(),
         )
 
         self.intakeMotor = Talon(
@@ -58,7 +58,7 @@ class IntakeSubsystem(SubsystemBase):
         if self.state == self.IntakeState.Intaking:
             self.pivotMotor.set(
                 Talon.ControlMode.Position,
-                constants.kIntakePositionFromHandoffDegrees
+                constants.kFloorPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
             if self.intakeMotor.getLimitSwitch(Talon.LimitSwitch.Forwards):
@@ -77,7 +77,7 @@ class IntakeSubsystem(SubsystemBase):
         elif self.state == self.IntakeState.Staging:
             self.pivotMotor.set(
                 Talon.ControlMode.Position,
-                constants.kStagingPositionFromHandoffDegrees
+                constants.kStagingPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
             self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
@@ -85,7 +85,7 @@ class IntakeSubsystem(SubsystemBase):
         elif self.state == self.IntakeState.Amp:
             self.pivotMotor.set(
                 Talon.ControlMode.Position,
-                constants.kStagingPositionFromHandoffDegrees
+                constants.kStagingPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
             self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
@@ -93,8 +93,7 @@ class IntakeSubsystem(SubsystemBase):
         elif self.state == self.IntakeState.Trap:
             # move with timeout
             self.pivotMotor.motor.set_position(
-                constants.kAmpScoringPositionFromHandoffDegrees
-                / constants.kDegeersPerRevolution,
+                constants.kAmpScoringPositionAngle / constants.kDegeersPerRevolution,
                 1,
             )
             self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
