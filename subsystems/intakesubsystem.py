@@ -1,75 +1,119 @@
 from enum import Enum, auto
 from commands2 import SubsystemBase
 
-from util.simfalcon import Falcon
-
+from util.simtalon import Talon
+from util.simcoder import CTREEncoder
 import constants
 
 
 class IntakeSubsystem(SubsystemBase):
     class IntakeState(Enum):
-        Floor = auto()  # arm is down, motor is running inwards
-        Trap = auto()  # arm is up, motor holding or running outwards ?
-        Hold = auto()  # arm is relaxed, motor is fixed
-        Feed = auto()  # arm is halfway up, motor running outwards
-        Idle = auto() # arm is down, motor off
+        Intaking = (
+            auto()
+        )  # arm is down, motor is running inwards/holding depending on note
+        Holding = auto()  # arm in feeding position, motor holding
+        Feeding = auto()  # arm in feeding position, motor ejecting
+        Staging = auto()  # arm is in position to score amp/trap, motor holding
+        Amp = auto()  # arm in same staging position, motor ejects
+        Trap = auto()  # arm pushes into trap, delay(?), motor ejects
 
     def __init__(self) -> None:
         SubsystemBase.__init__(self)
         self.setName(__class__.__name__)  # basic subsystem boilerplate
 
-        self.intakeMotor = Falcon(
+        self.pivotEncoder = CTREEncoder(
+            constants.kPivotEncoderID,
+            constants.kHandoffFromGroundDegrees,
+        )
+
+        self.intakeMotor = Talon(
             constants.kIntakeCANID,
             constants.kIntakePIDSlot,
             constants.kIntakePGain,
             constants.kIntakeIGain,
             constants.kIntakeDGain,
+            constants.kIntakeInverted,
         )
-        self.armMotor = Falcon(
-            constants.kArmCANID,
-            constants.kArmPIDSlot,
-            constants.kArmPGain,
-            constants.kArmIGain,
-            constants.kArmGain,
+        self.pivotMotor = Talon(
+            constants.kPivotCANID,
+            constants.kPivotPIDSlot,
+            constants.kPivotPGain,
+            constants.kPivotIGain,
+            constants.kPivotDGain,
+            constants.kPivotInverted,
         )
 
-        self.state = IntakeSubsystem.IntakeState.Idle
+        # pivot motor spins 60 times per arm revolution
+        # use absolute encoder to determine motor position
+        pivotMotorPosition = (
+            self.pivotEncoder.getPosition().degrees()
+            / constants.kDegeersPerRevolution
+            * 60
+        )
+        self.pivotMotor.setEncoderPosition(pivotMotorPosition)
 
-# all this motor stuff is wrong I copied it from ball and don't know what to do with it yet
+        self.state = self.IntakeState.Holding
 
     def periodic(self) -> None:
-        if self.state == IntakeSubsystem.IntakeState.Floor:
-            self.intakeMotor.set(Falcon.ControlMode.Velocity, 0)
-            self.armMotor.set(Falcon.ControlMode.Velocity, 0)
+        if self.state == self.IntakeState.Intaking:
+            self.pivotMotor.set(
+                Talon.ControlMode.Position,
+                constants.kIntakePositionFromHandoffDegrees
+                / constants.kDegeersPerRevolution,
+            )
+            if self.intakeMotor.getLimitSwitch(Talon.LimitSwitch.Forwards):
+                self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
+            else:
+                self.intakeMotor.set(Talon.ControlMode.Velocity, 100)
 
-        elif self.state == IntakeSubsystem.IntakeState.Trap:
-            self.intakeMotor.set(Falcon.ControlMode.Velocity, 0)
-            self.armMotor.set(Falcon.ControlMode.Velocity, 0)
+        elif self.state == self.IntakeState.Holding:
+            self.pivotMotor.set(Talon.ControlMode.Position, 0)
+            self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
 
-        elif self.state == IntakeSubsystem.IntakeState.Hold:
-            self.intakeMotor.set(Falcon.ControlMode.Velocity, 0)
-            self.armMotor.set(Falcon.ControlMode.Velocity, 0)
+        elif self.state == self.IntakeState.Feeding:
+            self.pivotMotor.set(Talon.ControlMode.Position, 0)
+            self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
 
-        elif self.state == IntakeSubsystem.IntakeState.Feed:
-            self.intakeMotor.set(Falcon.ControlMode.Velocity, 0)
-            self.armMotor.set(Falcon.ControlMode.Velocity, 0)
-            
-        elif self.state == IntakeSubsystem.IntakeState.Idle:
-            self.intakeMotor.set(Falcon.ControlMode.Velocity, 0)
-            self.armMotor.set(Falcon.ControlMode.Velocity, 0)
+        elif self.state == self.IntakeState.Staging:
+            self.pivotMotor.set(
+                Talon.ControlMode.Position,
+                constants.kStagingPositionFromHandoffDegrees
+                / constants.kDegeersPerRevolution,
+            )
+            self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
+
+        elif self.state == self.IntakeState.Amp:
+            self.pivotMotor.set(
+                Talon.ControlMode.Position,
+                constants.kStagingPositionFromHandoffDegrees
+                / constants.kDegeersPerRevolution,
+            )
+            self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
+
+        elif self.state == self.IntakeState.Trap:
+            # move with timeout
+            self.pivotMotor.motor.set_position(
+                constants.kAmpScoringPositionFromHandoffDegrees
+                / constants.kDegeersPerRevolution,
+                1,
+            )
+            self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
 
     # the following methods are simply state setting, all actual motor control is done in periodic
-    def setFloor(self) -> None:
-        self.state = IntakeSubsystem.IntakeState.Floor
+    def setIntaking(self) -> None:
+        self.state = self.IntakeState.Intaking
+
+    def setHolding(self) -> None:
+        self.state = self.IntakeState.Holding
+
+    def setFeeding(self) -> None:
+        self.state = self.IntakeState.Feeding
+
+    def setStaging(self) -> None:
+        self.state = self.IntakeState.Staging
+
+    def setAmp(self) -> None:
+        self.state = self.IntakeState.Amp
 
     def setTrap(self) -> None:
-        self.state = IntakeSubsystem.IntakeState.Trap
-
-    def setHold(self) -> None:
-        self.state = IntakeSubsystem.IntakeState.Hold
-
-    def setFeed(self) -> None:
-        self.state = IntakeSubsystem.IntakeState.Feed
-
-    def setIdle(self) -> None:
-        self.state = IntakeSubsystem.IntakeState.Idle
+        self.state = self.IntakeState.Trap

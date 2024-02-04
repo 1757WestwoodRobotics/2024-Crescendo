@@ -18,40 +18,49 @@ class SetIntakeState(
         return True
 
 
-class IntakeFloor(SetIntakeState):
+class FloorIntake(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
     def execute(self) -> None:
-        self.intake.setIntakeFloor()
+        self.intake.setIntaking()
 
 
-class IntakeTrap(SetIntakeState):
+class HoldIntakeAtHandoff(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
     def execute(self) -> None:
-        self.intake.setIntakeTrap()
+        self.intake.setHolding()
 
 
-class IntakeHold(SetIntakeState):
+class FeedIntakeToShooter(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
     def execute(self) -> None:
-        self.intake.setIntakeHold()
+        self.intake.setFeeding()
 
 
-class IntakeFeed(SetIntakeState):
+class StageIntake(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
     def execute(self) -> None:
-        self.intake.setIntakeFeed()
+        self.intake.setStaging()
 
-class IntakeIdle(SetIntakeState):
+
+class ScoreAmp(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
     def execute(self) -> None:
-        self.intake.setIntakeIdle()
+        self.intake.setAmp()
+
+
+class ScoreTrap(SetIntakeState):
+    def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
+        SetIntakeState.__init__(self, intakeSubsystem)
+
+    def execute(self) -> None:
+        self.intake.setTrap()
