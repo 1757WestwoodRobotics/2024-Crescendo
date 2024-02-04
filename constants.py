@@ -719,3 +719,50 @@ kIntakeSpeed = 1000
 
 kPivotAngleKey = "PivotAngle"
 kIntakeSpeedKey = "IntakeSpeed"
+
+kAngleMotorRatio = (64 / 16) * (60 / 18)
+kShootingMotorRatio = 24 / 36
+
+# change numbers later
+
+kAngleMotorCANId = 99
+kAngleMotorName = "ShooterAngleMotor"
+kAngleMotorPGain = 0.1
+kAngleMotorIGain = 0
+kAngleMotorDGain = 0
+kAngleMotorInverted = False
+
+kLeftShootingMotorCANId = 999
+kLeftShootingMotorName = "LeftShootingMotor"
+kLeftShootingMotorPGain = 1
+kLeftShootingMotorIGain = 0
+kLeftShootingMotorDGain = 0
+kLeftShootingMotorInverted = False
+
+kRightShootingMotorCANId = 9999
+kRightShootingMotorName = "RightShootingMotor"
+kRightShootingMotorPGain = 1
+kRightShootingMotorIGain = 0
+kRightShootingMotorDGain = 0
+kRightShootingMotorInverted = False
+
+kAngleMotorMappingFunction = lambda x: x
+kLeftShootingMotorMappingFunction = lambda x: x
+kRightShootingMotorMappingFunction = lambda x: x
+
+kShooterAngleEncoderCANId = 1
+kShooterAngleMotorOffset = Rotation2d.fromDegrees(10.207848)
+
+kShooterAngleKey = "shooterAngle"
+kLeftShootingMotorSpeedKey = "leftShootingMotorRPM"
+kRightShootingMotorSpeedKey = "rightShootingMotorRPM"
+
+kShooterAngleTolerance = Rotation2d.fromDegrees(1)
+kShooterSpeedTolerance = 100
+
+kShooterAngleOnTargetKey = "angleOnTarget"
+kLeftShootingMotorOnTargetKey = "leftMotorOnTarget"
+kRightShootingMotorOnTargetKey = "rightMotorOnTarget"
+kReadyToShoot = "fireInTheHole"
+
+kShooterMaxAngle = Rotation2d.fromDegrees(53.820315)
