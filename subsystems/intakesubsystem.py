@@ -28,7 +28,7 @@ class IntakeSubsystem(SubsystemBase):
 
         self.intakeMotor = Talon(
             constants.kIntakeCANID,
-            constants.kIntakePIDSlot,
+            constants.kIntakeName,
             constants.kIntakePGain,
             constants.kIntakeIGain,
             constants.kIntakeDGain,
@@ -36,7 +36,7 @@ class IntakeSubsystem(SubsystemBase):
         )
         self.pivotMotor = Talon(
             constants.kPivotCANID,
-            constants.kPivotPIDSlot,
+            constants.kPivotName,
             constants.kPivotPGain,
             constants.kPivotIGain,
             constants.kPivotDGain,
