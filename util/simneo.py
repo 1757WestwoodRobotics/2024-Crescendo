@@ -1,5 +1,6 @@
 from enum import Enum, auto
-from rev import CANSparkMax, REVLibError, SparkMaxLimitSwitch
+from rev import CANSparkFlex, REVLibError, SparkMaxLimitSwitch
+from wpilib import SmartDashboard
 
 
 def revCheckError(name: str, errorCode: REVLibError) -> bool:
@@ -26,6 +27,7 @@ class NEOBrushless:
     def __init__(
         self,
         canID: int,
+        name: str,
         pidSlot: int = 0,
         pGain: float = 1,
         iGain: float = 0,
@@ -34,11 +36,20 @@ class NEOBrushless:
         enableLimitSwitches: bool = True,
         limitSwitchPolarity: SparkMaxLimitSwitch.Type = SparkMaxLimitSwitch.Type.kNormallyOpen,
     ):
-        self.motor = CANSparkMax(canID, CANSparkMax.MotorType.kBrushless)
+        print(f"Init Spark FLEX with port {canID} with name {name}")
+        self.name = name
+        self.id = canID
+        self.motor = CANSparkFlex(canID, CANSparkFlex.MotorType.kBrushless)
         self.controller = self.motor.getPIDController()
         self.encoder = self.motor.getEncoder()
         self.forwardSwitch = self.motor.getForwardLimitSwitch(limitSwitchPolarity)
         self.reverseSwitch = self.motor.getReverseLimitSwitch(limitSwitchPolarity)
+
+        self._nettableidentifier = f"motors/{self.name}({self.id})"
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/p", pGain)
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/i", iGain)
+        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/d", dGain)
+        SmartDashboard.putBoolean(f"{self._nettableidentifier}/inverted", isInverted)
 
         if not revCheckError("factoryConfig", self.motor.restoreFactoryDefaults()):
             return
@@ -58,11 +69,12 @@ class NEOBrushless:
     def set(self, controlMode: ControlMode, demand: float):
         """input is in rotations or rpm"""
         if controlMode == NEOBrushless.ControlMode.Velocity:
-            self.controller.setReference(demand, CANSparkMax.ControlType.kVelocity)
+            self.controller.setReference(demand, CANSparkFlex.ControlType.kVelocity)
         elif controlMode == NEOBrushless.ControlMode.Position:
-            self.controller.setReference(demand, CANSparkMax.ControlType.kPosition)
+            self.controller.setReference(demand, CANSparkFlex.ControlType.kPosition)
         elif controlMode == NEOBrushless.ControlMode.Percent:
-            self.motor.set(demand)
+            # self.controller.setReference(demand, CANSparkFlex.ControlType.kDutyCycle)
+            self.motor.setVoltage(demand * 12)
 
     def get(self, controlMode: ControlMode) -> float:
         if controlMode == NEOBrushless.ControlMode.Velocity:
@@ -75,9 +87,9 @@ class NEOBrushless:
 
     def setNeutralOutput(self, output: NeutralMode) -> None:
         self.motor.setIdleMode(
-            CANSparkMax.IdleMode.kBrake
+            CANSparkFlex.IdleMode.kBrake
             if output == NEOBrushless.NeutralMode.Brake
-            else CANSparkMax.IdleMode.kCoast
+            else CANSparkFlex.IdleMode.kCoast
         )
 
     def neutralOutput(self) -> None:
