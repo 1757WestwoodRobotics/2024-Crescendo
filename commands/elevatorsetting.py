@@ -29,7 +29,7 @@ class ElevatorAmpPosition(SetElevatorState):
         SetElevatorState.__init__(self, elevatorSubsystem)
 
     def execute(self) -> None:
-        self.elevator.setAmpPosition
+        self.elevator.setAmpPosition()
 
 
 class ElevatorTopPosition(SetElevatorState):
@@ -37,4 +37,4 @@ class ElevatorTopPosition(SetElevatorState):
         SetElevatorState.__init__(self, elevatorSubsystem)
 
     def execute(self) -> None:
-        self.elevator.setTopPosition
+        self.elevator.setTopPosition()
