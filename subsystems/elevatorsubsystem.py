@@ -31,49 +31,28 @@ class ElevatorSubsystem(SubsystemBase):
             constants.kElevatorInverted,
         )
 
-        # do we need a elevatorMotorPosition = ... ?
-
         self.state = self.ElevatorState.BottomPosition
 
     def periodic(self) -> None:
         if self.state == self.ElevatorState.DownPosition:
-            self.elevatorMotor1.set(
-                Talon.ControlMode.Position,
-                constants.kBottomPositionBeltPosition
-                / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
-                * constants.kMotorPulleyGearRatio,
-            )
-            self.elevatorMotor2.set(
-                Talon.ControlMode.Position,
-                constants.kBottomPositionBeltPosition
-                / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
-                * constants.kMotorPulleyGearRatio,
-            )
+            setElevatorMotorsAtPosition(self, constants.kBottomPositionBeltPosition)
 
         elif self.state == self.ElevatorState.AmpPosition:
-            self.elevatorMotor1.set(
-                Talon.ControlMode.Position,
-                constants.kAmpPositionBeltPosition
-                / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
-                * constants.kMotorPulleyGearRatio,
-            )
-            self.elevatorMotor2.set(
-                Talon.ControlMode.Position,
-                constants.kAmpPositionBeltPosition
-                / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
-                * constants.kMotorPulleyGearRatio,
-            )
+            setElevatorMotorsAtPosition(self, constants.kAmpPositionBeltPosition)
 
         elif self.state == self.ElevatorState.TopPosition:
+            setElevatorMotorsAtPosition(self, constants.kTopPositionBeltPosition)
+
+        def setElevatorMotorsAtPosition(self, beltPosition) -> None:
             self.elevatorMotor1.set(
                 Talon.ControlMode.Position,
-                constants.kTopPositionBeltPosition
+                beltPosition
                 / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
                 * constants.kMotorPulleyGearRatio,
             )
             self.elevatorMotor2.set(
                 Talon.ControlMode.Position,
-                constants.kTopPositionBeltPosition
+                beltPosition
                 / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
                 * constants.kMotorPulleyGearRatio,
             )
