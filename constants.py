@@ -358,6 +358,7 @@ kTalonVelocityPerRPM = (
 ) / k100MillisecondsPerSecond
 """(pulses / 100 milliseconds) / RPM"""
 
+
 kTalonVelocityPerAngularVelocity = kTalonVelocityPerRPM * kRPMPerAngularVelocity
 """(pulses / 100 milliseconds) / (radians / second)"""
 
@@ -734,6 +735,7 @@ kAngleMotorInverted = False
 
 kLeftShootingMotorCANId = 999
 kLeftShootingMotorName = "LeftShootingMotor"
+kLeftShootingMotorPIDSlot = 0
 kLeftShootingMotorPGain = 1
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0
@@ -741,6 +743,7 @@ kLeftShootingMotorInverted = False
 
 kRightShootingMotorCANId = 9999
 kRightShootingMotorName = "RightShootingMotor"
+kRightShootingMotorPIDSlot = 0
 kRightShootingMotorPGain = 1
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0
@@ -763,6 +766,9 @@ kShooterSpeedTolerance = 100
 kShooterAngleOnTargetKey = "angleOnTarget"
 kLeftShootingMotorOnTargetKey = "leftMotorOnTarget"
 kRightShootingMotorOnTargetKey = "rightMotorOnTarget"
+kRobotAngleOnTargetKey = "robotAngleOnTarget"
 kReadyToShoot = "fireInTheHole"
 
 kShooterMaxAngle = Rotation2d.fromDegrees(53.820315)
+
+kShootingMotorCurrentLimit = 40

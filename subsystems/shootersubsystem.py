@@ -1,5 +1,6 @@
 from commands2 import Subsystem
 from util.simtalon import Talon
+from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
 import constants
 from wpimath.geometry import Rotation2d
@@ -19,17 +20,19 @@ class ShooterSubsystem(Subsystem):
             constants.kAngleMotorDGain,
             constants.kAngleMotorInverted,
         )
-        self.leftShootingMotor = Talon(
+        self.leftShootingMotor = NEOBrushless(
             constants.kLeftShootingMotorCANId,
             constants.kLeftShootingMotorName,
+            constants.kLeftShootingMotorPIDSlot,
             constants.kLeftShootingMotorPGain,
             constants.kLeftShootingMotorIGain,
             constants.kLeftShootingMotorDGain,
             constants.kLeftShootingMotorInverted,
         )
-        self.rightShootingMotor = Talon(
+        self.rightShootingMotor = NEOBrushless(
             constants.kRightShootingMotorCANId,
             constants.kRightShootingMotorName,
+            constants.kRightShootingMotorPIDSlot,
             constants.kRightShootingMotorPGain,
             constants.kRightShootingMotorIGain,
             constants.kRightShootingMotorDGain,
@@ -38,7 +41,15 @@ class ShooterSubsystem(Subsystem):
 
         self.shooterEncoder = CTREEncoder(
             constants.kShooterAngleEncoderCANId,
-            constants.kShooterAngleMotorOffset.degrees(),
+            constants.kShooterAngleMotorOffset.degrees()
+            / constants.kDegeersPerRevolution,
+        )
+
+        self.leftShootingMotor.setSmartCurrentLimit(
+            constants.kShootingMotorCurrentLimit
+        )
+        self.rightShootingMotor.setSmartCurrentLimit(
+            constants.kShootingMotorCurrentLimit
         )
 
         # set motor position
@@ -53,6 +64,8 @@ class ShooterSubsystem(Subsystem):
         self.leftTargetSpeed = 0
         self.rightTargetSpeed = 0
 
+        # speeds are in RPM
+
     def setShooterAngle(self, angle: Rotation2d) -> None:
         self.targetAngle = min(max(Rotation2d(0), angle), constants.kShooterMaxAngle)
 
@@ -66,15 +79,15 @@ class ShooterSubsystem(Subsystem):
     def setLeftShootingMotorSpeed(self, speed: int) -> None:
         self.leftTargetSpeed = speed
         self.leftShootingMotor.set(
-            Talon.ControlMode.Velocity,
-            speed * constants.kShootingMotorRatio * constants.kTalonVelocityPerRPM,
+            NEOBrushless.ControlMode.Velocity,
+            speed * constants.kShootingMotorRatio,
         )
 
     def setRightShootingMotorSpeed(self, speed: int) -> None:
         self.rightTargetSpeed = speed
         self.rightShootingMotor.set(
-            Talon.ControlMode.Velocity,
-            speed * constants.kShootingMotorRatio * constants.kTalonVelocityPerRPM,
+            NEOBrushless.ControlMode.Velocity,
+            speed * constants.kShootingMotorRatio,
         )
 
     def getShooterAngle(self) -> Rotation2d:
@@ -85,16 +98,10 @@ class ShooterSubsystem(Subsystem):
         )
 
     def getLeftShooterSpeed(self) -> int:
-        return (
-            self.leftShootingMotor.get(Talon.ControlMode.Velocity)
-            / constants.kTalonVelocityPerRPM
-        )
+        return self.leftShootingMotor.get(NEOBrushless.ControlMode.Velocity)
 
     def getRightShooterSpeed(self) -> int:
-        return (
-            self.rightShootingMotor.get(Talon.ControlMode.Velocity)
-            / constants.kTalonVelocityPerRPM
-        )
+        return self.rightShootingMotor.get(NEOBrushless.ControlMode.Velocity)
 
     def angleOnTarget(self) -> bool:
         return (
@@ -119,6 +126,7 @@ class ShooterSubsystem(Subsystem):
             self.angleOnTarget()
             and self.leftMotorSpeedOnTarget()
             and self.rightMotorSpeedOnTarget()
+            and SmartDashboard.getBoolean(constants.kRobotAngleOnTargetKey, False)
         )
 
     def periodic(self) -> None:
