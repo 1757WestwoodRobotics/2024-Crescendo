@@ -689,6 +689,7 @@ kVelocityControlkV = 0.01
 # Intake Mechanism, need to replace values
 kIntakeCANID = 60
 kIntakeName = "IntakeMotor"
+kIntakePIDSlot = 0
 kIntakePGain = 0.12
 kIntakeIGain = 0
 kIntakeDGain = 0

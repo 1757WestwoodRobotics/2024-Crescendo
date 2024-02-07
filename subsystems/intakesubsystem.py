@@ -2,6 +2,7 @@ from enum import Enum, auto
 from commands2 import SubsystemBase
 
 from util.simtalon import Talon
+from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
 import constants
 
@@ -26,9 +27,10 @@ class IntakeSubsystem(SubsystemBase):
             constants.kIntakeAngleOffset.degrees(),
         )
 
-        self.intakeMotor = Talon(
+        self.intakeMotor = NEOBrushless(
             constants.kIntakeCANID,
             constants.kIntakeName,
+            constants.kIntakePIDSlot,
             constants.kIntakePGain,
             constants.kIntakeIGain,
             constants.kIntakeDGain,
@@ -55,24 +57,26 @@ class IntakeSubsystem(SubsystemBase):
         self.state = self.IntakeState.Holding
 
     def periodic(self) -> None:
+        # get actual velocity values for intake motor later
+
         if self.state == self.IntakeState.Intaking:
             self.pivotMotor.set(
                 Talon.ControlMode.Position,
                 constants.kFloorPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
-            if self.intakeMotor.getLimitSwitch(Talon.LimitSwitch.Forwards):
-                self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
+            if self.intakeMotor.getLimitSwitch(NEOBrushless.LimitSwitch.Forwards):
+                self.intakeMotor.setNeutralOutput(NEOBrushless.NeutralMode.Brake)
             else:
-                self.intakeMotor.set(Talon.ControlMode.Velocity, 100)
+                self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, 100)
 
         elif self.state == self.IntakeState.Holding:
             self.pivotMotor.set(Talon.ControlMode.Position, 0)
-            self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
+            self.intakeMotor.setNeutralOutput(NEOBrushless.NeutralMode.Brake)
 
         elif self.state == self.IntakeState.Feeding:
             self.pivotMotor.set(Talon.ControlMode.Position, 0)
-            self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
+            self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, -100)
 
         elif self.state == self.IntakeState.Staging:
             self.pivotMotor.set(
@@ -80,7 +84,7 @@ class IntakeSubsystem(SubsystemBase):
                 constants.kStagingPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
-            self.intakeMotor.setNeutralMode(Talon.NeutralMode.Brake)
+            self.intakeMotor.setNeutralMode(NEOBrushless.NeutralMode.Brake)
 
         elif self.state == self.IntakeState.Amp:
             self.pivotMotor.set(
@@ -88,7 +92,7 @@ class IntakeSubsystem(SubsystemBase):
                 constants.kStagingPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
-            self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
+            self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, -100)
 
         elif self.state == self.IntakeState.Trap:
             # move with timeout
@@ -96,7 +100,7 @@ class IntakeSubsystem(SubsystemBase):
                 constants.kAmpScoringPositionAngle / constants.kDegeersPerRevolution,
                 1,
             )
-            self.intakeMotor.set(Talon.ControlMode.Velocity, -100)
+            self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, -100)
 
     # the following methods are simply state setting, all actual motor control is done in periodic
     def setIntaking(self) -> None:
