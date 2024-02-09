@@ -1,10 +1,10 @@
 from commands2 import Subsystem
+from wpilib import SmartDashboard
+from wpimath.geometry import Rotation2d
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
 import constants
-from wpimath.geometry import Rotation2d
-from wpilib import SmartDashboard
 
 
 class ShooterSubsystem(Subsystem):
