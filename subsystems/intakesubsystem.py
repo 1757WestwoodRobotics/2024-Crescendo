@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from commands2 import SubsystemBase
+from commands2 import Subsystem
 
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
@@ -7,7 +7,7 @@ from util.simcoder import CTREEncoder
 import constants
 
 
-class IntakeSubsystem(SubsystemBase):
+class IntakeSubsystem(Subsystem):
     class IntakeState(Enum):
         Intaking = (
             auto()
@@ -19,7 +19,7 @@ class IntakeSubsystem(SubsystemBase):
         Trap = auto()  # arm pushes into trap, delay(?), motor ejects
 
     def __init__(self) -> None:
-        SubsystemBase.__init__(self)
+        Subsystem.__init__(self)
         self.setName(__class__.__name__)  # basic subsystem boilerplate
 
         self.pivotEncoder = CTREEncoder(
@@ -84,7 +84,7 @@ class IntakeSubsystem(SubsystemBase):
                 constants.kStagingPositionAngle.degrees()
                 / constants.kDegeersPerRevolution,
             )
-            self.intakeMotor.setNeutralMode(NEOBrushless.NeutralMode.Brake)
+            self.intakeMotor.setNeutralOutput(NEOBrushless.NeutralMode.Brake)
 
         elif self.state == self.IntakeState.Amp:
             self.pivotMotor.set(
