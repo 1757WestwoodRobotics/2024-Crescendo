@@ -749,9 +749,10 @@ kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0
 kRightShootingMotorInverted = False
 
-kAngleMotorMappingFunction = lambda x: x
-kLeftShootingMotorMappingFunction = lambda x: x
-kRightShootingMotorMappingFunction = lambda x: x
+kAngleMotorMappingFunction = lambda x, y: x * y
+kLeftShootingMotorMappingFunction = lambda x, y: x * y
+kRightShootingMotorMappingFunction = lambda x, y: x * y
+kRobotAngleMappingFunction = lambda x, y: x * y
 
 kShooterAngleEncoderCANId = 1
 kShooterAngleMotorOffset = Rotation2d.fromDegrees(10.207848)
