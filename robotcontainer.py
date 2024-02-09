@@ -24,15 +24,6 @@ from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 
-from commands.intakesetting import (
-    FloorIntake,
-    HoldIntakeAtHandoff,
-    FeedIntakeToShooter,
-    StageIntake,
-    ScoreAmp,
-    ScoreTrap,
-)
-
 from operatorinterface import OperatorInterface
 from util.helpfultriggerwrappers import ModifiableJoystickButton
 

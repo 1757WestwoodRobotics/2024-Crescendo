@@ -1,12 +1,12 @@
-from commands2 import CommandBase
+from commands2.command import Command
 from subsystems.intakesubsystem import IntakeSubsystem
 
 
 class SetIntakeState(
-    CommandBase
+    Command
 ):  # since all ball subsystem commands are the same, subclasses will implement calling while this serves as the base
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
         self.intake = intakeSubsystem
         self.addRequirements([self.intake])
