@@ -760,6 +760,7 @@ kRobotAngleMappingFunction = lambda x, y: x * y
 
 kShooterAngleEncoderCANId = 1
 
+# radians
 kShooterAngleKey = "shooterAngle"
 kLeftShootingMotorSpeedKey = "leftShootingMotorRPM"
 kRightShootingMotorSpeedKey = "rightShootingMotorRPM"
@@ -780,3 +781,5 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 
 kShootingMotorCurrentLimit = 40
 kAngleMotorCurrentLimit = 40
+
+kShooterManualModeKey = "ShooterManualMode"
