@@ -1,6 +1,7 @@
 from commands2 import Subsystem
 from wpilib import SmartDashboard
 from wpimath.geometry import Rotation2d
+from phoenix6.configs import CurrentLimitsConfigs
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
@@ -28,6 +29,7 @@ class ShooterSubsystem(Subsystem):
             constants.kLeftShootingMotorIGain,
             constants.kLeftShootingMotorDGain,
             constants.kLeftShootingMotorInverted,
+            constants.kLeftShootingMotorKv,
         )
         self.rightShootingMotor = NEOBrushless(
             constants.kRightShootingMotorCANId,
@@ -37,13 +39,10 @@ class ShooterSubsystem(Subsystem):
             constants.kRightShootingMotorIGain,
             constants.kRightShootingMotorDGain,
             constants.kRightShootingMotorInverted,
+            constants.kRightShootingMotorKv,
         )
 
-        self.shooterEncoder = CTREEncoder(
-            constants.kShooterAngleEncoderCANId,
-            constants.kShooterAngleMotorOffset.degrees()
-            / constants.kDegeersPerRevolution,
-        )
+        self.shooterEncoder = CTREEncoder(constants.kShooterAngleEncoderCANId, 0)
 
         self.leftShootingMotor.setSmartCurrentLimit(
             constants.kShootingMotorCurrentLimit
@@ -52,55 +51,64 @@ class ShooterSubsystem(Subsystem):
             constants.kShootingMotorCurrentLimit
         )
 
-        # set motor position
+        self.angleMotor.setCurrentLimit(
+            CurrentLimitsConfigs().with_stator_current_limit(
+                constants.kAngleMotorCurrentLimit
+            )
+        )
+
+        # set motor position, encoder is inverse of the shooter
 
         self.angleMotor.setEncoderPosition(
-            constants.kShooterAngleMotorOffset.degrees()
-            / constants.kDegeersPerRevolution
-            * constants.kShootingMotorRatio
+            self.shooterEncoder.getPosition().radians()
+            / constants.kRadiansPerRevolution
+            * constants.kAngleMotorRatio
+            * -1
         )
 
         self.targetAngle = Rotation2d()
         self.leftTargetSpeed = 0
         self.rightTargetSpeed = 0
 
-        # speeds are in RPM
+        # speeds are in RPM, same as velocity control mode
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
-        self.targetAngle = min(max(Rotation2d(0), angle), constants.kShooterMaxAngle)
+        self.targetAngle = min(
+            max(constants.kShooterMinAngle, angle), constants.kShooterMaxAngle
+        )
 
         self.angleMotor.set(
             Talon.ControlMode.Position,
-            self.targetAngle.degrees()
-            / constants.kDegeersPerRevolution
+            self.targetAngle.radians()
+            / constants.kRadiansPerRevolution
             * constants.kAngleMotorRatio,
         )
 
-    def setLeftShootingMotorSpeed(self, speed: int) -> None:
-        self.leftTargetSpeed = speed
+    def setLeftShootingMotorSpeed(self, rpm: int) -> None:
+        self.leftTargetSpeed = rpm
         self.leftShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
-            speed * constants.kShootingMotorRatio,
+            rpm * constants.kShootingMotorRatio,
         )
 
-    def setRightShootingMotorSpeed(self, speed: int) -> None:
-        self.rightTargetSpeed = speed
+    def setRightShootingMotorSpeed(self, rpm: int) -> None:
+        self.rightTargetSpeed = rpm
         self.rightShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
-            speed * constants.kShootingMotorRatio,
+            rpm * constants.kShootingMotorRatio,
         )
 
     def getShooterAngle(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(
-            self.angleMotor.get(Talon.ControlMode.Position)
-            * constants.kAngleMotorRatio
-            * constants.kDegeersPerRevolution
+        return Rotation2d(
+            self.angleMotor.get(Talon.ControlMode.Position) * constants.kAngleMotorRatio
         )
 
     def getLeftShooterSpeed(self) -> int:
+        # RPM
         return self.leftShootingMotor.get(NEOBrushless.ControlMode.Velocity)
 
     def getRightShooterSpeed(self) -> int:
+        # RPM
         return self.rightShootingMotor.get(NEOBrushless.ControlMode.Velocity)
 
     def angleOnTarget(self) -> bool:
@@ -132,7 +140,7 @@ class ShooterSubsystem(Subsystem):
     def periodic(self) -> None:
         # logging
         SmartDashboard.putNumber(
-            constants.kShooterAngleKey, self.getShooterAngle().degrees()
+            constants.kShooterAngleKey, self.getShooterAngle().radians()
         )
         SmartDashboard.putNumber(
             constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()

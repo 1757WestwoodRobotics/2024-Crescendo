@@ -726,28 +726,32 @@ kShootingMotorRatio = 24 / 36
 
 # change numbers later
 
-kAngleMotorCANId = 99
+kAngleMotorCANId = 50
 kAngleMotorName = "ShooterAngleMotor"
 kAngleMotorPGain = 0.1
 kAngleMotorIGain = 0
 kAngleMotorDGain = 0
 kAngleMotorInverted = False
 
-kLeftShootingMotorCANId = 999
+kLeftShootingMotorCANId = 51
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
-kLeftShootingMotorPGain = 1
+kLeftShootingMotorPGain = 0.01
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0
 kLeftShootingMotorInverted = False
+kLeftShootingMotorKv = 550
 
-kRightShootingMotorCANId = 9999
+# Kv taken from motor specifications
+
+kRightShootingMotorCANId = 52
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
-kRightShootingMotorPGain = 1
+kRightShootingMotorPGain = 0.01
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0
 kRightShootingMotorInverted = False
+kRightShootingMotorKv = 550
 
 kAngleMotorMappingFunction = lambda x, y: x * y
 kLeftShootingMotorMappingFunction = lambda x, y: x * y
@@ -755,13 +759,13 @@ kRightShootingMotorMappingFunction = lambda x, y: x * y
 kRobotAngleMappingFunction = lambda x, y: x * y
 
 kShooterAngleEncoderCANId = 1
-kShooterAngleMotorOffset = Rotation2d.fromDegrees(10.207848)
 
 kShooterAngleKey = "shooterAngle"
 kLeftShootingMotorSpeedKey = "leftShootingMotorRPM"
 kRightShootingMotorSpeedKey = "rightShootingMotorRPM"
 
-kShooterAngleTolerance = Rotation2d.fromDegrees(1)
+kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
+# in RPM
 kShooterSpeedTolerance = 100
 
 kShooterAngleOnTargetKey = "angleOnTarget"
@@ -770,6 +774,9 @@ kRightShootingMotorOnTargetKey = "rightMotorOnTarget"
 kRobotAngleOnTargetKey = "robotAngleOnTarget"
 kReadyToShoot = "fireInTheHole"
 
-kShooterMaxAngle = Rotation2d.fromDegrees(53.820315)
+# from horizontal
+kShooterMaxAngle = Rotation2d.fromDegrees(64.028164)
+kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 
 kShootingMotorCurrentLimit = 40
+kAngleMotorCurrentLimit = 40

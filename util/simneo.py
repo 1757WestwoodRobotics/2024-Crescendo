@@ -24,6 +24,7 @@ class NEOBrushless:
         Forwards = auto()
         Backwards = auto()
 
+    # pylint:disable-next=too-many-arguments
     def __init__(
         self,
         canID: int,
@@ -33,6 +34,7 @@ class NEOBrushless:
         iGain: float = 0,
         dGain: float = 0,
         isInverted: bool = False,
+        kV: float = 0,
         enableLimitSwitches: bool = True,
         limitSwitchPolarity: SparkMaxLimitSwitch.Type = SparkMaxLimitSwitch.Type.kNormallyOpen,
     ):
@@ -59,6 +61,8 @@ class NEOBrushless:
             return
         if not revCheckError("setD", self.controller.setD(dGain, pidSlot)):
             return
+
+        self.controller.ArbFFUnits.kVoltage = kV
 
         self.forwardSwitch.enableLimitSwitch(enableLimitSwitches)
 
