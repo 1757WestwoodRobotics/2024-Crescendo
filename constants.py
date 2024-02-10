@@ -687,27 +687,35 @@ kVelocityControlMotorType = DCMotor.falcon500()
 kVelocityControlkV = 0.01
 
 # Intake Mechanism, need to replace values
-kIntakeCANID = 60
+kIntakeCANID = 40
 kIntakeName = "IntakeMotor"
 kIntakePIDSlot = 0
 kIntakePGain = 0.12
 kIntakeIGain = 0
 kIntakeDGain = 0
-kIntakeRotationAmount = 3000
 
-kPivotCANID = 61
+kPivotCANID = 41
 kPivotName = "PivotMotor"
 kPivotPGain = 0.7
 kPivotIGain = 0
 kPivotDGain = 0
 
+kPivotGearRatio = (4 / 1) * (50 / 16) * (84 / 16)
+
 kIntakeInverted = False
 kPivotInverted = False
 
-kPivotEncoderID = 0
+kPivotEncoderID = 1
+# intake 0 degrees is handoff angle
 kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
 # all angles are relative to handoff angle
 kHandoffAngle = Rotation2d(0)
 kFloorPositionAngle = Rotation2d.fromDegrees(225.045433)
 kStagingPositionAngle = Rotation2d.fromDegrees(69.939031)
 kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
+
+# RPM
+kIntakeSpeed = 1000
+
+kPivotAngleKey = "PivotAngle"
+kIntakeSpeedKey = "IntakeSpeed"
