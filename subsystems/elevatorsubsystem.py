@@ -1,6 +1,6 @@
 from enum import Enum, auto
-from commands2 import SubsystemBase
 from math import pi
+from commands2 import SubsystemBase
 
 from util.simtalon import Talon
 from util.simcoder import CTREEncoder
@@ -22,19 +22,28 @@ class ElevatorSubsystem(SubsystemBase):
             constants.kElevatorBottomPositionDegrees,
         )
 
-        self.elevatorMotor = Talon(
-            constants.kElevatorCANID,
-            constants.kElevatorName,
-            constants.kElevatorPGain,
-            constants.kElevatorIGain,
-            constants.kElevatorDGain,
-            constants.kElevatorInverted,
+        self.elevatorMotor1 = Talon(
+            constants.kElevator1CANID,
+            constants.kElevator1Name,
+            constants.kElevator1PGain,
+            constants.kElevator1IGain,
+            constants.kElevator1DGain,
+            constants.kElevator1Inverted,
+        )
+
+        self.elevatorMotor2 = Talon(
+            constants.kElevator2CANID,
+            constants.kElevator2Name,
+            constants.kElevator2PGain,
+            constants.kElevator2IGain,
+            constants.kElevator2DGain,
+            constants.kElevator2Inverted,
         )
 
         self.state = self.ElevatorState.BottomPosition
 
     def periodic(self) -> None:
-        if self.state == self.ElevatorState.DownPosition:
+        if self.state == self.ElevatorState.BottomPosition:
             setElevatorMotorsAtPosition(self, constants.kBottomPositionBeltPosition)
 
         elif self.state == self.ElevatorState.AmpPosition:
