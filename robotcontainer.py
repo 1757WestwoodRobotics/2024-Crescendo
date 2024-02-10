@@ -106,8 +106,6 @@ class RobotContainer:
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
 
-        # self.ball.setDefaultCommand(IntakeIdle(self.intake))
-
     def configureButtonBindings(self):
         """
         Use this method to define your button->command mappings. Buttons can be created by
