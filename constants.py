@@ -761,19 +761,19 @@ kRobotAngleMappingFunction = lambda x, y: x * y
 kShooterAngleEncoderCANId = 1
 
 # radians
-kShooterAngleKey = "shooterAngle"
-kLeftShootingMotorSpeedKey = "leftShootingMotorRPM"
-kRightShootingMotorSpeedKey = "rightShootingMotorRPM"
+kShooterAngleKey = "ShooterAngle"
+kLeftShootingMotorSpeedKey = "LeftShootingMotorRPM"
+kRightShootingMotorSpeedKey = "RightShootingMotorRPM"
 
 kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
 # in RPM
 kShooterSpeedTolerance = 100
 
-kShooterAngleOnTargetKey = "angleOnTarget"
-kLeftShootingMotorOnTargetKey = "leftMotorOnTarget"
-kRightShootingMotorOnTargetKey = "rightMotorOnTarget"
-kRobotAngleOnTargetKey = "robotAngleOnTarget"
-kReadyToShoot = "fireInTheHole"
+kShooterAngleOnTargetKey = "AngleOnTarget"
+kLeftShootingMotorOnTargetKey = "LeftMotorOnTarget"
+kRightShootingMotorOnTargetKey = "RightMotorOnTarget"
+kRobotAngleOnTargetKey = "RobotAngleOnTarget"
+kReadyToShoot = "FireInTheHole"
 
 # from horizontal
 kShooterMaxAngle = Rotation2d.fromDegrees(64.028164)
@@ -783,3 +783,11 @@ kShootingMotorCurrentLimit = 40
 kAngleMotorCurrentLimit = 40
 
 kShooterManualModeKey = "ShooterManualMode"
+kShooterAngleFudgeKey = "ShooterAngleFudge"
+kLeftMotorFudgeKey = "LeftMotorFudge"
+kRightMotorFudgeKey = "RightMotorFudge"
+
+kShootingMotorFudgeAmount = 50
+
+# radians
+kShootingAngleFudgeAmount = 0.05
