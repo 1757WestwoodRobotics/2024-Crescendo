@@ -797,7 +797,7 @@ kElevator1CANID = 60
 kElevator1Name = "Elevator1Motor"
 kElevator1PGain = 0.12
 kElevator1IGain = 0
-kIElevator1DGain = 0
+kElevator1DGain = 0
 kElevator1RotationAmount = 3000
 kElevator1Inverted = False
 
@@ -807,7 +807,7 @@ kElevator2PGain = 0.12
 kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2RotationAmount = 3000
-kElevator2Inverted = False
+kElevator2Inverted = True
 
 kMotorPulleyGearRatio = 60 / 18
 
