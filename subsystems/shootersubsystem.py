@@ -74,7 +74,12 @@ class ShooterSubsystem(Subsystem):
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
         self.targetAngle = min(
-            max(constants.kShooterMinAngle, angle), constants.kShooterMaxAngle
+            max(
+                constants.kShooterMinAngle,
+                angle
+                + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey)),
+                constants.kShooterMaxAngle,
+            )
         )
 
         self.angleMotor.set(
@@ -85,14 +90,18 @@ class ShooterSubsystem(Subsystem):
         )
 
     def setLeftShootingMotorSpeed(self, rpm: int) -> None:
-        self.leftTargetSpeed = rpm
+        self.leftTargetSpeed = rpm + SmartDashboard.getNumber(
+            constants.kLeftMotorFudgeKey, 0
+        )
         self.leftShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             rpm * constants.kShootingMotorRatio,
         )
 
     def setRightShootingMotorSpeed(self, rpm: int) -> None:
-        self.rightTargetSpeed = rpm
+        self.rightTargetSpeed = rpm + SmartDashboard.getNumber(
+            constants.kRightMotorFudgeKey, 0
+        )
         self.rightShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             rpm * constants.kShootingMotorRatio,
