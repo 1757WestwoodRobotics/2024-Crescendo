@@ -62,7 +62,7 @@ class NEOBrushless:
         if not revCheckError("setD", self.controller.setD(dGain, pidSlot)):
             return
 
-        self.controller.ArbFFUnits.kVoltage = kV
+        self.controller.setFF(kV)
 
         self.forwardSwitch.enableLimitSwitch(enableLimitSwitches)
 
