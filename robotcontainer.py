@@ -14,6 +14,7 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
+from commands.shootermanualmode import ShooterManualMode
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -23,9 +24,10 @@ from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
+from subsystems.shootersubsystem import ShooterSubsystem
 
 from operatorinterface import OperatorInterface
-from util.helpfultriggerwrappers import ModifiableJoystickButton
+from util.helpfultriggerwrappers import ModifiableJoystickButton, SmartDashboardButton
 
 
 class RobotContainer:
@@ -45,6 +47,7 @@ class RobotContainer:
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
         self.intake = IntakeSubsystem()
+        self.shooter = ShooterSubsystem()
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
@@ -154,6 +157,9 @@ class RobotContainer:
         )
 
         # intake subsystem related calls
+        SmartDashboardButton(constants.kShooterManualModeKey).whileTrue(
+            ShooterManualMode(self.shooter)
+        )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)

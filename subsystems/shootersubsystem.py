@@ -99,9 +99,7 @@ class ShooterSubsystem(Subsystem):
         )
 
     def getShooterAngle(self) -> Rotation2d:
-        return Rotation2d(
-            self.angleMotor.get(Talon.ControlMode.Position) * constants.kAngleMotorRatio
-        )
+        return Rotation2d(self.shooterEncoder.getPosition().radians() * -1)
 
     def getLeftShooterSpeed(self) -> int:
         # RPM
@@ -113,19 +111,19 @@ class ShooterSubsystem(Subsystem):
 
     def angleOnTarget(self) -> bool:
         return (
-            abs(self.targetAngle - self.getShooterAngle())
-            < constants.kShooterAngleTolerance
+            abs(self.targetAngle.radians() - self.getShooterAngle().radians())
+            < constants.kShooterAngleTolerance.radians()
         )
 
     def leftMotorSpeedOnTarget(self) -> bool:
         return (
-            abs(self.leftTargetSpeed - self.getLeftShooterSpeed)
+            abs(self.leftTargetSpeed - self.getLeftShooterSpeed())
             < constants.kShooterSpeedTolerance
         )
 
     def rightMotorSpeedOnTarget(self) -> bool:
         return (
-            abs(self.rightTargetSpeed - self.getRightShooterSpeed)
+            abs(self.rightTargetSpeed - self.getRightShooterSpeed())
             < constants.kShooterSpeedTolerance
         )
 
