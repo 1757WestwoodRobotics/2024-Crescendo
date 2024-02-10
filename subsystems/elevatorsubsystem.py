@@ -3,7 +3,6 @@ from math import pi
 from commands2 import SubsystemBase
 
 from util.simtalon import Talon
-from util.simcoder import CTREEncoder
 import constants
 
 
@@ -16,11 +15,6 @@ class ElevatorSubsystem(SubsystemBase):
     def __init__(self) -> None:
         SubsystemBase.__init__(self)
         self.setName(__class__.__name__)  # basic subsystem boilerplate
-
-        self.elevatorEncoder = CTREEncoder(
-            constants.kElevatorEncoderID,
-            constants.kElevatorBottomPositionDegrees,
-        )
 
         self.elevatorMotor1 = Talon(
             constants.kElevator1CANID,
@@ -44,27 +38,27 @@ class ElevatorSubsystem(SubsystemBase):
 
     def periodic(self) -> None:
         if self.state == self.ElevatorState.BottomPosition:
-            setElevatorMotorsAtPosition(self, constants.kBottomPositionBeltPosition)
+            self.setElevatorMotorsAtPosition(constants.kBottomPositionBeltPosition)
 
         elif self.state == self.ElevatorState.AmpPosition:
-            setElevatorMotorsAtPosition(self, constants.kAmpPositionBeltPosition)
+            self.setElevatorMotorsAtPosition(constants.kAmpPositionBeltPosition)
 
         elif self.state == self.ElevatorState.TopPosition:
-            setElevatorMotorsAtPosition(self, constants.kTopPositionBeltPosition)
+            self.setElevatorMotorsAtPosition(constants.kTopPositionBeltPosition)
 
-        def setElevatorMotorsAtPosition(self, beltPosition) -> None:
-            self.elevatorMotor1.set(
-                Talon.ControlMode.Position,
-                beltPosition
-                / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
-                * constants.kMotorPulleyGearRatio,
-            )
-            self.elevatorMotor2.set(
-                Talon.ControlMode.Position,
-                beltPosition
-                / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
-                * constants.kMotorPulleyGearRatio,
-            )
+    def setElevatorMotorsAtPosition(self, beltPosition) -> None:
+        self.elevatorMotor1.set(
+            Talon.ControlMode.Position,
+            beltPosition
+            / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
+            * constants.kMotorPulleyGearRatio,
+        )
+        self.elevatorMotor2.set(
+            Talon.ControlMode.Position,
+            beltPosition
+            / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
+            * constants.kMotorPulleyGearRatio,
+        )
 
     # the following methods are simply state setting, all actual motor control is done in periodic
     def setBottomPosition(self) -> None:
