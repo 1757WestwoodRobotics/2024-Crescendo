@@ -77,7 +77,9 @@ class ShooterSubsystem(Subsystem):
             max(
                 constants.kShooterMinAngle,
                 angle
-                + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey)),
+                + Rotation2d(
+                    SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0)
+                ),
                 constants.kShooterMaxAngle,
             )
         )

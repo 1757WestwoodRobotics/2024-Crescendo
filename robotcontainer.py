@@ -14,7 +14,7 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
-from commands.shootermanualmode import ShooterManualMode
+from commands.shooter.shootermanualmode import ShooterManualMode
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
