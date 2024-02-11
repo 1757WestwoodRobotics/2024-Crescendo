@@ -9,14 +9,13 @@ import constants
 
 class IntakeSubsystem(Subsystem):
     class IntakeState(Enum):
-        Intaking = (
-            auto()
-        )  # arm is down, motor is running inwards/holding depending on note
+        Intaking = auto()  # arm is down, motor intaking/holding
         Holding = auto()  # arm in feeding position, motor holding
-        Feeding = auto()  # arm in feeding position, motor ejecting
+        Feeding = auto()  # arm in feeding position, motor passing through
         Staging = auto()  # arm is in position to score amp/trap, motor holding
         Amp = auto()  # arm in same staging position, motor ejects
         Trap = auto()  # arm pushes into trap, delay(?), motor ejects
+        Eject = auto()  # arm is down, motor ejects
 
     def __init__(self) -> None:
         Subsystem.__init__(self)
@@ -67,7 +66,10 @@ class IntakeSubsystem(Subsystem):
                 * constants.kPivotGearRatio,
             )
             if self.intakeMotor.getLimitSwitch(NEOBrushless.LimitSwitch.Forwards):
-                self.intakeMotor.neutralOutput()
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position,
+                    self.intakeMotor.get(NEOBrushless.ControlMode.Position),
+                )
             else:
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed
@@ -80,7 +82,10 @@ class IntakeSubsystem(Subsystem):
                 / constants.kRadiansPerRevolution
                 * constants.kPivotGearRatio,
             )
-            self.intakeMotor.neutralOutput()
+            self.intakeMotor.set(
+                NEOBrushless.ControlMode.Position,
+                self.intakeMotor.get(NEOBrushless.ControlMode.Position),
+            )
 
         elif self.state == self.IntakeState.Feeding:
             self.pivotMotor.set(
@@ -90,7 +95,7 @@ class IntakeSubsystem(Subsystem):
                 * constants.kPivotGearRatio,
             )
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
+                NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed
             )
 
         elif self.state == self.IntakeState.Staging:
@@ -100,7 +105,10 @@ class IntakeSubsystem(Subsystem):
                 / constants.kRadiansPerRevolution
                 * constants.kPivotGearRatio,
             )
-            self.intakeMotor.neutralOutput()
+            self.intakeMotor.set(
+                NEOBrushless.ControlMode.Position,
+                self.intakeMotor.get(NEOBrushless.ControlMode.Position),
+            )
 
         elif self.state == self.IntakeState.Amp:
             self.pivotMotor.set(
@@ -124,6 +132,18 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
             )
+
+        elif self.state == self.IntakeState.Eject:
+            self.pivotMotor.set(
+                Talon.ControlMode.Position,
+                constants.kFloorPositionAngle.radians()
+                / constants.kRadiansPerRevolution
+                * constants.kPivotGearRatio,
+            )
+            self.intakeMotor.set(
+                NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
+            )
+
         SmartDashboard.putNumber(
             constants.kPivotAngleKey, self.pivotEncoder.getPosition().radians()
         )
