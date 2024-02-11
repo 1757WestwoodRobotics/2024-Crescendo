@@ -15,7 +15,7 @@ class IntakeSubsystem(Subsystem):
         Staging = auto()  # arm is in position to score amp/trap, motor holding
         Amp = auto()  # arm in same staging position, motor ejects
         Trap = auto()  # arm pushes into trap, delay(?), motor ejects
-        Eject = auto()  # arm is down, motor ejects
+        Ejecting = auto()  # arm is down, motor ejects
 
     def __init__(self) -> None:
         Subsystem.__init__(self)
@@ -55,6 +55,11 @@ class IntakeSubsystem(Subsystem):
 
         self.state = self.IntakeState.Holding
 
+        self.frontSensor = NEOBrushless.LimitSwitch.Forwards
+        self.backSensor = NEOBrushless.LimitSwitch.Backwards
+        self.hasPosition = False
+        self.heldPosition = 0
+
     def periodic(self) -> None:
         # get actual velocity values for intake motor later
 
@@ -65,15 +70,33 @@ class IntakeSubsystem(Subsystem):
                 / constants.kRadiansPerRevolution
                 * constants.kPivotGearRatio,
             )
-            if self.intakeMotor.getLimitSwitch(NEOBrushless.LimitSwitch.Forwards):
+
+            # none - intaking
+            # only front - keep intaking
+            # front and back - get position and hold
+            # only back - go to held position from front and back
+
+            frontLimitState = self.intakeMotor.getLimitSwitch(self.frontSensor)
+            backLimitState = self.intakeMotor.getLimitSwitch(self.backSensor)
+
+            if frontLimitState and backLimitState:
+                if not self.hasPosition:
+                    self.heldPosition = self.intakeMotor.get(
+                        NEOBrushless.ControlMode.Position
+                    )
                 self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position,
-                    self.intakeMotor.get(NEOBrushless.ControlMode.Position),
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
+            elif not frontLimitState and backLimitState:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
                 )
             else:
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed
                 )
+            self.hasPosition = backLimitState
+            # will maintain the same held position as long as the back sensor is covered
 
         elif self.state == self.IntakeState.Holding:
             self.pivotMotor.set(
@@ -82,10 +105,7 @@ class IntakeSubsystem(Subsystem):
                 / constants.kRadiansPerRevolution
                 * constants.kPivotGearRatio,
             )
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Position,
-                self.intakeMotor.get(NEOBrushless.ControlMode.Position),
-            )
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
         elif self.state == self.IntakeState.Feeding:
             self.pivotMotor.set(
@@ -105,10 +125,7 @@ class IntakeSubsystem(Subsystem):
                 / constants.kRadiansPerRevolution
                 * constants.kPivotGearRatio,
             )
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Position,
-                self.intakeMotor.get(NEOBrushless.ControlMode.Position),
-            )
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
         elif self.state == self.IntakeState.Amp:
             self.pivotMotor.set(
@@ -133,7 +150,7 @@ class IntakeSubsystem(Subsystem):
                 NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
             )
 
-        elif self.state == self.IntakeState.Eject:
+        elif self.state == self.IntakeState.Ejecting:
             self.pivotMotor.set(
                 Talon.ControlMode.Position,
                 constants.kFloorPositionAngle.radians()
@@ -170,3 +187,6 @@ class IntakeSubsystem(Subsystem):
 
     def setTrap(self) -> None:
         self.state = self.IntakeState.Trap
+
+    def setEjecting(self) -> None:
+        self.state = self.IntakeState.Ejecting
