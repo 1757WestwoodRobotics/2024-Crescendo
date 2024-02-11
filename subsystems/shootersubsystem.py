@@ -94,7 +94,7 @@ class ShooterSubsystem(Subsystem):
         )
         self.leftShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
-            rpm * constants.kShootingMotorRatio,
+            self.leftTargetSpeed * constants.kShootingMotorRatio,
         )
 
     def setRightShootingMotorSpeed(self, rpm: int) -> None:
@@ -103,7 +103,7 @@ class ShooterSubsystem(Subsystem):
         )
         self.rightShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
-            rpm * constants.kShootingMotorRatio,
+            self.rightTargetSpeed * constants.kShootingMotorRatio,
         )
 
     def getShooterAngle(self) -> Rotation2d:
