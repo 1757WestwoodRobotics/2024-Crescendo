@@ -790,4 +790,4 @@ kRightMotorFudgeKey = "RightMotorFudge"
 kShootingMotorFudgeAmount = 50
 
 # radians
-kShootingAngleFudgeAmount = 0.05
+kShootingAngleFudgeAmount = 0.01
