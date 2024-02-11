@@ -61,6 +61,7 @@ class IntakeSubsystem(Subsystem):
         self.heldPosition = 0
 
     def periodic(self) -> None:
+        SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
         # get actual velocity values for intake motor later
 
         if self.state == self.IntakeState.Intaking:

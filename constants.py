@@ -707,6 +707,8 @@ kIntakeInverted = False
 kPivotInverted = False
 
 kPivotEncoderID = 1
+
+kIntakeStateKey = "intake/state"
 # intake 0 degrees is handoff angle
 kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
 # all angles are relative to handoff angle
@@ -718,8 +720,8 @@ kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
 # RPM
 kIntakeSpeed = 1000
 
-kPivotAngleKey = "PivotAngle"
-kIntakeSpeedKey = "IntakeSpeed"
+kPivotAngleKey = "intake/pivotAngle"
+kIntakeSpeedKey = "intake/speed"
 
 kAngleMotorRatio = (64 / 16) * (60 / 18)
 kShootingMotorRatio = 24 / 36
@@ -761,19 +763,19 @@ kRobotAngleMappingFunction = lambda x, y: x * y
 kShooterAngleEncoderCANId = 1
 
 # radians
-kShooterAngleKey = "ShooterAngle"
-kLeftShootingMotorSpeedKey = "LeftShootingMotorRPM"
-kRightShootingMotorSpeedKey = "RightShootingMotorRPM"
+kShooterAngleKey = "shooter/angle"
+kLeftShootingMotorSpeedKey = "shooter/leftMotorSpeed"
+kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
 
 kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
 # in RPM
 kShooterSpeedTolerance = 100
 
-kShooterAngleOnTargetKey = "AngleOnTarget"
-kLeftShootingMotorOnTargetKey = "LeftMotorOnTarget"
-kRightShootingMotorOnTargetKey = "RightMotorOnTarget"
-kRobotAngleOnTargetKey = "RobotAngleOnTarget"
-kReadyToShoot = "FireInTheHole"
+kShooterAngleOnTargetKey = "shooter/angleOnTarget"
+kLeftShootingMotorOnTargetKey = "shooter/leftMotorOnTarget"
+kRightShootingMotorOnTargetKey = "shooter/rightMotorOnTarget"
+kRobotAngleOnTargetKey = "shooter/robotAngleOnTarget"
+kReadyToShoot = "shooter/ready"
 
 # from horizontal
 kShooterMaxAngle = Rotation2d.fromDegrees(64.028164)
@@ -782,10 +784,10 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 kShootingMotorCurrentLimit = 40
 kAngleMotorCurrentLimit = 40
 
-kShooterManualModeKey = "ShooterManualMode"
-kShooterAngleFudgeKey = "ShooterAngleFudge"
-kLeftMotorFudgeKey = "LeftMotorFudge"
-kRightMotorFudgeKey = "RightMotorFudge"
+kShooterManualModeKey = "shooter/manualMode"
+kShooterAngleFudgeKey = "shooter/fudge/angle"
+kLeftMotorFudgeKey = "shooter/fudge/leftMotor"
+kRightMotorFudgeKey = "shooter/fudge/rightMotor"
 
 kShootingMotorFudgeAmount = 50
 
