@@ -11,6 +11,10 @@ class ShooterManualMode(Command):
         self.shooter = shooter
         self.addRequirements(self.shooter)
 
+        SmartDashboard.putNumber(constants.kLeftShootingMotorSpeedKey, 0)
+        SmartDashboard.putNumber(constants.kRightShootingMotorSpeedKey, 0)
+        SmartDashboard.putNumber(constants.kShooterAngleKey, 0)
+
     def execute(self) -> None:
         self.shooter.setLeftShootingMotorSpeed(
             SmartDashboard.getNumber(constants.kLeftShootingMotorSpeedKey, 0)

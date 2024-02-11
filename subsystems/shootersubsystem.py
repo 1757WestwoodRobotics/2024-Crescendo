@@ -52,7 +52,7 @@ class ShooterSubsystem(Subsystem):
         )
 
         self.angleMotor.setCurrentLimit(
-            CurrentLimitsConfigs().with_stator_current_limit(
+            CurrentLimitsConfigs().with_supply_current_limit(
                 constants.kAngleMotorCurrentLimit
             )
         )
@@ -70,19 +70,16 @@ class ShooterSubsystem(Subsystem):
         self.leftTargetSpeed = 0
         self.rightTargetSpeed = 0
 
+        SmartDashboard.putNumber(constants.kLeftMotorFudgeKey, 0)
+        SmartDashboard.putNumber(constants.kRightMotorFudgeKey, 0)
+        SmartDashboard.putNumber(constants.kShooterAngleFudgeKey, 0)
         # speeds are in RPM, same as velocity control mode
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
         self.targetAngle = min(
-            max(
-                constants.kShooterMinAngle,
-                angle
-                + Rotation2d(
-                    SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0)
-                ),
-                constants.kShooterMaxAngle,
-            )
-        )
+            max(constants.kShooterMinAngle, angle),
+            constants.kShooterMaxAngle,
+        ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
 
         self.angleMotor.set(
             Talon.ControlMode.Position,
@@ -110,6 +107,13 @@ class ShooterSubsystem(Subsystem):
         )
 
     def getShooterAngle(self) -> Rotation2d:
+        return Rotation2d(
+            self.angleMotor.get(Talon.ControlMode.Position)
+            * constants.kRadiansPerRevolution
+            / constants.kAngleMotorRatio
+        )
+
+    def getShooterAngleAbsolute(self) -> Rotation2d:
         return Rotation2d(self.shooterEncoder.getPosition().radians() * -1)
 
     def getLeftShooterSpeed(self) -> int:
