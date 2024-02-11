@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 black = "*"
 pylint = "*"
-photonlibpy = "*"
+photonlibpy = "2024.2.4"
 robotpy-cli = "*"
 robotpy = {extras = ["all"], version = "==2024.2.1.1"}
 

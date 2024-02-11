@@ -531,7 +531,7 @@ class DriveSubsystem(Subsystem):
             if estimatedCameraPose.hasTargets:
                 self.estimator.addVisionMeasurement(
                     estimatedCameraPose.pose.toPose2d(),
-                    estimatedCameraPose.timestamp / 1e12,
+                    estimatedCameraPose.timestamp,
                 )
                 hasTargets = True
 
