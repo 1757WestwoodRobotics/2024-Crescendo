@@ -29,6 +29,7 @@ from util.motorsimulator import MotorSimulator
 
 
 class SwerveModuleSim:
+    # pylint:disable-next=too-many-arguments
     def __init__(
         self,
         position: Translation2d,
@@ -40,6 +41,7 @@ class SwerveModuleSim:
         steerMotorGearing: float,
         swerveEncoderSim: typing.Callable[[], CANcoderSimState],
         encoderOffset: float,
+        inverted: bool,
     ) -> None:
         self.position = position
         self.wheelMotorSim = wheelMotorSim
@@ -60,6 +62,8 @@ class SwerveModuleSim:
         )
         self.swerveEncoderSim = swerveEncoderSim
         self.encoderOffset = encoderOffset + 0.25
+
+        self.multiplier = -1 if inverted else 1
 
     def __str__(self) -> str:
         return f"pos: x={self.position.X():.2f} y={self.position.Y():.2f}"
@@ -146,6 +150,7 @@ class SwerveDriveSim:
 
             wheelLinearVelocity = (
                 wheel_velocity_rps
+                * module.multiplier
                 * constants.kWheelRadius
                 * constants.kRadiansPerRevolution
                 / constants.kDriveGearingRatio
@@ -154,7 +159,7 @@ class SwerveDriveSim:
             state = wpimath.kinematics.SwerveModuleState(
                 -wheelLinearVelocity,
                 Rotation2d(
-                    -swerve_position_rot
+                    swerve_position_rot
                     / module.steerMotorGearing
                     * constants.kRadiansPerRevolution
                 ),
@@ -171,7 +176,7 @@ class SwerveDriveSim:
             [chassisSpeed.vx, chassisSpeed.vy, chassisSpeed.omega],
         )
 
-        deltaTrans = Transform2d(deltaX, deltaY, deltaHeading)
+        deltaTrans = Transform2d(deltaX, -deltaY, deltaHeading)
 
         newPose = self.pose + deltaTrans
         self.pose = newPose
@@ -199,6 +204,7 @@ class PhysicsEngine:
             constants.kSteerGearingRatio,
             frontLeftSim[2],
             constants.kFrontLeftAbsoluteEncoderOffset,
+            constants.kFrontLeftDriveInverted,
         )
         frontRightSim = driveSubsystem.frontRightModule.getSimulator()
         self.frontRightModuleSim = SwerveModuleSim(
@@ -211,6 +217,7 @@ class PhysicsEngine:
             constants.kSteerGearingRatio,
             frontRightSim[2],
             constants.kFrontRightAbsoluteEncoderOffset,
+            constants.kFrontRightDriveInverted,
         )
         backLeftSim = driveSubsystem.backLeftModule.getSimulator()
         self.backSimLeftModule = SwerveModuleSim(
@@ -223,6 +230,7 @@ class PhysicsEngine:
             constants.kSteerGearingRatio,
             backLeftSim[2],
             constants.kBackLeftAbsoluteEncoderOffset,
+            constants.kBackLeftDriveInverted,
         )
         backRightSim = driveSubsystem.backRightModule.getSimulator()
         self.backSimRightModule = SwerveModuleSim(
@@ -235,6 +243,7 @@ class PhysicsEngine:
             constants.kSteerGearingRatio,
             backRightSim[2],
             constants.kBackRightAbsoluteEncoderOffset,
+            constants.kBackRightDriveInverted,
         )
 
         self.swerveModuleSims = [
@@ -293,7 +302,7 @@ class PhysicsEngine:
             self.sim_initialized = True
             # self.physics_controller.field, is not set until simulation_init
 
-        self.gyroSim.set_raw_yaw(self.driveSim.getHeading().degrees())
+        self.gyroSim.set_raw_yaw(-self.driveSim.getHeading().degrees())
 
         # Simulate the drivetrain
         voltage = RobotController.getInputVoltage()

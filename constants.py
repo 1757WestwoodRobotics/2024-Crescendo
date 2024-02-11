@@ -378,7 +378,7 @@ kSteerDGain = 0
 
 kFrontLeftDriveInverted = False
 kFrontRightDriveInverted = True
-kBackLeftDriveInverted = True
+kBackLeftDriveInverted = False
 kBackRightDriveInverted = True
 
 kFrontLeftSteerInverted = False
@@ -400,7 +400,7 @@ To determine encoder offsets (with robot ON and DISABLED):
   7. Click "Self-Test Snapshot"
   8. Record value from line: "Absolute Position (unsigned):"
 """
-kFrontLeftAbsoluteEncoderOffset = 256.113 / kRadiansPerDegree
+kFrontLeftAbsoluteEncoderOffset = 256.113 / kDegeersPerRevolution
 """rotations"""
 
 kFrontRightAbsoluteEncoderOffset = 125.420 / kDegeersPerRevolution
