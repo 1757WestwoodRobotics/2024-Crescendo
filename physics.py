@@ -196,6 +196,11 @@ class NoteSim:
             constants.kNoteLoadingStationPositionRed,
         ]
 
+    def canPickup(self, note: Pose3d, botPose) -> bool:
+        if pointInCircle(botPose.translation(), note.toPose2d().translation(), 0.5):
+            return True
+        return False
+
     def update(self, tm_diff, bot: MentorBot):
         SmartDashboard.putNumberArray(
             constants.kSimNotePositionsKey,
@@ -216,34 +221,44 @@ class NoteSim:
         botPose = Pose2d(
             *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
         )
-        inPosition = (
-            functools.reduce(
-                operator.add,
-                [
-                    pointInCircle(
-                        botPose.translation(), i.toPose2d().translation(), 0.5
-                    )
-                    for i in self.loadingNotes
-                ],
-                False,
-            )
-            > 0
+
+        hasNote = SmartDashboard.getBoolean(
+            f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit",
+            False,
         )
 
-        if inPosition and intaking:
+        if intaking:
+            notestate = hasNote
+            for stationObject in self.loadingNotes:
+                if self.canPickup(stationObject, botPose):
+                    notestate = True
+
+            for blueWingNote in self.blueNotes:
+                # remove the note from the field
+                if self.canPickup(blueWingNote, botPose):
+                    notestate = True
+                    self.blueNotes.remove(blueWingNote)
+
+            for redWingNote in self.redNotes:
+                # remove the note from the field
+                if self.canPickup(redWingNote, botPose):
+                    notestate = True
+                    self.redNotes.remove(redWingNote)
+
+            for midlineNote in self.midlineNotes:
+                # remove the note from the field
+                if self.canPickup(midlineNote, botPose):
+                    notestate = True
+                    self.midlineNotes.remove(midlineNote)
+
             SmartDashboard.putBoolean(
-                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit", True
+                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit", notestate
             )
 
         # shooting a note clears the note
         feeding = bot.container.intake.state == IntakeSubsystem.IntakeState.Feeding
 
         if feeding:
-            hasNote = SmartDashboard.getBoolean(
-                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit",
-                False,
-            )
-
             if hasNote:
                 pass  # TODO: Logic for calculating a shot
 
