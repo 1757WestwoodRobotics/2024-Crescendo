@@ -729,6 +729,7 @@ kPivotInverted = False
 kPivotEncoderID = 1
 
 kIntakeStateKey = "intake/state"
+kIntakeHasNoteKey = "intake/hasNote"
 # intake 0 degrees is handoff angle
 kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
 # all angles are relative to handoff angle
