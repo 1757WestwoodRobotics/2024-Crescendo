@@ -200,18 +200,57 @@ class NoteSim:
         SmartDashboard.putNumberArray(
             constants.kSimNotePositionsKey,
             convertToSendablePoses(
-                [*self.midlineNotes, *self.blueNotes, *self.redNotes, *self.loadingNotes]
+                [
+                    *self.midlineNotes,
+                    *self.blueNotes,
+                    *self.redNotes,
+                    *self.loadingNotes,
+                ]
             ),
         )
 
         # check whether intaking, update sensors according to position on field
-        
+
         intaking = bot.container.intake.state == IntakeSubsystem.IntakeState.Intaking
 
-        botPose = Pose2d(*SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0,0,0]))
-        inPosition = functools.reduce(operator.or, [pointInCircle(botPose.translation(), i.toPose2d().translation(), 0.5) for i in self.loadingNotes], False)
+        botPose = Pose2d(
+            *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
+        )
+        inPosition = (
+            functools.reduce(
+                operator.add,
+                [
+                    pointInCircle(
+                        botPose.translation(), i.toPose2d().translation(), 0.5
+                    )
+                    for i in self.loadingNotes
+                ],
+                False,
+            )
+            > 0
+        )
 
-        print(inPosition)
+        if inPosition and intaking:
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit", True
+            )
+
+        # shooting a note clears the note
+        feeding = bot.container.intake.state == IntakeSubsystem.IntakeState.Feeding
+
+        if feeding:
+            hasNote = SmartDashboard.getBoolean(
+                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit",
+                False,
+            )
+
+            if hasNote:
+                pass  # TODO: Logic for calculating a shot
+
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit",
+                False,
+            )
 
 
 class PhysicsEngine:
