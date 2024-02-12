@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from rev import CANSparkFlex, REVLibError, SparkMaxLimitSwitch
 from wpilib import SmartDashboard
+from wpilib._wpilib import RobotBase
 
 
 def revCheckError(name: str, errorCode: REVLibError) -> bool:
@@ -53,6 +54,9 @@ class NEOBrushless:
         SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/d", dGain)
         SmartDashboard.putBoolean(f"{self._nettableidentifier}/inverted", isInverted)
 
+        SmartDashboard.putBoolean(f"{self._nettableidentifier}/fwdLimit", False)
+        SmartDashboard.putBoolean(f"{self._nettableidentifier}/bckLimit", False)
+
         if not revCheckError("factoryConfig", self.motor.restoreFactoryDefaults()):
             return
         if not revCheckError("setP", self.controller.setP(pGain, pidSlot)):
@@ -100,10 +104,21 @@ class NEOBrushless:
         self.motor.set(0)
 
     def getLimitSwitch(self, switch: LimitSwitch) -> bool:
-        if switch == NEOBrushless.LimitSwitch.Forwards:
-            return self.forwardSwitch.get()
-        if switch == NEOBrushless.LimitSwitch.Backwards:
-            return self.reverseSwitch.get()
+        if RobotBase.isReal():
+            if switch == NEOBrushless.LimitSwitch.Forwards:
+                return self.forwardSwitch.get()
+            if switch == NEOBrushless.LimitSwitch.Backwards:
+                return self.reverseSwitch.get()
+        else:
+            if switch == NEOBrushless.LimitSwitch.Forwards:
+                return SmartDashboard.getBoolean(
+                    f"{self._nettableidentifier}/fwdLimit", False
+                )
+            if switch == NEOBrushless.LimitSwitch.Backwards:
+                return SmartDashboard.getBoolean(
+                    f"{self._nettableidentifier}/bckLimit", False
+                )
+
         return False
 
     def setSmartCurrentLimit(self, limit: int = 25) -> None:

@@ -96,9 +96,6 @@ def pointInRectangle(
     dotBCBC = dot(bc, bc)
     return 0 <= dotABAM and dotABAM <= dotABAB and 0 <= dotBCBM and dotBCBM <= dotBCBC
 
-def pointInCircle(
-    p1: Translation2d,
-    c: Translation2d,
-    r: float
-) -> bool:
+
+def pointInCircle(p1: Translation2d, c: Translation2d, r: float) -> bool:
     return (p1 - c).norm() <= r
