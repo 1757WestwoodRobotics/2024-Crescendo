@@ -39,6 +39,7 @@ from pathplannerlib.config import (
     PIDConstants,
     ReplanningConfig,
 )
+from util.convenientmath import pose3dFrom2d
 
 from util.keyorganization import OptionalValueKeys
 
@@ -662,6 +663,23 @@ kTargetWaypointThetaControllerKey = "waypoint/theta"
 # lights
 kCANdleID = 2
 
+kNoteZeroOffset = Transform3d(Pose3d(), pose3dFrom2d(Pose2d(-27 * kMetersPerInch, 27 / 2 * kMetersPerInch, 0)))
+
+kNotesStartingMidline = [
+    i + kNoteZeroOffset
+    for i in [  # gotten from the glb in 6328's field element
+        Pose3d(0, 0, 0.030175, Rotation3d()),
+    ]
+]
+
+kNotesStartingBlueWing = [
+    i + kNoteZeroOffset for i in [Pose3d(5.3747, -1.4478, 0.030175, Rotation3d())]
+]
+
+kNoteLoadingStationPositionBlue = Pose3d(15, 1, 0, Rotation3d())
+kNoteLoadingStationPositionRed = Pose3d(54 * kMetersPerFoot -15, 1, 0, Rotation3d())
+
+kSimNotePositionsKey = "SimNotesPositions"
 
 # Logging
 kSwerveActualStatesKey = "swerve/actual"
