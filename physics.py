@@ -189,7 +189,7 @@ class NoteSim:
     def __init__(self) -> None:
         self.midlineNotes = constants.kNotesStartingMidline
         self.blueNotes = constants.kNotesStartingBlueWing
-        self.redNotes = [Pose3d()]
+        self.redNotes = constants.kNotesStartingRedWing
 
         self.loadingNotes = [
             constants.kNoteLoadingStationPositionBlue,
