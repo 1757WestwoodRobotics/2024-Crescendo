@@ -25,8 +25,9 @@ from pyfrc.physics.core import PhysicsInterface
 import constants
 from robot import MentorBot
 from subsystems.drivesubsystem import DriveSubsystem
+from subsystems.intakesubsystem import IntakeSubsystem
 from util.advantagescopeconvert import convertToSendablePoses
-from util.convenientmath import clamp
+from util.convenientmath import clamp, pointInCircle
 from util.motorsimulator import MotorSimulator
 
 
@@ -205,6 +206,12 @@ class NoteSim:
 
         # check whether intaking, update sensors according to position on field
         
+        intaking = bot.container.intake.state == IntakeSubsystem.IntakeState.Intaking
+
+        botPose = Pose2d(*SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0,0,0]))
+        inPosition = functools.reduce(operator.or, [pointInCircle(botPose.translation(), i.toPose2d().translation(), 0.5) for i in self.loadingNotes], False)
+
+        print(inPosition)
 
 
 class PhysicsEngine:
@@ -215,6 +222,7 @@ class PhysicsEngine:
     # pylint: disable-next=unused-argument
     def __init__(self, physics_controller: PhysicsInterface, robot: MentorBot):
         self.physics_controller = physics_controller
+        self.bot = robot
 
         driveSubsystem: DriveSubsystem = robot.container.drive
 
@@ -335,7 +343,7 @@ class PhysicsEngine:
 
         self.motorsim.update(tm_diff, voltage)
         self.driveSim.update(tm_diff, voltage)
-        self.noteSim.update(tm_diff)
+        self.noteSim.update(tm_diff, self.bot)
 
         simRobotPose = self.driveSim.getPose()
         self.physics_controller.field.setRobotPose(simRobotPose)
