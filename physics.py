@@ -302,7 +302,7 @@ class PhysicsEngine:
             self.sim_initialized = True
             # self.physics_controller.field, is not set until simulation_init
 
-        self.gyroSim.set_raw_yaw(-self.driveSim.getHeading().degrees())
+        self.gyroSim.set_raw_yaw(self.driveSim.getHeading().degrees())
 
         # Simulate the drivetrain
         voltage = RobotController.getInputVoltage()
