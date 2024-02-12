@@ -1,6 +1,6 @@
 from enum import Enum, auto
 from math import pi
-from commands2 import SubsystemBase
+from commands2 import Subsystem
 
 from util.simtalon import Talon
 import constants
@@ -11,9 +11,10 @@ class ElevatorSubsystem(SubsystemBase):
         BottomPosition = auto()
         AmpPosition = auto()
         TopPosition = auto()
+        PullDown = auto()  # climber
 
     def __init__(self) -> None:
-        SubsystemBase.__init__(self)
+        Subsystem.__init__(self)
         self.setName(__class__.__name__)  # basic subsystem boilerplate
 
         self.elevatorMotor1 = Talon(
@@ -46,17 +47,35 @@ class ElevatorSubsystem(SubsystemBase):
         elif self.state == self.ElevatorState.TopPosition:
             self.setElevatorMotorsAtPosition(constants.kTopPositionBeltPosition)
 
+        elif self.state == self.ElevatorState.PullDown:
+            if self.elevatorMotor1.get(Talon.ControlMode.Position) > constants.kPullDownBandLimit:
+                self.elevatorMotor1.set(
+                    Talon.ControlMode.Velocity,
+                    constants.kBeltPullDownSpeed
+                    * constants.kMotorPulleyGearRatio
+                    / (constants.kPulleyGearPitchDiameter * pi),
+                )
+                self.elevatorMotor2.set(
+                    Talon.ControlMode.Velocity,
+                    constants.kBeltPullDownSpeed
+                    * constants.kMotorPulleyGearRatio
+                    / (constants.kPulleyGearPitchDiameter * pi),
+                )
+
+            else:
+                self.state = self.ElevatorState.BottomPosition
+
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
         self.elevatorMotor1.set(
             Talon.ControlMode.Position,
-            beltPosition
-            / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
+            (beltPosition)
+            / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,
         )
         self.elevatorMotor2.set(
             Talon.ControlMode.Position,
             beltPosition
-            / (constants.kPulleyGearPitchDiameter * constants.kMetersPerInch * pi)
+            / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,
         )
 
