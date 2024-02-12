@@ -663,19 +663,25 @@ kTargetWaypointThetaControllerKey = "waypoint/theta"
 # lights
 kCANdleID = 2
 
-kNoteZeroOffset = Transform3d(
-    Pose3d(), pose3dFrom2d(Pose2d(-27 * kMetersPerInch, 27 / 2 * kMetersPerInch, 0))
-)
 
 kNotesStartingMidline = [
-    i + kNoteZeroOffset
-    for i in [  # gotten from the glb in 6328's field element
-        Pose3d(0, 0, 0.030175, Rotation3d()),
-    ]
+    Pose3d(8.258, 7.462, 0.03018, Rotation3d()),
+    Pose3d(8.258, 5.785, 0.03018, Rotation3d()),
+    Pose3d(8.258, 4.109, 0.03018, Rotation3d()),
+    Pose3d(8.258, 2.432, 0.03018, Rotation3d()),
+    Pose3d(8.258, 0.756, 0.03018, Rotation3d()),
 ]
 
 kNotesStartingBlueWing = [
-    i + kNoteZeroOffset for i in [Pose3d(5.3747, -1.4478, 0.030175, Rotation3d())]
+    Pose3d(2.884, 4.109, 0.03018, Rotation3d()),
+    Pose3d(2.884, 5.557, 0.03018, Rotation3d()),
+    Pose3d(2.884, 7.004, 0.03018, Rotation3d()),
+]
+
+kNotesStartingRedWing = [
+    Pose3d(13.63, 4.109, 0.03018, Rotation3d()),
+    Pose3d(13.63, 5.557, 0.03018, Rotation3d()),
+    Pose3d(13.63, 7.004, 0.03018, Rotation3d()),
 ]
 
 kNoteLoadingStationPositionBlue = Pose3d(15, 1, 0, Rotation3d())
