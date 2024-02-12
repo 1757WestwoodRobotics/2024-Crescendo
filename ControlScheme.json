@@ -4,7 +4,7 @@
     {
       "Button": 3
     },
-    "replace me"
+    "HOTAS Ring Button"
   ],
   "chassisForwardsBackwards": [
     0,
@@ -37,7 +37,7 @@
   "defenseStateControl": [
     0,
     {
-      "Button": 3
+      "Button": 4
     },
     "left button on top of joystick (ThrustmasterT16000M)"
   ],
@@ -51,7 +51,7 @@
   "resetGyro": [
     0,
     {
-      "Button": 10
+      "Button": 16
     },
     "Middle POV left (ThrustmasterTWCSThrottle)"
   ],
@@ -84,11 +84,11 @@
     "placeholder"
   ],
   "floor": [
-    1,
+    0,
     {
-      "Button": 1
+      "Button": 2
     },
-    "Replace"
+    "HOTAS Thumb Button"
   ],
   "hold": [
     1,
@@ -98,17 +98,150 @@
     "Replace"
   ],
   "feed": [
-    1,
+    0,
     {
       "Button": 1
     },
-    "Replace"
+    "HOTAS Trigger"
   ],
-  "trap": [
+  "amp": [
+    0,
+    {
+      "Button": 3
+    },
+    "HOTAS Left button"
+  ],
+  "trapPrep": [
+    1,
+    {
+      "Button": 10
+    },
+    "Buttonbox"
+  ],
+  "prepShotDynamic": [
+    2,
+    {
+      "Button": 2
+    },
+    "Throttle Pinky button"
+  ],
+  "prepShotSubwoofer": [
+    2,
+    {
+      "Button": 4
+    },
+    "Throttle middle rocker up"
+  ],
+  "prepShotPodium": [
+    2,
+    {
+      "Button": 5
+    },
+    "Throttle middle rocker down"
+  ],
+  "elevatorClimbUp": [
+    1,
+    {
+      "Button": 12
+    },
+    "Buttonbox"
+  ],
+  "elevatorClimbSlowDown": [
+    1,
+    {
+      "Button": 14
+    },
+    "Buttonbox"
+  ],
+  "trapScore": [
+    1,
+    {
+      "Button": 16
+    },
+    "Buttonbox"
+  ],
+  "resetElevator": [
+    0,
+    {
+      "Button": 13
+    },
+    "something on stick"
+  ],
+  "resetIntake": [
+    0,
+    {
+      "Button": 14
+    },
+    "something on stick"
+  ],
+  "resetShooter": [
+    0,
+    {
+      "Button": 15
+    },
+    "something on stick"
+  ],
+  "shooterRightSpeedIncrease": [
+    1,
+    {
+      "Button": 0
+    },
+    "buttonbox"
+  ],
+  "shooterRightSpeedDecrease": [
+    1,
+    {
+      "Button": 5
+    },
+    "buttonbox"
+  ],
+  "shooterLeftSpeedIncrease": [
     1,
     {
       "Button": 1
     },
-    "Replace"
+    "buttonbox"
+  ],
+  "elevatorJogUp": [
+    1,
+    {
+      "Button": 3
+    },
+    "buttonbox"
+  ],
+  "elevatorJogDown": [
+    1,
+    {
+      "Button": 8
+    },
+    "buttonbox"
+  ],
+  "intakePivotCWJog": [
+    1,
+    {
+      "Button": 4
+    },
+    "buttonbox"
+  ],
+  "intakePivotCCWJog": [
+    1,
+    {
+      "Button": 9
+    },
+    "buttonbox"
+  ],
+  "shooterPivotUpJog": [
+    1,
+    {
+      "Button": 2
+    },
+    "buttonbox"
+  ],
+  "shooterPivotDownJog": [
+    1,
+    {
+      "Button": 7
+    },
+    "buttonbox"
   ]
 }

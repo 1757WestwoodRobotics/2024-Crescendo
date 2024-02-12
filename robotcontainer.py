@@ -5,6 +5,7 @@ from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
+from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 
 import constants
 
@@ -107,6 +108,7 @@ class RobotContainer:
                 self.operatorInterface.chassisControls.rotationX,
             )
         )
+        self.intake.setDefaultCommand(StageIntake(self.intake))
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
@@ -163,6 +165,13 @@ class RobotContainer:
             ShooterManualMode(self.shooter)
         )
 
+        ModifiableJoystickButton(self.operatorInterface.floor).whileTrue(
+            FloorIntake(self.intake)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.feed).whileTrue(
+            FeedIntakeToShooter(self.intake)
+        )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
         # )

@@ -9,13 +9,13 @@ class SetIntakeState(
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.intake = intakeSubsystem
-        self.addRequirements([self.intake])
+        self.addRequirements(self.intake)
 
     def execute(self) -> None:
         raise NotImplementedError("Must be implemented by subclass")
 
     def isFinished(self) -> bool:
-        return True
+        return False
 
 
 class FloorIntake(SetIntakeState):
