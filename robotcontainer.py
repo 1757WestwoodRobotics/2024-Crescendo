@@ -22,6 +22,7 @@ from subsystems.drivesubsystem import DriveSubsystem
 # from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
+from subsystems.elevatorsubsystem import ElevatorSubsystem
 
 from operatorinterface import OperatorInterface
 from util.helpfultriggerwrappers import ModifiableJoystickButton
@@ -43,6 +44,7 @@ class RobotContainer:
         self.vision = VisionSubsystem()
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
+        self.elevator = ElevatorSubsystem()
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()

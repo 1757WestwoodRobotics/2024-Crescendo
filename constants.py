@@ -693,7 +693,6 @@ kElevator1Name = "Elevator1Motor"
 kElevator1PGain = 0.12
 kElevator1IGain = 0
 kElevator1DGain = 0
-kElevator1RotationAmount = 3000
 kElevator1Inverted = False
 
 kElevator2CANID = 60
@@ -701,7 +700,6 @@ kElevator2Name = "Elevator2Motor"
 kElevator2PGain = 0.12
 kElevator2IGain = 0
 kElevator2DGain = 0
-kElevator2RotationAmount = 3000
 kElevator2Inverted = True
 
 kMotorPulleyGearRatio = 60 / 18
@@ -710,6 +708,12 @@ kPulleyGearPitchDiameter = 1.504
 """inches"""
 
 kBottomPositionBeltPosition = 0
-kAmpPositionBeltPosition = 0.5
-kTopPositionBeltPosition = 1
-"""meters"""
+kAmpPositionBeltPosition = 19.125
+kTopPositionBeltPosition = 26.5
+"""inches"""
+
+kBeltPullDownSpeed = 3
+"""inches per second"""
+
+kPullDownBandLimit = 0.1
+"""Revolutions"""

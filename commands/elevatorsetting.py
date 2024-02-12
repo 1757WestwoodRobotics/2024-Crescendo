@@ -1,10 +1,10 @@
-from commands2 import CommandBase
+from commands2 import Command
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 
 
-class SetElevatorState(CommandBase):
+class SetElevatorState(Command):
     def __init__(self, elevatorSubsystem: ElevatorSubsystem) -> None:
-        CommandBase.__init__(self)
+        Command.__init__(self)
         self.setName(__class__.__name__)
         self.elevator = elevatorSubsystem
         self.addRequirements([self.elevator])
@@ -38,3 +38,11 @@ class ElevatorTopPosition(SetElevatorState):
 
     def execute(self) -> None:
         self.elevator.setTopPosition()
+
+
+class ElevatorPullDown(SetElevatorState):
+    def __init__(self, elevatorSubsystem: ElevatorSubsystem) -> None:
+        SetElevatorState.__init__(self, elevatorSubsystem)
+
+    def execute(self) -> None:
+        self.elevator.setPullDown()
