@@ -79,7 +79,6 @@ class IntakeSubsystem(Subsystem):
             # front and back - get position and hold
             # only back - go to held position from front and back
 
-
             if frontLimitState and backLimitState:
                 if not self.hasPosition:
                     self.heldPosition = self.intakeMotor.get(

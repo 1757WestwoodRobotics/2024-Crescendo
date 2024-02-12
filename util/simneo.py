@@ -124,3 +124,6 @@ class NEOBrushless:
     def setSmartCurrentLimit(self, limit: int = 25) -> None:
         self.motor.setSmartCurrentLimit(limit)
         # """25 amps"""
+
+    def getNettableIden(self) -> str:
+        return self._nettableidentifier
