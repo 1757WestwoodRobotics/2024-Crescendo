@@ -12,18 +12,20 @@
 import functools
 import operator
 import typing
+from ntcore import NetworkTableInstance
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
 from wpilib import RobotController, SmartDashboard
 from wpilib.simulation import DCMotorSim
-from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
+from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d, Pose3d
 from wpimath.system.plant import DCMotor
 import wpimath.kinematics
 from pyfrc.physics.core import PhysicsInterface
 import constants
 from robot import MentorBot
 from subsystems.drivesubsystem import DriveSubsystem
+from util.advantagescopeconvert import convertToSendablePoses
 from util.convenientmath import clamp
 from util.motorsimulator import MotorSimulator
 
@@ -159,7 +161,7 @@ class SwerveDriveSim:
             state = wpimath.kinematics.SwerveModuleState(
                 -wheelLinearVelocity,
                 Rotation2d(
-                    -swerve_position_rot
+                    swerve_position_rot
                     / module.steerMotorGearing
                     * constants.kRadiansPerRevolution
                 ),
@@ -176,10 +178,33 @@ class SwerveDriveSim:
             [chassisSpeed.vx, chassisSpeed.vy, chassisSpeed.omega],
         )
 
-        deltaTrans = Transform2d(deltaX, deltaY, deltaHeading)
+        deltaTrans = Transform2d(deltaX, -deltaY, deltaHeading)
 
         newPose = self.pose + deltaTrans
         self.pose = newPose
+
+
+class NoteSim:
+    def __init__(self) -> None:
+        self.midlineNotes = constants.kNotesStartingMidline
+        self.blueNotes = constants.kNotesStartingBlueWing
+        self.redNotes = [Pose3d()]
+
+        self.loadingNotes = [
+            constants.kNoteLoadingStationPositionBlue,
+            constants.kNoteLoadingStationPositionRed,
+        ]
+
+    def update(self, tm_diff, bot: MentorBot):
+        SmartDashboard.putNumberArray(
+            constants.kSimNotePositionsKey,
+            convertToSendablePoses(
+                [*self.midlineNotes, *self.blueNotes, *self.redNotes, *self.loadingNotes]
+            ),
+        )
+
+        # check whether intaking, update sensors according to position on field
+        
 
 
 class PhysicsEngine:
@@ -254,6 +279,7 @@ class PhysicsEngine:
         ]
 
         self.driveSim = SwerveDriveSim(tuple(self.swerveModuleSims))
+        self.noteSim = NoteSim()
 
         self.gyroSim = driveSubsystem.gyro.sim_state
 
@@ -309,6 +335,7 @@ class PhysicsEngine:
 
         self.motorsim.update(tm_diff, voltage)
         self.driveSim.update(tm_diff, voltage)
+        self.noteSim.update(tm_diff)
 
         simRobotPose = self.driveSim.getPose()
         self.physics_controller.field.setRobotPose(simRobotPose)
