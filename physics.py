@@ -12,7 +12,6 @@
 import functools
 import operator
 import typing
-from ntcore import NetworkTableInstance
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
@@ -201,7 +200,7 @@ class NoteSim:
             return True
         return False
 
-    def update(self, tm_diff, bot: MentorBot):
+    def update(self, _tm_diff, bot: MentorBot):
         SmartDashboard.putNumberArray(
             constants.kSimNotePositionsKey,
             convertToSendablePoses(
@@ -223,7 +222,7 @@ class NoteSim:
         )
 
         hasNote = SmartDashboard.getBoolean(
-            f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit",
+            f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
             False,
         )
 
@@ -252,7 +251,8 @@ class NoteSim:
                     self.midlineNotes.remove(midlineNote)
 
             SmartDashboard.putBoolean(
-                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit", notestate
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
+                notestate,
             )
 
         # shooting a note clears the note
@@ -260,10 +260,10 @@ class NoteSim:
 
         if feeding:
             if hasNote:
-                pass  # TODO: Logic for calculating a shot
+                pass  # Logic for calculating a shot
 
             SmartDashboard.putBoolean(
-                f"{bot.container.intake.intakeMotor._nettableidentifier}/fwdLimit",
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
                 False,
             )
 

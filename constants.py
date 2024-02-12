@@ -39,7 +39,6 @@ from pathplannerlib.config import (
     PIDConstants,
     ReplanningConfig,
 )
-from util.convenientmath import pose3dFrom2d
 
 from util.keyorganization import OptionalValueKeys
 
