@@ -76,7 +76,7 @@ kSecondsPerMinute = 60 / 1
 kRPMPerAngularVelocity = (1 / kRadiansPerRevolution) * kSecondsPerMinute
 """RPM / (radians / second)"""
 
-kGravity = 9.802 # new york gravity
+kGravity = 9.802  # new york gravity
 """m / s / s"""
 
 # Debug parameters

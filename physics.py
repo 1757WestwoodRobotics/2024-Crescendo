@@ -261,7 +261,9 @@ class PhysicsEngine:
 
         self.motorsim = MotorSimulator()
         self.motorsim.addFalcon(
-            robot.container.shooter.angleMotor, 1, constants.kSimulationRotationalInertia
+            robot.container.shooter.angleMotor,
+            1,
+            constants.kSimulationRotationalInertia,
         )
 
         targets = []
