@@ -16,6 +16,7 @@ from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
 from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 from commands.shooter.alignandaim import AlignAndAim
+from commands.drive.drivewaypoint import DriveWaypoint
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -132,13 +133,10 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
-            AlignAndAim(
-                self.shooter,
+            DriveWaypoint(
                 self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
+                self.operatorInterface.chassisControls.forwardsBackwards,
+                self.operatorInterface.chassisControls.sideToSide,
             )
         )
 

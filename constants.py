@@ -846,3 +846,8 @@ kSimNoteArrayKey = "SimNoteArray"
 kLatestNoteTrajectoryKey = "LatestNoteTrajectory"
 kNoteTrajectoryTimeInterval = 0.15
 kShooterWheelRadius = kShooterWheelDiameter / 2
+kShooterMovingIterations = 5
+
+kAlignAnglePGain = 1.2
+kAlignAngleIGain = 0
+kAlignAngleDGain = 0

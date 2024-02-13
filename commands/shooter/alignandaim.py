@@ -4,7 +4,7 @@ import typing
 from commands2.command import Command
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
-from wpimath.geometry import Pose3d, Pose2d, Rotation2d, Translation3d, Translation2d
+from wpimath.geometry import Pose3d, Rotation2d, Translation3d, Translation2d
 from wpilib import DriverStation, SmartDashboard, Preferences
 
 
@@ -35,9 +35,9 @@ class AlignAndAim(Command):
         self.targetPose = Pose3d()
 
         self.thetaController = ProfiledPIDControllerRadians(
-            constants.kTrajectoryAnglePGain / 5,
-            constants.kTrajectoryAngleIGain,
-            constants.kTrajectoryAngleDGain,
+            constants.kAlignAnglePGain,
+            constants.kAlignAngleIGain,
+            constants.kAlignAngleDGain,
             TrapezoidProfileRadians.Constraints(
                 constants.kMaxRotationAngularVelocity,
                 constants.kMaxRotationAngularAcceleration,
@@ -58,12 +58,11 @@ class AlignAndAim(Command):
         )
 
         currentPose = self.drive.getPose()
-        currentVel = Pose2d(
-            *SmartDashboard.getNumberArray(constants.kDriveVelocityKeys, [0, 0, 0])
+        currentVel = SmartDashboard.getNumberArray(
+            constants.kDriveVelocityKeys, [0, 0, 0]
         )
-        self.thetaController.reset(
-            currentPose.rotation().radians(), currentVel.rotation().radians()
-        )
+
+        self.thetaController.reset(currentPose.rotation().radians(), currentVel[2])
 
     def calculateTimeVelocityAngle(
         self, position: Translation3d
@@ -102,7 +101,9 @@ class AlignAndAim(Command):
 
         newTarget = target
 
-        for _ in range(5):  # iterative solver for moving shot
+        for _ in range(
+            constants.kShooterMovingIterations
+        ):  # iterative solver for moving shot
             time, velocity, psi, theta = self.calculateTimeVelocityAngle(newTarget)
 
             positionChange = Translation2d(
