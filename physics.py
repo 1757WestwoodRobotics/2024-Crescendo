@@ -159,7 +159,7 @@ class SwerveDriveSim:
             state = wpimath.kinematics.SwerveModuleState(
                 -wheelLinearVelocity,
                 Rotation2d(
-                    swerve_position_rot
+                    -swerve_position_rot
                     / module.steerMotorGearing
                     * constants.kRadiansPerRevolution
                 ),
@@ -176,7 +176,7 @@ class SwerveDriveSim:
             [chassisSpeed.vx, chassisSpeed.vy, chassisSpeed.omega],
         )
 
-        deltaTrans = Transform2d(deltaX, -deltaY, deltaHeading)
+        deltaTrans = Transform2d(deltaX, deltaY, deltaHeading)
 
         newPose = self.pose + deltaTrans
         self.pose = newPose
