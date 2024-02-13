@@ -702,7 +702,7 @@ kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2Inverted = True
 
-kMotorPulleyGearRatio = 60 / 18
+kMotorPulleyGearRatio = 60 / 18 * 4 / 1
 
 kPulleyGearPitchDiameter = 1.504
 """inches"""
