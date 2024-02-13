@@ -142,7 +142,6 @@ class OperatorInterface:
         self.resetGyro = getButtonBindingOfName(constants.kResetGyroButtonName)
         self.defenseStateControl = getButtonBindingOfName("defenseStateControl")
 
-        self.turboSpeed = getButtonBindingOfName(constants.kTurboSpeedButtonName)
         self.alignClosestWaypoint = getButtonBindingOfName("alignClosestWaypoint")
 
         self.offVelocity = getButtonBindingOfName("offVelocity")
@@ -186,7 +185,37 @@ class OperatorInterface:
             ),
         )
         # intake subsystem related commands
-        self.floor = getButtonBindingOfName("floor")
-        self.trap = getButtonBindingOfName("trap")
+        self.floorIntake = getButtonBindingOfName("floorIntake")
+        self.trapScore = getButtonBindingOfName("trapScore")
+        self.trapPrep = getButtonBindingOfName("trapPrep")
         self.hold = getButtonBindingOfName("hold")
-        self.feed = getButtonBindingOfName("feed")
+        self.feedScore = getButtonBindingOfName("feed")
+
+        # shooter prep
+        self.prepShotDynamic = getButtonBindingOfName("prepShotDynamic")
+        self.prepShotSubwoofer = getButtonBindingOfName("prepShotSubwoofer")
+        self.prepShotPodium = getButtonBindingOfName("prepShotPodium")
+
+        # elevator related
+        self.elevatorClimb = getButtonBindingOfName("elevatorClimbUp")
+        self.elevatorClimbSlowDown = getButtonBindingOfName("elevatorClimbSlowDown")
+
+        # resets
+        self.resetIntake = getButtonBindingOfName("resetIntake")
+        self.resetElevator = getButtonBindingOfName("resetElevator")
+
+        # overrides / offsets
+
+        self.intakeCWJog = getButtonBindingOfName("intakePivotCWJog")
+        self.intakeCCWJog = getButtonBindingOfName("intakePivotCCWJog")
+
+        self.shooterPivotUp = getButtonBindingOfName("shooterPivotUpJog")
+        self.shooterPivotDown = getButtonBindingOfName("shooterPivotDownJog")
+
+        self.shooterRightSpeedUp = getButtonBindingOfName("shooterRightSpeedIncrease")
+        self.shooterRightSpeedDown = getButtonBindingOfName("shooterRightSpeedDecrease")
+        self.shooterLeftSpeedUp = getButtonBindingOfName("shooterLeftSpeedIncrease")
+        self.shooterLeftSpeedDown = getButtonBindingOfName("shooterLeftSpeedDecrease")
+
+        self.elevatorJogUp = getButtonBindingOfName("elevatorJogUp")
+        self.elevatorJogDown = getButtonBindingOfName("elevatorJogDown")

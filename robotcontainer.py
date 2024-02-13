@@ -120,17 +120,6 @@ class RobotContainer:
         and then passing it to a JoystickButton.
         """
 
-        ModifiableJoystickButton(self.operatorInterface.turboSpeed).whileTrue(
-            FieldRelativeDrive(
-                self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
-                self.operatorInterface.chassisControls.rotationX,
-            )
-        )
-
         ModifiableJoystickButton(
             self.operatorInterface.fieldRelativeCoordinateModeControl
         ).toggleOnTrue(
@@ -165,11 +154,11 @@ class RobotContainer:
             ShooterManualMode(self.shooter)
         )
 
-        ModifiableJoystickButton(self.operatorInterface.floor).whileTrue(
+        ModifiableJoystickButton(self.operatorInterface.floorIntake).whileTrue(
             FloorIntake(self.intake)
         )
 
-        ModifiableJoystickButton(self.operatorInterface.feed).whileTrue(
+        ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
             FeedIntakeToShooter(self.intake)
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
