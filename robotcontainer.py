@@ -23,11 +23,8 @@ from subsystems.drivesubsystem import DriveSubsystem
 # from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
-<<<<<<< HEAD
-=======
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.shootersubsystem import ShooterSubsystem
->>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 
 from operatorinterface import OperatorInterface
@@ -50,11 +47,8 @@ class RobotContainer:
         self.vision = VisionSubsystem()
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
-<<<<<<< HEAD
-=======
         self.intake = IntakeSubsystem()
         self.shooter = ShooterSubsystem()
->>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
         self.elevator = ElevatorSubsystem()
 
         # Robot demo subsystems

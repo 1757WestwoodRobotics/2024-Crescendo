@@ -687,8 +687,6 @@ kVelocityControlDGain = 0
 kVelocityControlMotorType = DCMotor.falcon500()
 kVelocityControlkV = 0.01
 
-<<<<<<< HEAD
-=======
 # Intake Mechanism, need to replace values
 kIntakeCANID = 40
 kIntakeName = "IntakeMotor"
@@ -793,7 +791,6 @@ kShootingMotorFudgeAmount = 50
 
 # radians
 kShootingAngleFudgeAmount = 0.01
->>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
 # Elevator constants, replace values
 
 kElevator1CANID = 60
@@ -810,11 +807,7 @@ kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2Inverted = True
 
-<<<<<<< HEAD
 kMotorPulleyGearRatio = 60 / 18 * 4 / 1
-=======
-kMotorPulleyGearRatio = 60 / 18
->>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
 
 kPulleyGearPitchDiameter = 1.504
 """inches"""
