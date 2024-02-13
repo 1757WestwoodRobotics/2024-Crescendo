@@ -5,7 +5,6 @@ from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
-from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 
 import constants
 
@@ -16,6 +15,7 @@ from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
+from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 
 # from commands.velocitysetpoint import VelocitySetpoint
 

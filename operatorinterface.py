@@ -71,11 +71,13 @@ class Control2D:
         self.sideToSide = sideToSide
 
 
+# pylint:disable-next=too-many-instance-attributes
 class OperatorInterface:
     """
     The controls that the operator(s)/driver(s) interact with
     """
 
+    # pylint:disable-next=too-many-instance-attributes
     def __init__(self) -> None:
         with open(
             path.join(
