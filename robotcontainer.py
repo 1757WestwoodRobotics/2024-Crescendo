@@ -16,6 +16,7 @@ from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
 from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
+from commands.shooter.shootsimnote import ShootSimNote
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -49,8 +50,8 @@ class RobotContainer:
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
         self.intake = IntakeSubsystem()
-        self.shooter = ShooterSubsystem()
         self.elevator = ElevatorSubsystem()
+        self.shooter = ShooterSubsystem(self.drive.printTimer)
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
@@ -170,6 +171,10 @@ class RobotContainer:
         # ModifiableJoystickButton(self.operatorInterface.velocitySetpoint2).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Setpoint2)
         # )
+
+        ModifiableJoystickButton(self.operatorInterface.simshoot).onTrue(
+            ShootSimNote(self.shooter)
+        )
 
     def getAutonomousCommand(self) -> commands2.Command:
         return self.chooser.getSelected()

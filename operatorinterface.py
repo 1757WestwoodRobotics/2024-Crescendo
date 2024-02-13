@@ -221,3 +221,5 @@ class OperatorInterface:
 
         self.elevatorJogUp = getButtonBindingOfName("elevatorJogUp")
         self.elevatorJogDown = getButtonBindingOfName("elevatorJogDown")
+
+        self.simshoot = getButtonBindingOfName("simshoot")

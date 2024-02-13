@@ -822,3 +822,13 @@ kBeltPullDownSpeed = 3
 
 kPullDownBandLimit = 0.1
 """Revolutions"""
+
+kRobotToShooterTransform = Transform3d(
+    Pose3d(),
+    Pose3d(
+        -5.631 * kMetersPerInch, 0, 13.191 * kMetersPerInch, Rotation3d(0, 0, math.pi)
+    ),
+)
+
+kShooterWheelDiameter = 3.965 * kMetersPerInch
+kSimNoteArrayKey = "SimNoteArray"
