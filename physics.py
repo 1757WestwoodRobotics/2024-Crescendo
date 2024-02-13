@@ -222,8 +222,7 @@ class NoteSim:
         )
 
         hasNote = SmartDashboard.getBoolean(
-            f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
-            False,
+            constants.kIntakeHasNoteKey, False
         )
 
         if intaking:
