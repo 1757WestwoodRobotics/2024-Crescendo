@@ -462,7 +462,7 @@ class DriveSubsystem(Subsystem):
         odometry with sensor data.
         """
 
-        pastPose = self.odometry.getPose()
+        pastPose = self.getPose()
 
         self.odometry.update(
             self.getRotation(),
@@ -487,15 +487,6 @@ class DriveSubsystem(Subsystem):
                 self.backLeftModule.getWheelLinearVelocity(),
                 self.backRightModule.getSwerveEncoderAngle().radians(),
                 self.backRightModule.getWheelLinearVelocity(),
-            ],
-        )
-        SmartDashboard.putNumberArray(
-            constants.kDriveVelocityKeys,
-            [
-                deltaPose.X()
-                / constants.kRobotUpdatePeriod,  # velocity is delta pose / delta time
-                deltaPose.Y() / constants.kRobotUpdatePeriod,
-                self.getAngularVelocity(),
             ],
         )
 
@@ -635,6 +626,18 @@ class DriveSubsystem(Subsystem):
                 )
             else:
                 robotChassisSpeeds = ChassisSpeeds()
+
+        fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            robotChassisSpeeds.vx,
+            robotChassisSpeeds.vy,
+            robotChassisSpeeds.omega,
+            -self.getRotation(),
+        )
+
+        SmartDashboard.putNumberArray(
+            constants.kDriveVelocityKeys,
+            [fieldSpeeds.vx, fieldSpeeds.vy, fieldSpeeds.omega],
+        )
 
         moduleStates = self.kinematics.toSwerveModuleStates(robotChassisSpeeds)
         self.applyStates(moduleStates)

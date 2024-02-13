@@ -199,13 +199,7 @@ class ShooterSubsystem(Subsystem):
         pose = SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
         robotPose = Pose2d(pose[0], pose[1], pose[2])
         robotVelocities = SmartDashboard.getNumberArray(
-            constants.kSimRobotVelocityArrayKey, [0, 0, 0]
-        )
-        robotSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-            robotVelocities[0],
-            robotVelocities[1],
-            robotVelocities[2],
-            -robotPose.rotation(),
+            constants.kDriveVelocityKeys, [0, 0, 0]
         )
         shooterPose = Pose3d(robotPose) + constants.kRobotToShooterTransform
 
@@ -220,8 +214,8 @@ class ShooterSubsystem(Subsystem):
         vVertical = noteSpeed * math.sin(shooterAngle)
         vHorizontal = noteSpeed * math.cos(shooterAngle)
 
-        vx = robotSpeeds.vx + vHorizontal * math.cos(shooterPose.rotation().Z())
-        vy = robotSpeeds.vy + vHorizontal * math.sin(shooterPose.rotation().Z())
+        vx = robotVelocities[0] + vHorizontal * math.cos(shooterPose.rotation().Z())
+        vy = robotVelocities[1] + vHorizontal * math.sin(shooterPose.rotation().Z())
         vz = vVertical
 
         self.simNotes.append(
