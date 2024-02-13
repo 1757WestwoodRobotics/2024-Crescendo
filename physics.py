@@ -221,10 +221,7 @@ class NoteSim:
             *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
         )
 
-        hasNote = SmartDashboard.getBoolean(
-            f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
-            False,
-        )
+        hasNote = SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
 
         if intaking:
             notestate = hasNote
