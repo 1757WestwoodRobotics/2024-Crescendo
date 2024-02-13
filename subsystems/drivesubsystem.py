@@ -462,8 +462,6 @@ class DriveSubsystem(Subsystem):
         odometry with sensor data.
         """
 
-        pastPose = self.getPose()
-
         self.odometry.update(
             self.getRotation(),
             (
@@ -475,7 +473,6 @@ class DriveSubsystem(Subsystem):
         )
         robotPose = self.getPose()
 
-        deltaPose = robotPose - pastPose
         SmartDashboard.putNumberArray(
             constants.kSwerveActualStatesKey,
             [

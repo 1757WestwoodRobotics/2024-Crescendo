@@ -1,8 +1,7 @@
 import math
 from commands2 import Subsystem
 from wpilib import SmartDashboard, Timer
-from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d, Translation2d
-from wpimath.kinematics import ChassisSpeeds
+from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d
 from phoenix6.configs import CurrentLimitsConfigs
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
