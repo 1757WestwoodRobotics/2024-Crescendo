@@ -243,12 +243,5 @@
       "Button": 7
     },
     "buttonbox"
-  ],
-  "simshoot": [
-    3,
-    {
-      "Button": 1
-    },
-    "temporary"
   ]
 }

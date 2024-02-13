@@ -1,5 +1,6 @@
 from commands2.command import Command
 from subsystems.intakesubsystem import IntakeSubsystem
+from subsystems.shootersubsystem import ShooterSubsystem
 
 
 class SetIntakeState(
@@ -35,8 +36,14 @@ class HoldIntakeAtHandoff(SetIntakeState):
 
 
 class FeedIntakeToShooter(SetIntakeState):
-    def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
+    def __init__(
+        self, intakeSubsystem: IntakeSubsystem, shooterSubsystem: ShooterSubsystem
+    ) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
+        self.shooter = shooterSubsystem
+
+    def initialize(self):
+        self.shooter.addSimNote()
 
     def execute(self) -> None:
         self.intake.setFeeding()

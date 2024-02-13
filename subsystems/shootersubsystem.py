@@ -7,6 +7,7 @@ from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
 from util.advantagescopeconvert import convertToSendablePoses
+from util.convenientmath import clamp
 import constants
 
 
@@ -47,11 +48,11 @@ class SimNote:
 
 
 class ShooterSubsystem(Subsystem):
-    def __init__(self, timer: Timer) -> None:
+    def __init__(self) -> None:
         Subsystem.__init__(self)
         self.setName(__class__.__name__)
 
-        self.timer = timer
+        self.timer = Timer()
         self.simNotes = []
 
         self.angleMotor = Talon(
@@ -118,8 +119,9 @@ class ShooterSubsystem(Subsystem):
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
         self.targetAngle = Rotation2d(
-            min(
-                max(constants.kShooterMinAngle.radians(), angle.radians()),
+            clamp(
+                angle.radians(),
+                constants.kShooterMinAngle.radians(),
                 constants.kShooterMaxAngle.radians(),
             )
         ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
@@ -197,7 +199,7 @@ class ShooterSubsystem(Subsystem):
         pose = SmartDashboard.getNumberArray(
             constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
         )
-        robotPose = Pose2d(pose[0], pose[1], pose[2])
+        robotPose = Pose2d(*pose)
         robotVelocities = SmartDashboard.getNumberArray(
             constants.kDriveVelocityKeys, [0, 0, 0]
         )
