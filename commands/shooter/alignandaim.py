@@ -4,7 +4,7 @@ import typing
 from commands2.command import Command
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
-from wpimath.geometry import Pose3d, Pose2d, Rotation2d
+from wpimath.geometry import Pose3d, Pose2d, Rotation2d, Translation3d, Translation2d
 from wpilib import DriverStation, SmartDashboard, Preferences
 
 
@@ -65,11 +65,13 @@ class AlignAndAim(Command):
             currentPose.rotation().radians(), currentVel.rotation().radians()
         )
 
-    def execute(self):
+    def calculateTimeVelocityAngle(
+        self, position: Translation3d
+    ) -> typing.Tuple[float, float, Rotation2d, Rotation2d]:
         botPose = self.drive.getPose()
-        targetPose2d = self.targetPose.toPose2d()
+        target2d = position.toTranslation2d()
 
-        deltaTranslation = botPose.translation() - targetPose2d.translation()
+        deltaTranslation = botPose.translation() - target2d
 
         angleToTarget = rotationFromTranslation(deltaTranslation)
         distanceToTarget = deltaTranslation.norm()
@@ -88,26 +90,44 @@ class AlignAndAim(Command):
         launchAngle = atan2(vy, vx)  # radians
         launch_vel = sqrt(vx**2 + vy**2)  # m/s
 
+        return airtime, launch_vel, Rotation2d(launchAngle), angleToTarget
+
+    def execute(self):
+        botPose = self.drive.getPose()
+        robotVelocity = SmartDashboard.getNumberArray(
+            constants.kDriveVelocityKeys, [0, 0, 0]
+        )
+        time, velocity, psi, theta = 0, 0, Rotation2d(), Rotation2d()
+        target = self.targetPose.translation()
+
+        for _ in range(2):  # iterative solver for moving shot
+            time, velocity, psi, theta = self.calculateTimeVelocityAngle(target)
+
+            positionChange = Translation2d(
+                robotVelocity[0] * time, robotVelocity[1] * time
+            )
+            target = target - Translation3d(positionChange.X(), positionChange.Y(), 0)
+
         launch_vel_rpm = (
-            launch_vel
+            velocity
             * constants.kSecondsPerMinute
             / constants.kShooterWheelRadius
             / constants.kRadiansPerRevolution
             / constants.kShootingMotorRatio
         )
 
-        SmartDashboard.putNumber(constants.kShooterCalcSpeed, launch_vel_rpm)
-        SmartDashboard.putNumber(constants.kShooterCalcAngle, launchAngle)
+        SmartDashboard.putNumber(constants.kShooterCalcSpeed, velocity)
+        SmartDashboard.putNumber(constants.kShooterCalcAngle, psi.radians())
 
         spinAmount = Preferences.getDouble("Spin Amount", 100)
 
-        self.shooter.setShooterAngle(Rotation2d(launchAngle))
+        self.shooter.setShooterAngle(psi)
         self.shooter.setLeftShootingMotorSpeed(launch_vel_rpm - spinAmount)
         self.shooter.setRightShootingMotorSpeed(launch_vel_rpm + spinAmount)
 
         # rotation pid gain
         rotation = self.thetaController.calculate(
-            botPose.rotation().radians(), angleToTarget.radians()
+            botPose.rotation().radians(), theta.radians()
         )
 
         if DriverStation.getAlliance() == DriverStation.Alliance.kRed:

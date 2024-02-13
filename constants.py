@@ -631,7 +631,7 @@ kDriveToTargetControlButtonName = "driveToTargetControl"
 kXboxTriggerActivationThreshold = 0.5
 
 kTurboSpeedButtonName = "turboSpeed"
-kNormalSpeedMultiplier = 0.80  # half full on normal
+kNormalSpeedMultiplier = 0.50  # half full on normal
 kTurboSpeedMultiplier = 0.95  # full speed!!!
 
 # Simulation Parameters
@@ -735,7 +735,7 @@ kShootingMotorRatio = 24 / 36
 
 kAngleMotorCANId = 50
 kAngleMotorName = "ShooterAngleMotor"
-kAngleMotorPGain = 0.5
+kAngleMotorPGain = 0.9
 kAngleMotorIGain = 0
 kAngleMotorDGain = 0
 kAngleMotorInverted = False
