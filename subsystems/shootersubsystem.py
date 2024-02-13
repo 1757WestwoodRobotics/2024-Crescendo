@@ -133,7 +133,7 @@ class ShooterSubsystem(Subsystem):
             * constants.kAngleMotorRatio,
         )
 
-    def setLeftShootingMotorSpeed(self, rpm: int) -> None:
+    def setLeftShootingMotorSpeed(self, rpm: float) -> None:
         self.leftTargetSpeed = rpm + SmartDashboard.getNumber(
             constants.kLeftMotorFudgeKey, 0
         )
@@ -142,7 +142,7 @@ class ShooterSubsystem(Subsystem):
             self.leftTargetSpeed * constants.kShootingMotorRatio,
         )
 
-    def setRightShootingMotorSpeed(self, rpm: int) -> None:
+    def setRightShootingMotorSpeed(self, rpm: float) -> None:
         self.rightTargetSpeed = rpm + SmartDashboard.getNumber(
             constants.kRightMotorFudgeKey, 0
         )

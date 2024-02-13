@@ -5,6 +5,7 @@ from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
+from commands.shooter.alignandaim import AlignAndAim
 
 import constants
 
@@ -132,7 +133,8 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
-            AngleAlignDrive(
+            AlignAndAim(
+                self.shooter,
                 self.drive,
                 lambda: self.operatorInterface.chassisControls.forwardsBackwards()
                 * constants.kNormalSpeedMultiplier,
@@ -160,6 +162,17 @@ class RobotContainer:
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
             FeedIntakeToShooter(self.intake, self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
+            AlignAndAim(
+                self.shooter,
+                self.drive,
+                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
+                * constants.kNormalSpeedMultiplier,
+                lambda: self.operatorInterface.chassisControls.sideToSide()
+                * constants.kNormalSpeedMultiplier,
+            )
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
