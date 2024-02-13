@@ -76,9 +76,7 @@ class IntakeSubsystem(Subsystem):
             )
 
             if self.hasPosition:
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Velocity, 0
-                )
+                self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, 0)
             # If either sensor is covered, stop the motor
 
         elif self.state == self.IntakeState.Holding:
@@ -100,7 +98,9 @@ class IntakeSubsystem(Subsystem):
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Position, self.heldPosition
                 )
-            elif not frontLimitState and backLimitState: #Note: not only aplies to first part (this is for front off back on)
+            elif (
+                not frontLimitState and backLimitState
+            ):  # Note: not only aplies to first part (this is for front off back on)
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Position, self.heldPosition
                 )

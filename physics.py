@@ -221,9 +221,7 @@ class NoteSim:
             *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
         )
 
-        hasNote = SmartDashboard.getBoolean(
-            constants.kIntakeHasNoteKey, False
-        )
+        hasNote = SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
 
         if intaking:
             notestate = hasNote
