@@ -15,6 +15,7 @@ from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
+from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -107,6 +108,7 @@ class RobotContainer:
                 self.operatorInterface.chassisControls.rotationX,
             )
         )
+        self.intake.setDefaultCommand(StageIntake(self.intake))
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
@@ -117,17 +119,6 @@ class RobotContainer:
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
         and then passing it to a JoystickButton.
         """
-
-        ModifiableJoystickButton(self.operatorInterface.turboSpeed).whileTrue(
-            FieldRelativeDrive(
-                self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
-                self.operatorInterface.chassisControls.rotationX,
-            )
-        )
 
         ModifiableJoystickButton(
             self.operatorInterface.fieldRelativeCoordinateModeControl
@@ -163,6 +154,13 @@ class RobotContainer:
             ShooterManualMode(self.shooter)
         )
 
+        ModifiableJoystickButton(self.operatorInterface.floorIntake).whileTrue(
+            FloorIntake(self.intake)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
+            FeedIntakeToShooter(self.intake)
+        )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
         # )
