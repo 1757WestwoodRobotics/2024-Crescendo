@@ -99,14 +99,16 @@ class AlignAndAim(Command):
         )
         time, velocity, psi, theta = 0, 0, Rotation2d(), Rotation2d()
         target = self.targetPose.translation()
+        
+        newTarget = target
 
-        for _ in range(2):  # iterative solver for moving shot
-            time, velocity, psi, theta = self.calculateTimeVelocityAngle(target)
+        for _ in range(5):  # iterative solver for moving shot
+            time, velocity, psi, theta = self.calculateTimeVelocityAngle(newTarget)
 
             positionChange = Translation2d(
                 robotVelocity[0] * time, robotVelocity[1] * time
             )
-            target = target - Translation3d(positionChange.X(), positionChange.Y(), 0)
+            newTarget = target - Translation3d(positionChange.X(), positionChange.Y(), 0)
 
         launch_vel_rpm = (
             velocity
