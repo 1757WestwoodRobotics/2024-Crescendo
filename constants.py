@@ -358,6 +358,7 @@ kTalonVelocityPerRPM = (
 ) / k100MillisecondsPerSecond
 """(pulses / 100 milliseconds) / RPM"""
 
+
 kTalonVelocityPerAngularVelocity = kTalonVelocityPerRPM * kRPMPerAngularVelocity
 """(pulses / 100 milliseconds) / (radians / second)"""
 
@@ -686,6 +687,113 @@ kVelocityControlDGain = 0
 kVelocityControlMotorType = DCMotor.falcon500()
 kVelocityControlkV = 0.01
 
+<<<<<<< HEAD
+=======
+# Intake Mechanism, need to replace values
+kIntakeCANID = 40
+kIntakeName = "IntakeMotor"
+kIntakePIDSlot = 0
+kIntakePGain = 0.12
+kIntakeIGain = 0
+kIntakeDGain = 0
+
+kPivotCANID = 41
+kPivotName = "PivotMotor"
+kPivotPGain = 0.7
+kPivotIGain = 0
+kPivotDGain = 0
+
+kPivotGearRatio = (4 / 1) * (50 / 16) * (84 / 16)
+
+kIntakeInverted = False
+kPivotInverted = False
+
+kPivotEncoderID = 1
+# intake 0 degrees is handoff angle
+kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
+# all angles are relative to handoff angle
+kHandoffAngle = Rotation2d(0)
+kFloorPositionAngle = Rotation2d.fromDegrees(225.045433)
+kStagingPositionAngle = Rotation2d.fromDegrees(69.939031)
+kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
+
+# RPM
+kIntakeSpeed = 1000
+
+kPivotAngleKey = "PivotAngle"
+kIntakeSpeedKey = "IntakeSpeed"
+
+kAngleMotorRatio = (64 / 16) * (60 / 18)
+kShootingMotorRatio = 24 / 36
+
+# change numbers later
+
+kAngleMotorCANId = 50
+kAngleMotorName = "ShooterAngleMotor"
+kAngleMotorPGain = 0.1
+kAngleMotorIGain = 0
+kAngleMotorDGain = 0
+kAngleMotorInverted = False
+
+kLeftShootingMotorCANId = 51
+kLeftShootingMotorName = "LeftShootingMotor"
+kLeftShootingMotorPIDSlot = 0
+kLeftShootingMotorPGain = 0.01
+kLeftShootingMotorIGain = 0
+kLeftShootingMotorDGain = 0
+kLeftShootingMotorInverted = False
+kLeftShootingMotorKv = 550
+
+# Kv taken from motor specifications
+
+kRightShootingMotorCANId = 52
+kRightShootingMotorName = "RightShootingMotor"
+kRightShootingMotorPIDSlot = 0
+kRightShootingMotorPGain = 0.01
+kRightShootingMotorIGain = 0
+kRightShootingMotorDGain = 0
+kRightShootingMotorInverted = False
+kRightShootingMotorKv = 550
+
+kAngleMotorMappingFunction = lambda x, y: x * y
+kLeftShootingMotorMappingFunction = lambda x, y: x * y
+kRightShootingMotorMappingFunction = lambda x, y: x * y
+kRobotAngleMappingFunction = lambda x, y: x * y
+
+kShooterAngleEncoderCANId = 1
+
+# radians
+kShooterAngleKey = "ShooterAngle"
+kLeftShootingMotorSpeedKey = "LeftShootingMotorRPM"
+kRightShootingMotorSpeedKey = "RightShootingMotorRPM"
+
+kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
+# in RPM
+kShooterSpeedTolerance = 100
+
+kShooterAngleOnTargetKey = "AngleOnTarget"
+kLeftShootingMotorOnTargetKey = "LeftMotorOnTarget"
+kRightShootingMotorOnTargetKey = "RightMotorOnTarget"
+kRobotAngleOnTargetKey = "RobotAngleOnTarget"
+kReadyToShoot = "FireInTheHole"
+
+# from horizontal
+kShooterMaxAngle = Rotation2d.fromDegrees(64.028164)
+kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
+
+kShootingMotorCurrentLimit = 40
+kAngleMotorCurrentLimit = 40
+
+kShooterManualModeKey = "ShooterManualMode"
+kShooterAngleFudgeKey = "ShooterAngleFudge"
+kLeftMotorFudgeKey = "LeftMotorFudge"
+kRightMotorFudgeKey = "RightMotorFudge"
+
+kShootingMotorFudgeAmount = 50
+
+# radians
+kShootingAngleFudgeAmount = 0.01
+>>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
 # Elevator constants, replace values
 
 kElevator1CANID = 60
@@ -702,7 +810,11 @@ kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2Inverted = True
 
+<<<<<<< HEAD
 kMotorPulleyGearRatio = 60 / 18 * 4 / 1
+=======
+kMotorPulleyGearRatio = 60 / 18
+>>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
 
 kPulleyGearPitchDiameter = 1.504
 """inches"""

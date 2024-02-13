@@ -185,3 +185,8 @@ class OperatorInterface:
                 )
             ),
         )
+        # intake subsystem related commands
+        self.floor = getButtonBindingOfName("floor")
+        self.trap = getButtonBindingOfName("trap")
+        self.hold = getButtonBindingOfName("hold")
+        self.feed = getButtonBindingOfName("feed")

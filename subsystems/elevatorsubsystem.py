@@ -6,7 +6,11 @@ from util.simtalon import Talon
 import constants
 
 
+<<<<<<< HEAD
 class ElevatorSubsystem(SubsystemBase):
+=======
+class ElevatorSubsystem(Subsystem):
+>>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
     class ElevatorState(Enum):
         BottomPosition = auto()
         AmpPosition = auto()
@@ -48,7 +52,14 @@ class ElevatorSubsystem(SubsystemBase):
             self.setElevatorMotorsAtPosition(constants.kTopPositionBeltPosition)
 
         elif self.state == self.ElevatorState.PullDown:
+<<<<<<< HEAD
             if self.elevatorMotor1.get(Talon.ControlMode.Position) > constants.kPullDownBandLimit:
+=======
+            if (
+                self.elevatorMotor1.get(Talon.ControlMode.Position)
+                > constants.kPullDownBandLimit
+            ):
+>>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
                 self.elevatorMotor1.set(
                     Talon.ControlMode.Velocity,
                     constants.kBeltPullDownSpeed

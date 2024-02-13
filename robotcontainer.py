@@ -14,6 +14,7 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
+from commands.shooter.shootermanualmode import ShooterManualMode
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -22,10 +23,15 @@ from subsystems.drivesubsystem import DriveSubsystem
 # from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
+<<<<<<< HEAD
+=======
+from subsystems.intakesubsystem import IntakeSubsystem
+from subsystems.shootersubsystem import ShooterSubsystem
+>>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 
 from operatorinterface import OperatorInterface
-from util.helpfultriggerwrappers import ModifiableJoystickButton
+from util.helpfultriggerwrappers import ModifiableJoystickButton, SmartDashboardButton
 
 
 class RobotContainer:
@@ -44,6 +50,11 @@ class RobotContainer:
         self.vision = VisionSubsystem()
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
+<<<<<<< HEAD
+=======
+        self.intake = IntakeSubsystem()
+        self.shooter = ShooterSubsystem()
+>>>>>>> 4c2118b7a2395129c03e6e77dc1f5d76e15be5d9
         self.elevator = ElevatorSubsystem()
 
         # Robot demo subsystems
@@ -151,6 +162,11 @@ class RobotContainer:
 
         ModifiableJoystickButton(self.operatorInterface.defenseStateControl).whileTrue(
             DefenseState(self.drive)
+        )
+
+        # intake subsystem related calls
+        SmartDashboardButton(constants.kShooterManualModeKey).whileTrue(
+            ShooterManualMode(self.shooter)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
