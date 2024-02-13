@@ -195,8 +195,9 @@ class ShooterSubsystem(Subsystem):
         )
 
     def addSimNote(self) -> None:
-        # uses NT values right now because motors aren't simulated
-        pose = SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
+        pose = SmartDashboard.getNumberArray(
+            constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
+        )
         robotPose = Pose2d(pose[0], pose[1], pose[2])
         robotVelocities = SmartDashboard.getNumberArray(
             constants.kDriveVelocityKeys, [0, 0, 0]
