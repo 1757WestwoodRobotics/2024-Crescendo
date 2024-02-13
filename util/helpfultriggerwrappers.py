@@ -19,6 +19,7 @@ class AxisButton(Trigger):
 
 class SmartDashboardButton(Trigger):
     def __init__(self, key: str) -> None:
+        SmartDashboard.putBoolean(key, False)
         super().__init__(lambda: SmartDashboard.getBoolean(key, False))
 
 

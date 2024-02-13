@@ -78,6 +78,7 @@ class OperatorInterface:
     """
 
     # pylint:disable-next=too-many-instance-attributes
+    # pylint:disable-next=too-many-statements
     def __init__(self) -> None:
         with open(
             path.join(

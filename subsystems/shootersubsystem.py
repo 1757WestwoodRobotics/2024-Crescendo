@@ -1,17 +1,59 @@
+import math
 from commands2 import Subsystem
-from wpilib import SmartDashboard
-from wpimath.geometry import Rotation2d
+from wpilib import SmartDashboard, Timer
+from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d
 from phoenix6.configs import CurrentLimitsConfigs
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
+from util.advantagescopeconvert import convertToSendablePoses
+from util.convenientmath import clamp
 import constants
+
+
+class SimNote:
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        z: float,
+        vx: float,
+        vy: float,
+        vz: float,
+        initialTime: float,
+    ) -> None:
+        # metric units
+        # initial position
+        self.xi = x
+        self.yi = y
+        self.zi = z
+
+        # current position
+        self.xc = x
+        self.yc = y
+        self.zc = z
+
+        # velocity
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+        self.initialTime = initialTime
+
+    def update(self, currentTime) -> None:
+        if self.zc > 0:
+            elapsedTime = currentTime - self.initialTime
+            self.xc = self.xi + self.vx * elapsedTime
+            self.yc = self.yi + self.vy * elapsedTime
+            self.zc = self.zi + self.vz * elapsedTime - 9.8 / 2 * elapsedTime**2
 
 
 class ShooterSubsystem(Subsystem):
     def __init__(self) -> None:
         Subsystem.__init__(self)
         self.setName(__class__.__name__)
+
+        self.timer = Timer()
+        self.simNotes = []
 
         self.angleMotor = Talon(
             constants.kAngleMotorCANId,
@@ -76,9 +118,12 @@ class ShooterSubsystem(Subsystem):
         # speeds are in RPM, same as velocity control mode
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
-        self.targetAngle = min(
-            max(constants.kShooterMinAngle, angle),
-            constants.kShooterMaxAngle,
+        self.targetAngle = Rotation2d(
+            clamp(
+                angle.radians(),
+                constants.kShooterMinAngle.radians(),
+                constants.kShooterMaxAngle.radians(),
+            )
         ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
 
         self.angleMotor.set(
@@ -150,17 +195,97 @@ class ShooterSubsystem(Subsystem):
             and SmartDashboard.getBoolean(constants.kRobotAngleOnTargetKey, False)
         )
 
+    def addSimNote(self) -> None:
+        pose = SmartDashboard.getNumberArray(
+            constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
+        )
+        robotPose = Pose2d(*pose)
+        robotVelocities = SmartDashboard.getNumberArray(
+            constants.kDriveVelocityKeys, [0, 0, 0]
+        )
+        shooterPose = Pose3d(robotPose) + constants.kRobotToShooterTransform
+
+        noteSpeed = (
+            (
+                SmartDashboard.getNumber(constants.kRightShootingMotorSpeedKey, 0)
+                + SmartDashboard.getNumber(constants.kLeftShootingMotorSpeedKey, 0)
+            )
+            / 2
+            / constants.kSecondsPerMinute
+            * constants.kRadiansPerRevolution
+            * constants.kShooterWheelDiameter
+            / 2
+        )
+        shooterAngle = SmartDashboard.getNumber(constants.kShooterAngleKey, 0)
+        vVertical = noteSpeed * math.sin(shooterAngle)
+        vHorizontal = noteSpeed * math.cos(shooterAngle)
+
+        vx = robotVelocities[0] + vHorizontal * math.cos(shooterPose.rotation().Z())
+        vy = robotVelocities[1] + vHorizontal * math.sin(shooterPose.rotation().Z())
+        vz = vVertical
+
+        self.simNotes.append(
+            SimNote(
+                shooterPose.X(),
+                shooterPose.Y(),
+                shooterPose.Z(),
+                vx,
+                vy,
+                vz,
+                self.timer.getFPGATimestamp(),
+            )
+        )
+        latestNoteTrajectory = []
+        onGround = False
+        elapsedTime = 0
+        while not onGround:
+            note = SimNote(
+                shooterPose.X(),
+                shooterPose.Y(),
+                shooterPose.Z(),
+                vx,
+                vy,
+                vz,
+                self.timer.getFPGATimestamp(),
+            )
+            note.update(self.timer.getFPGATimestamp() + elapsedTime)
+            elapsedTime += constants.kNoteTrajectoryTimeInterval
+            if note.zc > 0:
+                latestNoteTrajectory.append(
+                    Pose3d(note.xc, note.yc, note.zc, Rotation3d(0, 0, 0))
+                )
+            else:
+                onGround = True
+        SmartDashboard.putNumberArray(
+            constants.kLatestNoteTrajectoryKey,
+            convertToSendablePoses(latestNoteTrajectory),
+        )
+
     def periodic(self) -> None:
+        notePoses = []
+
+        for simNote in self.simNotes:
+            simNote.update(self.timer.getFPGATimestamp())
+            if simNote.zc <= 0:
+                self.simNotes.remove(simNote)
+            else:
+                notePoses.append(
+                    Pose3d(simNote.xc, simNote.yc, simNote.zc, Rotation3d(0, 0, 0))
+                )
+        SmartDashboard.putNumberArray(
+            constants.kSimNoteArrayKey, convertToSendablePoses(notePoses)
+        )
         # logging
-        SmartDashboard.putNumber(
-            constants.kShooterAngleKey, self.getShooterAngle().radians()
-        )
-        SmartDashboard.putNumber(
-            constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()
-        )
-        SmartDashboard.putNumber(
-            constants.kRightShootingMotorSpeedKey, self.getRightShooterSpeed()
-        )
+        if not SmartDashboard.getBoolean(constants.kShooterManualModeKey, False):
+            SmartDashboard.putNumber(
+                constants.kShooterAngleKey, self.getShooterAngle().radians()
+            )
+            SmartDashboard.putNumber(
+                constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()
+            )
+            SmartDashboard.putNumber(
+                constants.kRightShootingMotorSpeedKey, self.getRightShooterSpeed()
+            )
 
         SmartDashboard.putBoolean(
             constants.kShooterAngleOnTargetKey, self.angleOnTarget()

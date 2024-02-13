@@ -1,5 +1,6 @@
 from commands2 import Command
 from wpilib import SmartDashboard
+from wpimath.geometry import Rotation2d
 import constants
 from subsystems.shootersubsystem import ShooterSubsystem
 
@@ -17,11 +18,11 @@ class ShooterManualMode(Command):
 
     def execute(self) -> None:
         self.shooter.setLeftShootingMotorSpeed(
-            SmartDashboard.getNumber(constants.kLeftShootingMotorSpeedKey, 0)
+            SmartDashboard.getNumber(constants.kLeftShootingMotorSpeedKey, 1000)
         )
         self.shooter.setRightShootingMotorSpeed(
-            SmartDashboard.getNumber(constants.kRightShootingMotorSpeedKey, 0)
+            SmartDashboard.getNumber(constants.kRightShootingMotorSpeedKey, 1000)
         )
         self.shooter.setShooterAngle(
-            SmartDashboard.getNumber(constants.kShooterAngleKey, 0)
+            Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleKey, 0.5))
         )

@@ -49,8 +49,8 @@ class RobotContainer:
         self.drive = DriveSubsystem(self.vision)
         self.log = LoggingSubsystem(self.operatorInterface)
         self.intake = IntakeSubsystem()
-        self.shooter = ShooterSubsystem()
         self.elevator = ElevatorSubsystem()
+        self.shooter = ShooterSubsystem()
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
@@ -159,7 +159,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
-            FeedIntakeToShooter(self.intake)
+            FeedIntakeToShooter(self.intake, self.shooter)
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
