@@ -205,7 +205,11 @@ class ShooterSubsystem(Subsystem):
         shooterPose = Pose3d(robotPose) + constants.kRobotToShooterTransform
 
         noteSpeed = (
-            SmartDashboard.getNumber(constants.kRightShootingMotorSpeedKey, 0)
+            (
+                SmartDashboard.getNumber(constants.kRightShootingMotorSpeedKey, 0)
+                + SmartDashboard.getNumber(constants.kLeftShootingMotorSpeedKey, 0)
+            )
+            / 2
             / constants.kSecondsPerMinute
             * constants.kRadiansPerRevolution
             * constants.kShooterWheelDiameter
@@ -230,11 +234,35 @@ class ShooterSubsystem(Subsystem):
                 self.timer.getFPGATimestamp(),
             )
         )
+        latestNoteTrajectory = []
+        onGround = False
+        elapsedTime = 0
+        while not onGround:
+            note = SimNote(
+                shooterPose.X(),
+                shooterPose.Y(),
+                shooterPose.Z(),
+                vx,
+                vy,
+                vz,
+                self.timer.getFPGATimestamp(),
+            )
+            note.update(self.timer.getFPGATimestamp() + elapsedTime)
+            elapsedTime += constants.kNoteTrajectoryTimeInterval
+            if note.zc > 0:
+                latestNoteTrajectory.append(
+                    Pose3d(note.xc, note.yc, note.zc, Rotation3d(0, 0, 0))
+                )
+            else:
+                onGround = True
+        SmartDashboard.putNumberArray(
+            constants.kLatestNoteTrajectoryKey,
+            convertToSendablePoses(latestNoteTrajectory),
+        )
 
     def periodic(self) -> None:
         notePoses = []
 
-        SmartDashboard.clearPersistent
         for simNote in self.simNotes:
             simNote.update(self.timer.getFPGATimestamp())
             if simNote.zc <= 0:

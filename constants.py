@@ -832,3 +832,5 @@ kRobotToShooterTransform = Transform3d(
 
 kShooterWheelDiameter = 3.965 * kMetersPerInch
 kSimNoteArrayKey = "SimNoteArray"
+kLatestNoteTrajectoryKey = "LatestNoteTrajectory"
+kNoteTrajectoryTimeInterval = 0.15
