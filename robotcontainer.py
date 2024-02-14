@@ -12,10 +12,11 @@ from commands.resetdrive import ResetDrive
 from commands.drivedistance import DriveDistance
 from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
-from commands.drive.anglealign import AngleAlignDrive
 from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
 from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
+from commands.shooter.alignandaim import AlignAndAim
+from commands.drive.drivewaypoint import DriveWaypoint
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -132,12 +133,10 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
-            AngleAlignDrive(
+            DriveWaypoint(
                 self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
+                self.operatorInterface.chassisControls.forwardsBackwards,
+                self.operatorInterface.chassisControls.sideToSide,
             )
         )
 
@@ -160,6 +159,17 @@ class RobotContainer:
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
             FeedIntakeToShooter(self.intake, self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
+            AlignAndAim(
+                self.shooter,
+                self.drive,
+                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
+                * constants.kNormalSpeedMultiplier,
+                lambda: self.operatorInterface.chassisControls.sideToSide()
+                * constants.kNormalSpeedMultiplier,
+            )
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)

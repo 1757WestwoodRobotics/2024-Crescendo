@@ -260,9 +260,11 @@ class PhysicsEngine:
         self.sim_initialized = False
 
         self.motorsim = MotorSimulator()
-        # self.motorsim.addFalcon(
-        #     robot.container.velocity.motor, 1, constants.kSimulationRotationalInertia
-        # )
+        self.motorsim.addFalcon(
+            robot.container.shooter.angleMotor,
+            1,
+            constants.kSimulationRotationalInertia,
+        )
 
         targets = []
         for target in constants.kApriltagPositionDict.values():

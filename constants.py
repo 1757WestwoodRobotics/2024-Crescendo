@@ -76,6 +76,9 @@ kSecondsPerMinute = 60 / 1
 kRPMPerAngularVelocity = (1 / kRadiansPerRevolution) * kSecondsPerMinute
 """RPM / (radians / second)"""
 
+kGravity = 9.802  # new york gravity
+"""m / s / s"""
+
 # Debug parameters
 kPrintFrequency = 2
 """ 1 / second"""
@@ -628,7 +631,7 @@ kDriveToTargetControlButtonName = "driveToTargetControl"
 kXboxTriggerActivationThreshold = 0.5
 
 kTurboSpeedButtonName = "turboSpeed"
-kNormalSpeedMultiplier = 0.80  # half full on normal
+kNormalSpeedMultiplier = 0.50  # half full on normal
 kTurboSpeedMultiplier = 0.95  # full speed!!!
 
 # Simulation Parameters
@@ -662,6 +665,10 @@ kTargetWaypointThetaControllerKey = "waypoint/theta"
 # lights
 kCANdleID = 2
 
+# Field
+
+kSpeakerCenterBlue = Pose3d(0.2167, 5.549, 2.12, Rotation3d())
+kSpeakerCenterRed = Pose3d(16.3, 5.549, 2.12, Rotation3d())
 
 # Logging
 kSwerveActualStatesKey = "swerve/actual"
@@ -728,7 +735,7 @@ kShootingMotorRatio = 24 / 36
 
 kAngleMotorCANId = 50
 kAngleMotorName = "ShooterAngleMotor"
-kAngleMotorPGain = 0.1
+kAngleMotorPGain = 0.9
 kAngleMotorIGain = 0
 kAngleMotorDGain = 0
 kAngleMotorInverted = False
@@ -787,6 +794,10 @@ kShooterAngleFudgeKey = "ShooterAngleFudge"
 kLeftMotorFudgeKey = "LeftMotorFudge"
 kRightMotorFudgeKey = "RightMotorFudge"
 
+
+kShooterCalcSpeed = "shooter/calculated/speed"
+kShooterCalcAngle = "shooter/calculated/angle"
+
 kShootingMotorFudgeAmount = 50
 
 # radians
@@ -834,3 +845,9 @@ kShooterWheelDiameter = 4 * kMetersPerInch
 kSimNoteArrayKey = "SimNoteArray"
 kLatestNoteTrajectoryKey = "LatestNoteTrajectory"
 kNoteTrajectoryTimeInterval = 0.15
+kShooterWheelRadius = kShooterWheelDiameter / 2
+kShooterMovingIterations = 5
+
+kAlignAnglePGain = 1.2
+kAlignAngleIGain = 0
+kAlignAngleDGain = 0
