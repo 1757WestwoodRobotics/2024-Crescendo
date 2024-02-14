@@ -17,14 +17,16 @@ from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
 from wpilib import RobotController, SmartDashboard
 from wpilib.simulation import DCMotorSim
-from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d
+from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d, Pose3d
 from wpimath.system.plant import DCMotor
 import wpimath.kinematics
 from pyfrc.physics.core import PhysicsInterface
 import constants
 from robot import MentorBot
 from subsystems.drivesubsystem import DriveSubsystem
-from util.convenientmath import clamp
+from subsystems.intakesubsystem import IntakeSubsystem
+from util.advantagescopeconvert import convertToSendablePoses
+from util.convenientmath import clamp, pointInCircle
 from util.motorsimulator import MotorSimulator
 
 
@@ -159,7 +161,7 @@ class SwerveDriveSim:
             state = wpimath.kinematics.SwerveModuleState(
                 -wheelLinearVelocity,
                 Rotation2d(
-                    -swerve_position_rot
+                    swerve_position_rot
                     / module.steerMotorGearing
                     * constants.kRadiansPerRevolution
                 ),
@@ -176,10 +178,91 @@ class SwerveDriveSim:
             [chassisSpeed.vx, chassisSpeed.vy, chassisSpeed.omega],
         )
 
-        deltaTrans = Transform2d(deltaX, deltaY, deltaHeading)
+        deltaTrans = Transform2d(deltaX, -deltaY, deltaHeading)
 
         newPose = self.pose + deltaTrans
         self.pose = newPose
+
+
+class NoteSim:
+    def __init__(self) -> None:
+        self.midlineNotes = constants.kNotesStartingMidline
+        self.blueNotes = constants.kNotesStartingBlueWing
+        self.redNotes = constants.kNotesStartingRedWing
+
+        self.loadingNotes = [
+            constants.kNoteLoadingStationPositionBlue,
+            constants.kNoteLoadingStationPositionRed,
+        ]
+
+    def canPickup(self, note: Pose3d, botPose) -> bool:
+        if pointInCircle(botPose.translation(), note.toPose2d().translation(), 0.5):
+            return True
+        return False
+
+    def update(self, _tm_diff, bot: MentorBot):
+        SmartDashboard.putNumberArray(
+            constants.kSimNotePositionsKey,
+            convertToSendablePoses(
+                [
+                    *self.midlineNotes,
+                    *self.blueNotes,
+                    *self.redNotes,
+                    *self.loadingNotes,
+                ]
+            ),
+        )
+
+        # check whether intaking, update sensors according to position on field
+
+        intaking = bot.container.intake.state == IntakeSubsystem.IntakeState.Intaking
+
+        botPose = Pose2d(
+            *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
+        )
+
+        hasNote = SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
+
+        if intaking:
+            notestate = hasNote
+            for stationObject in self.loadingNotes:
+                if self.canPickup(stationObject, botPose):
+                    notestate = True
+
+            for blueWingNote in self.blueNotes:
+                # remove the note from the field
+                if self.canPickup(blueWingNote, botPose):
+                    notestate = True
+                    self.blueNotes.remove(blueWingNote)
+
+            for redWingNote in self.redNotes:
+                # remove the note from the field
+                if self.canPickup(redWingNote, botPose):
+                    notestate = True
+                    self.redNotes.remove(redWingNote)
+
+            for midlineNote in self.midlineNotes:
+                # remove the note from the field
+                if self.canPickup(midlineNote, botPose):
+                    notestate = True
+                    self.midlineNotes.remove(midlineNote)
+
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
+                notestate,
+            )
+
+        # shooting a note clears the note
+        feeding = bot.container.intake.state == IntakeSubsystem.IntakeState.Feeding
+
+        if feeding:
+            if hasNote:
+                pass  # Logic for calculating a shot
+
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
+                False,
+            )
 
 
 class PhysicsEngine:
@@ -190,6 +273,7 @@ class PhysicsEngine:
     # pylint: disable-next=unused-argument
     def __init__(self, physics_controller: PhysicsInterface, robot: MentorBot):
         self.physics_controller = physics_controller
+        self.bot = robot
 
         driveSubsystem: DriveSubsystem = robot.container.drive
 
@@ -254,6 +338,7 @@ class PhysicsEngine:
         ]
 
         self.driveSim = SwerveDriveSim(tuple(self.swerveModuleSims))
+        self.noteSim = NoteSim()
 
         self.gyroSim = driveSubsystem.gyro.sim_state
 
@@ -311,6 +396,7 @@ class PhysicsEngine:
 
         self.motorsim.update(tm_diff, voltage)
         self.driveSim.update(tm_diff, voltage)
+        self.noteSim.update(tm_diff, self.bot)
 
         simRobotPose = self.driveSim.getPose()
         self.physics_controller.field.setRobotPose(simRobotPose)

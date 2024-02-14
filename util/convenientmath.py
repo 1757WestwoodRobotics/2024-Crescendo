@@ -72,3 +72,30 @@ def addPose2d(a: Pose2d, b: Pose2d):
 
 def pose3dFrom2d(pose: Pose2d) -> Pose3d:
     return Pose3d(pose.X(), pose.Y(), 0, Rotation3d(0, 0, pose.rotation().radians()))
+
+
+def translationDotProduct(a: Translation2d, b: Translation2d) -> float:
+    return a.x * b.x + a.y * b.y
+
+
+def pointInRectangle(
+    rect: typing.Tuple[Translation2d, Translation2d, Translation2d, Translation2d],
+    point: Translation2d,
+) -> bool:
+    # https://stackoverflow.com/a/37865332 cuz aint no way I can magic my way this one
+    a, b, c, _ = rect
+    ab = a - b
+    am = a - point
+    bc = b - c
+    bm = b - point
+    dot = translationDotProduct
+
+    dotABAM = dot(ab, am)
+    dotABAB = dot(ab, ab)
+    dotBCBM = dot(bc, bm)
+    dotBCBC = dot(bc, bc)
+    return 0 <= dotABAM <= dotABAB and 0 <= dotBCBM <= dotBCBC
+
+
+def pointInCircle(p1: Translation2d, c: Translation2d, r: float) -> bool:
+    return (p1 - c).norm() <= r

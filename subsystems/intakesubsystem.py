@@ -61,8 +61,12 @@ class IntakeSubsystem(Subsystem):
         self.heldPosition = 0
 
     def periodic(self) -> None:
+        SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
         # get actual velocity values for intake motor later
 
+        frontLimitState = self.intakeMotor.getLimitSwitch(self.frontSensor)
+        backLimitState = self.intakeMotor.getLimitSwitch(self.backSensor)
+        self.hasPosition = backLimitState or frontLimitState
         if self.state == self.IntakeState.Intaking:
             self.pivotMotor.set(
                 Talon.ControlMode.Position,
@@ -71,32 +75,9 @@ class IntakeSubsystem(Subsystem):
                 * constants.kPivotGearRatio,
             )
 
-            # none - intaking
-            # only front - keep intaking
-            # front and back - get position and hold
-            # only back - go to held position from front and back
-
-            frontLimitState = self.intakeMotor.getLimitSwitch(self.frontSensor)
-            backLimitState = self.intakeMotor.getLimitSwitch(self.backSensor)
-
-            if frontLimitState and backLimitState:
-                if not self.hasPosition:
-                    self.heldPosition = self.intakeMotor.get(
-                        NEOBrushless.ControlMode.Position
-                    )
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position, self.heldPosition
-                )
-            elif not frontLimitState and backLimitState:
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position, self.heldPosition
-                )
-            else:
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed
-                )
-            self.hasPosition = backLimitState
-            # will maintain the same held position as long as the back sensor is covered
+            if self.hasPosition:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, 0)
+            # If either sensor is covered, stop the motor
 
         elif self.state == self.IntakeState.Holding:
             self.pivotMotor.set(
@@ -105,6 +86,28 @@ class IntakeSubsystem(Subsystem):
                 / constants.kRadiansPerRevolution
                 * constants.kPivotGearRatio,
             )
+            # none - intaking
+            # only front - keep intaking
+            # front and back - get position and hold
+            # only back - go to held position from front and back
+            if frontLimitState and backLimitState:
+                if not self.hasPosition:
+                    self.heldPosition = self.intakeMotor.get(
+                        NEOBrushless.ControlMode.Position
+                    )
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
+            elif (
+                not frontLimitState and backLimitState
+            ):  # Note: not only aplies to first part (this is for front off back on)
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
+            else:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed
+                )
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
         elif self.state == self.IntakeState.Feeding:
@@ -168,6 +171,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeSpeedKey,
             self.intakeMotor.get(NEOBrushless.ControlMode.Velocity),
         )
+        SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, self.hasPosition)
 
     # the following methods are simply state setting, all actual motor control is done in periodic
     def setIntaking(self) -> None:

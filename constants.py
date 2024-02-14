@@ -670,6 +670,31 @@ kCANdleID = 2
 kSpeakerCenterBlue = Pose3d(0.2167, 5.549, 2.12, Rotation3d())
 kSpeakerCenterRed = Pose3d(16.3, 5.549, 2.12, Rotation3d())
 
+kNotesStartingMidline = [
+    Pose3d(8.258, 7.462, 0.03018, Rotation3d()),
+    Pose3d(8.258, 5.785, 0.03018, Rotation3d()),
+    Pose3d(8.258, 4.109, 0.03018, Rotation3d()),
+    Pose3d(8.258, 2.432, 0.03018, Rotation3d()),
+    Pose3d(8.258, 0.756, 0.03018, Rotation3d()),
+]
+
+kNotesStartingBlueWing = [
+    Pose3d(2.884, 4.109, 0.03018, Rotation3d()),
+    Pose3d(2.884, 5.557, 0.03018, Rotation3d()),
+    Pose3d(2.884, 7.004, 0.03018, Rotation3d()),
+]
+
+kNotesStartingRedWing = [
+    Pose3d(13.63, 4.109, 0.03018, Rotation3d()),
+    Pose3d(13.63, 5.557, 0.03018, Rotation3d()),
+    Pose3d(13.63, 7.004, 0.03018, Rotation3d()),
+]
+
+kNoteLoadingStationPositionBlue = Pose3d(15, 1, 0, Rotation3d())
+kNoteLoadingStationPositionRed = Pose3d(54 * kMetersPerFoot - 15, 1, 0, Rotation3d())
+
+kSimNotePositionsKey = "SimNotesPositions"
+
 # Logging
 kSwerveActualStatesKey = "swerve/actual"
 kSwerveExpectedStatesKey = "swerve/expected"
@@ -714,6 +739,9 @@ kIntakeInverted = False
 kPivotInverted = False
 
 kPivotEncoderID = 1
+
+kIntakeStateKey = "intake/state"
+kIntakeHasNoteKey = "intake/hasNote"
 # intake 0 degrees is handoff angle
 kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
 # all angles are relative to handoff angle
@@ -725,8 +753,8 @@ kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
 # RPM
 kIntakeSpeed = 1000
 
-kPivotAngleKey = "PivotAngle"
-kIntakeSpeedKey = "IntakeSpeed"
+kPivotAngleKey = "intake/pivotAngle"
+kIntakeSpeedKey = "intake/speed"
 
 kAngleMotorRatio = (64 / 16) * (60 / 18)
 kShootingMotorRatio = 24 / 36
@@ -768,19 +796,19 @@ kRobotAngleMappingFunction = lambda x, y: x * y
 kShooterAngleEncoderCANId = 1
 
 # radians
-kShooterAngleKey = "ShooterAngle"
-kLeftShootingMotorSpeedKey = "LeftShootingMotorRPM"
-kRightShootingMotorSpeedKey = "RightShootingMotorRPM"
+kShooterAngleKey = "shooter/angle"
+kLeftShootingMotorSpeedKey = "shooter/leftMotorSpeed"
+kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
 
 kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
 # in RPM
 kShooterSpeedTolerance = 100
 
-kShooterAngleOnTargetKey = "AngleOnTarget"
-kLeftShootingMotorOnTargetKey = "LeftMotorOnTarget"
-kRightShootingMotorOnTargetKey = "RightMotorOnTarget"
-kRobotAngleOnTargetKey = "RobotAngleOnTarget"
-kReadyToShoot = "FireInTheHole"
+kShooterAngleOnTargetKey = "shooter/angleOnTarget"
+kLeftShootingMotorOnTargetKey = "shooter/leftMotorOnTarget"
+kRightShootingMotorOnTargetKey = "shooter/rightMotorOnTarget"
+kRobotAngleOnTargetKey = "shooter/robotAngleOnTarget"
+kReadyToShoot = "shooter/ready"
 
 # from horizontal
 kShooterMaxAngle = Rotation2d.fromDegrees(64.028164)
@@ -789,10 +817,10 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 kShootingMotorCurrentLimit = 40
 kAngleMotorCurrentLimit = 40
 
-kShooterManualModeKey = "ShooterManualMode"
-kShooterAngleFudgeKey = "ShooterAngleFudge"
-kLeftMotorFudgeKey = "LeftMotorFudge"
-kRightMotorFudgeKey = "RightMotorFudge"
+kShooterManualModeKey = "shooter/manualMode"
+kShooterAngleFudgeKey = "shooter/fudge/angle"
+kLeftMotorFudgeKey = "shooter/fudge/leftMotor"
+kRightMotorFudgeKey = "shooter/fudge/rightMotor"
 
 
 kShooterCalcSpeed = "shooter/calculated/speed"
