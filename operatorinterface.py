@@ -222,3 +222,4 @@ class OperatorInterface:
 
         self.elevatorJogUp = getButtonBindingOfName("elevatorJogUp")
         self.elevatorJogDown = getButtonBindingOfName("elevatorJogDown")
+        self.goToAmp = getButtonBindingOfName("goToAmp")

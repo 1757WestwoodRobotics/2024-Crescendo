@@ -40,6 +40,8 @@ from pathplannerlib.config import (
     ReplanningConfig,
 )
 
+from pathplannerlib.auto import PathConstraints
+
 from util.keyorganization import OptionalValueKeys
 
 # Basic units
@@ -899,3 +901,14 @@ kShooterMovingIterations = 5
 kAlignAnglePGain = 1.2
 kAlignAngleIGain = 0
 kAlignAngleDGain = 0
+
+kPathfindingConstraints = PathConstraints(
+    kMaxWheelLinearVelocity / 2,
+    kMaxWheelLinearAcceleration / 2,
+    kMaxRotationAngularVelocity / 2,
+    kMaxRotationAngularAcceleration / 2,
+)
+
+kAmpWaypoint = Pose2d(1.85, 7.5, -math.pi / 2)
+kSpeakerWaypoint = Pose2d(1.3, 5.55, 0)
+kWaypoints = [kAmpWaypoint, kSpeakerWaypoint]

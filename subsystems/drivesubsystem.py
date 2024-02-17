@@ -367,6 +367,9 @@ class DriveSubsystem(Subsystem):
             (lambda: DriverStation.getAlliance() == DriverStation.Alliance.kRed),
             self,
         )
+        self.pathToNearestWaypoint = AutoBuilder.pathfindToPose(
+            Pose2d(0, 0, 0), constants.kPathfindingConstraints
+        )
 
     def getRobotRelativeSpeeds(self):
         return self.kinematics.toChassisSpeeds(self.getModuleStates())
@@ -456,6 +459,9 @@ class DriveSubsystem(Subsystem):
             pose,
         )
 
+    def getClosestWaypoint(self):
+        return self.getPose().nearest(constants.kWaypoints)
+
     def periodic(self):
         """
         Called periodically when it can be called. Updates the robot's
@@ -536,6 +542,10 @@ class DriveSubsystem(Subsystem):
         self.vision.poseList.clear()
 
         self.visionEstimate = self.estimator.getEstimatedPosition()
+
+        self.pathToNearestWaypoint = AutoBuilder.pathfindToPose(
+            self.getClosestWaypoint(), constants.kPathfindingConstraints
+        )
 
         SmartDashboard.putBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
