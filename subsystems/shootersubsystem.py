@@ -44,7 +44,11 @@ class SimNote:
             elapsedTime = currentTime - self.initialTime
             self.xc = self.xi + self.vx * elapsedTime
             self.yc = self.yi + self.vy * elapsedTime
-            self.zc = self.zi + self.vz * elapsedTime - 9.8 / 2 * elapsedTime**2
+            self.zc = (
+                self.zi
+                + self.vz * elapsedTime
+                - constants.kGravity / 2 * elapsedTime**2
+            )
 
 
 class ShooterSubsystem(Subsystem):
