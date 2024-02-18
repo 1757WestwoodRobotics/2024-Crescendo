@@ -817,10 +817,10 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 kShootingMotorCurrentLimit = 40
 kAngleMotorCurrentLimit = 40
 
-kShooterSubwooferSpeed = 2000 # NEEDS UPDATE
+kShooterSubwooferSpeed = 2000  # NEEDS UPDATE
 
-kPodiumShooterAngle = Rotation2d(0.639) # NEEDS UPDATE
-kPodiumShooterSpeed = 2100 # NEEDS UPDATE
+kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
+kPodiumShooterSpeed = 2100  # NEEDS UPDATE
 
 kShooterManualModeKey = "shooter/manualMode"
 kShooterAngleFudgeKey = "shooter/fudge/angle"

@@ -5,7 +5,6 @@ from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
-from commands.shooter.shooterfixedshots import PodiumShot, SubwooferShot
 
 import constants
 
@@ -18,6 +17,7 @@ from commands.shooter.shootermanualmode import ShooterManualMode
 from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
+from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -111,6 +111,8 @@ class RobotContainer:
             )
         )
         self.intake.setDefaultCommand(StageIntake(self.intake))
+        self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
+
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
