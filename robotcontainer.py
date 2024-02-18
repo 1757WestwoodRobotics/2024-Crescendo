@@ -142,11 +142,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
-            DriveWaypoint(
-                self.drive,
-                self.operatorInterface.chassisControls.forwardsBackwards,
-                self.operatorInterface.chassisControls.sideToSide,
-            )
+            DriveWaypoint(self.drive)
         )
 
         ModifiableJoystickButton(self.operatorInterface.resetGyro).onTrue(
