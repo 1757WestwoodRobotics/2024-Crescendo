@@ -5,6 +5,7 @@ from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
 from pathplannerlib.auto import PathPlannerAuto, NamedCommands
+from commands.shooter.shooterfixedshots import PodiumShot, SubwooferShot
 
 import constants
 
@@ -170,6 +171,13 @@ class RobotContainer:
                 lambda: self.operatorInterface.chassisControls.sideToSide()
                 * constants.kNormalSpeedMultiplier,
             )
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.prepShotSubwoofer).whileTrue(
+            SubwooferShot(self.shooter)
+        )
+        ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
+            PodiumShot(self.shooter)
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
