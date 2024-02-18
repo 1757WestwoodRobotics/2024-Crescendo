@@ -19,7 +19,7 @@ class DriveWaypoint(Command):
 
     def initialize(self) -> None:
         self.running = True
-        self.command = AutoBuilder.pathfindToPose(
+        self.command = AutoBuilder.pathfindToPoseFlipped(
             self.drive.getClosestWaypoint(), constants.kPathfindingConstraints
         )
         self.command.initialize()
