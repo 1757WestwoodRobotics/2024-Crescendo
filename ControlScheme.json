@@ -243,12 +243,5 @@
       "Button": 7
     },
     "buttonbox"
-  ],
-  "goToAmp": [
-    5,
-    {
-      "Button": 1
-    },
-    "temporary"
   ]
 }
