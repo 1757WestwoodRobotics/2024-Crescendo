@@ -457,7 +457,11 @@ class DriveSubsystem(Subsystem):
         )
 
     def getClosestWaypoint(self):
-        return self.getPose().nearest(constants.kWaypoints)
+        return (
+            self.getPose().nearest(constants.kWaypointsBlue)
+            if DriverStation.getAlliance() == DriverStation.Alliance.kBlue
+            else self.getPose().nearest(constants.kWaypointsRed)
+        )
 
     def periodic(self):
         """
@@ -539,7 +543,6 @@ class DriveSubsystem(Subsystem):
         self.vision.poseList.clear()
 
         self.visionEstimate = self.estimator.getEstimatedPosition()
-
 
         SmartDashboard.putBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, hasTargets

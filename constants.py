@@ -909,6 +909,20 @@ kPathfindingConstraints = PathConstraints(
     kMaxRotationAngularAcceleration / 2,
 )
 
-kAmpWaypoint = Pose2d(1.85, 7.5, -math.pi / 2)
-kSpeakerWaypoint = Pose2d(1.3, 5.55, 0)
-kWaypoints = [kAmpWaypoint, kSpeakerWaypoint]
+kAmpWaypointBlue = Pose2d(1.828, 8.208 - kRobotLength / 2, math.pi / 2)
+kSpeakerWaypointBlue = Pose2d(0.9067 + kRobotLength / 2, 5.551, 0)
+kSourceWaypointBlue = Pose2d(
+    15.62 - kRobotLength / 2 * math.cos(math.pi / 3),
+    1.081 + kRobotLength / 2 * math.sin(math.pi / 3),
+    -math.pi / 3,
+)
+kWaypointsBlue = [kAmpWaypointBlue, kSpeakerWaypointBlue, kSourceWaypointBlue]
+
+kAmpWaypointRed = Pose2d(14.69, 8.208 - kRobotLength / 2, math.pi / 2)
+kSpeakerWaypointRed = Pose2d(15.61 - kRobotLength / 2, 5.551, math.pi)
+kSourceWaypointRed = Pose2d(
+    0.8951 + kRobotLength / 2 * math.cos(math.pi / 3),
+    1.081 + kRobotLength / 2 * math.sin(math.pi / 3),
+    -2 * math.pi / 3,
+)
+kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
