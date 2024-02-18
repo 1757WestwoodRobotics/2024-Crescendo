@@ -7,10 +7,7 @@ import commands2.button
 from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
-    AutoBuilder,
-    PathConstraints,
 )
-from wpimath.geometry import Pose2d, Rotation2d
 
 import constants
 
