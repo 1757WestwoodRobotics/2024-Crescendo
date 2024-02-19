@@ -17,6 +17,7 @@ from commands.shooter.shootermanualmode import ShooterManualMode
 from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
+from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -110,6 +111,8 @@ class RobotContainer:
             )
         )
         self.intake.setDefaultCommand(StageIntake(self.intake))
+        self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
+
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)
         wpilib.DriverStation.silenceJoystickConnectionWarning(True)
@@ -170,6 +173,13 @@ class RobotContainer:
                 lambda: self.operatorInterface.chassisControls.sideToSide()
                 * constants.kNormalSpeedMultiplier,
             )
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.prepShotSubwoofer).whileTrue(
+            SubwooferShot(self.shooter)
+        )
+        ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
+            PodiumShot(self.shooter)
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)

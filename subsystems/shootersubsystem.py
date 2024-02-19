@@ -154,6 +154,10 @@ class ShooterSubsystem(Subsystem):
             self.rightTargetSpeed,
         )
 
+    def neutralShooter(self) -> None:
+        self.rightShootingMotor.neutralOutput()
+        self.leftShootingMotor.neutralOutput()
+
     def getShooterAngle(self) -> Rotation2d:
         return Rotation2d(
             self.angleMotor.get(Talon.ControlMode.Position)
