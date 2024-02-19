@@ -213,7 +213,7 @@ class VisionSubsystemSim(Subsystem):
 
             rel = CameraTargetRelation(simPose3d + camera.location, botPose)
             VisionSubsystemReal.updateAdvantagescopePose(
-                botPose, camera.key, simPose3d, rel.camToTarg
+                botPose + camera.location, camera.key, simPose3d, rel.camToTarg
             )
 
             self.poseList.append(
