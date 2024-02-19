@@ -190,7 +190,7 @@ class VisionSubsystemSim(Subsystem):
         ]
         self.poseList = []
 
-        self.rng = RNG(constants.kSimulationVariation, 500)
+        self.rng = RNG(constants.kSimulationVariation)
 
     def periodic(self) -> None:
         simPose = Pose2d(
@@ -222,9 +222,8 @@ class VisionSubsystemSim(Subsystem):
 
 
 class RNG:
-    def __init__(self, stdDev: float, number: int) -> None:
+    def __init__(self, stdDev: float) -> None:
         self.stdDev = stdDev
-        self.number = number
         # self.rng = np.random.normal(0, stdDev, number)
         # self.rngIdx = 0
 
