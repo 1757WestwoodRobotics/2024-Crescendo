@@ -332,7 +332,7 @@ class DriveSubsystem(Subsystem):
             ],
             Pose2d(),
             [0.1, 0.1, 0.1],
-            [0.5, 0.5, 0.5],
+            [0.2, 0.2, 0.2],
         )
         # standard deviations stolen from 2910
 
@@ -456,13 +456,18 @@ class DriveSubsystem(Subsystem):
             pose,
         )
 
+    def getClosestWaypoint(self):
+        return (
+            self.getPose().nearest(constants.kWaypointsBlue)
+            if DriverStation.getAlliance() == DriverStation.Alliance.kBlue
+            else self.getPose().nearest(constants.kWaypointsRed)
+        )
+
     def periodic(self):
         """
         Called periodically when it can be called. Updates the robot's
         odometry with sensor data.
         """
-
-        pastPose = self.odometry.getPose()
 
         self.odometry.update(
             self.getRotation(),
@@ -475,7 +480,6 @@ class DriveSubsystem(Subsystem):
         )
         robotPose = self.getPose()
 
-        deltaPose = robotPose - pastPose
         SmartDashboard.putNumberArray(
             constants.kSwerveActualStatesKey,
             [
@@ -487,15 +491,6 @@ class DriveSubsystem(Subsystem):
                 self.backLeftModule.getWheelLinearVelocity(),
                 self.backRightModule.getSwerveEncoderAngle().radians(),
                 self.backRightModule.getWheelLinearVelocity(),
-            ],
-        )
-        SmartDashboard.putNumberArray(
-            constants.kDriveVelocityKeys,
-            [
-                deltaPose.X()
-                / constants.kRobotUpdatePeriod,  # velocity is delta pose / delta time
-                deltaPose.Y() / constants.kRobotUpdatePeriod,
-                self.getAngularVelocity(),
             ],
         )
 
@@ -530,11 +525,13 @@ class DriveSubsystem(Subsystem):
         for estimatedCameraPose in estimatedCameraPoses:
             if estimatedCameraPose.hasTargets:
                 self.estimator.addVisionMeasurement(
-                    estimatedCameraPose.pose.toPose2d(), estimatedCameraPose.timestamp
+                    estimatedCameraPose.pose.toPose2d(),
+                    estimatedCameraPose.timestamp,
                 )
                 hasTargets = True
 
-        self.estimator.update(
+        self.estimator.updateWithTime(
+            self.printTimer.getFPGATimestamp(),
             self.odometry.getPose().rotation(),
             [
                 self.frontLeftModule.getPosition(),
@@ -633,6 +630,18 @@ class DriveSubsystem(Subsystem):
                 )
             else:
                 robotChassisSpeeds = ChassisSpeeds()
+
+        fieldSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            robotChassisSpeeds.vx,
+            robotChassisSpeeds.vy,
+            robotChassisSpeeds.omega,
+            -self.getRotation(),
+        )
+
+        SmartDashboard.putNumberArray(
+            constants.kDriveVelocityKeys,
+            [fieldSpeeds.vx, fieldSpeeds.vy, fieldSpeeds.omega],
+        )
 
         moduleStates = self.kinematics.toSwerveModuleStates(robotChassisSpeeds)
         self.applyStates(moduleStates)

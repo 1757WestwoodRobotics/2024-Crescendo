@@ -1,133 +1,93 @@
 from enum import Enum, auto
-from functools import partial
-
-from typing import Tuple
-import typing
-
-import constants
-from util import convenientmath
-from util.simcoder import CTREEncoder
-from util.angleoptimize import optimizeAngle
-from util.simtalon import Talon
-
-from subsystems.visionsubsystem import VisionSubsystem
-from subsystems.dynamicvelocitycontrol import VelocityControl
-
-from pathplannerlib.auto import AutoBuilder
-
+from math import pi
 from commands2 import Subsystem
-from pheonix6.configs.pigeon2 configs import Pigeon2Configuration
-from pheonix6.hardware.pigeon2 import Pigeon2
-from pheonix6.sim.cancoder_sim_state import CANcoderSimState
-frompheonix6.sim.talon_fx_sim_state import TalonFXSimState
 
-from wpilib import(
-    RobotBase,
-    SmartDashboard,
-    Timer,
-    DataLogManager,
-    DriverStation,
-    RobotOdometryPose
-)
-
-from wpimath.geometry import Pose2d, Rotation2d, Translation2d
-from wpimath.filter import SlewRateLimiter
-from wpimath.kinematics import ChassisSpeeds
-
-# elevator has 4 states: bottom, climbing to amp, amp, trap
-# 1:11 ratio for 2 parallel gears
-# 0.01 for voltage of PID, 0 and 0 for other inputs
-
-
-class SetElevatorParameters:
-    def __init__(self,elevateMotorID,deelevateMotorID,encoderID,PIDVoltage,elevationOffset,elevatorState,elevatorHeight,motor1,motor2)
-        self.elevateMotorID = elevateMotorID
-        self.deelevateMotorID = deelevateMotorID
-        self.encoderID =  encoderID
-        self.PIDVoltage = PIDVoltage
-        self.elevationOffset = elevationOffset
-        self.elevatorState = elevatorState
-        self.elevatorHeight = elevatorHeight
-        self.motor1 = motor1 #motor wheels can be defined later, IDK what to do with this for now
-        self.motor2 = motor2 #motor1 is the bigger one, motor2 1:11 ratio
+from util.simtalon import Talon
+import constants
 
 
 class ElevatorSubsystem(Subsystem):
-    class ElevatorModes(Enum):
-        Bottom = auto()
-        ClimbingToAmp = auto()
-        Amp = auto()
-        Trap = auto()
+    class ElevatorState(Enum):
+        BottomPosition = auto()
+        AmpPosition = auto()
+        TopPosition = auto()
+        PullDown = auto()  # climber
 
-    class ElevatorStates(Enum):
-        Climbing = auto()
-        Stopped = auto()
-        Off = auto()
-    
-    def __init__(self,vision: VisionSubsystem) -> None:
+    def __init__(self) -> None:
         Subsystem.__init__(self)
-        self.setName(__class__.__name__)
-        SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey,False)
+        self.setName(__class__.__name__)  # basic subsystem boilerplate
 
-        self.vision = vision
-
-        self.kinematics = (
-            constants.kTrajectoryPositionPGain,
-            constants.kTrajectoryPositionIGain,
-            constants.kTrajectoryPositionDGain
+        self.elevatorMotor1 = Talon(
+            constants.kElevator1CANID,
+            constants.kElevator1Name,
+            constants.kElevator1PGain,
+            constants.kElevator1IGain,
+            constants.kElevator1DGain,
+            constants.kElevator1Inverted,
         )
 
-        self.vision_estimate = Pose2d()
-
-        AutoBuilder.configureHolonomic(
-            constants.kPathFollowingConfig,
-            self.get_pose,
-            self.get_robot_relative_speeds,
-            partial(
-                self.drivesubsystem.arcadeDriveWithSpeeds, #temporary, I didn't want to write in my own
-                self.drivesubsystem.arcadeDriveWithFactors, #temporary, I didn't want to write in my own
-                setElevatorStates=ElevatorSubsystem.SetElevatorStates.Bottom
-            )
+        self.elevatorMotor2 = Talon(
+            constants.kElevator2CANID,
+            constants.kElevator2Name,
+            constants.kElevator2PGain,
+            constants.kElevator2IGain,
+            constants.kElevator2DGain,
+            constants.kElevator2Inverted,
         )
 
-        def get_elevator_speed(self):
-            return self.kinematics.toChassisSpeeds()
-        
-        def get_pose(self):
-            movement = self.estimator.getEstimatedPosition().movement()
-            return Pose2d(movement)
-        
-        def get_elevator_state(self):
-            return CANcoderSimState(
-                self.getWheelLinearVelocity(),
-                self.get_angular_velocity_z_world()
-            )
-        
-        def get_elevator_mode_state(self):
-            return (
-                self.ElevatorModes.Bottom.get_elevator_state(),
-                self.ElevatorModes.Amp.get_elevator_state(),
-                self.ElevatorModes.ClimbingToAmp.get_elevator_state(),
-                self.ElevatorModes.Trap.get_elevator_state()
-            )
-            
-        def apply_elevator_state(self):
-            current_state = get_elevator_mode_state()
+        self.state = self.ElevatorState.BottomPosition
 
-            self.setWheelLinearVelocityTarget(current_state.speed)
+    def periodic(self) -> None:
+        if self.state == self.ElevatorState.BottomPosition:
+            self.setElevatorMotorsAtPosition(constants.kBottomPositionBeltPosition)
 
-            if int(current_state.speed) >= constants.kMinWheelLinearVelocity:
-                ElevatorSubsystem.stop_motor_current()
-        
-        def stop_motor_current(self):
-            if constants.kMaxForwardLinearVelocity <= constants.kMinWheelLinearVelocity:
-                self.motor.stop_motor_current()
+        elif self.state == self.ElevatorState.AmpPosition:
+            self.setElevatorMotorsAtPosition(constants.kAmpPositionBeltPosition)
 
-        def PID_control(self):
-            self.elevateMotorID.set_elevator_state()
-            self.elevateMotorID.PID(self.PIDVoltage,self.kinematics)
-        
-        def set_dynamic_driving_gears(motor1=,motor2=): #IDK what to set for these values
-            motor1.VelocityControl()#formula for gear ratio
-            motor2.VelocityControl() * #motor1.velocity / (pi*11 squared)
-            
+        elif self.state == self.ElevatorState.TopPosition:
+            self.setElevatorMotorsAtPosition(constants.kTopPositionBeltPosition)
+
+        elif self.state == self.ElevatorState.PullDown:
+            if (
+                self.elevatorMotor1.get(Talon.ControlMode.Position)
+                > constants.kPullDownBandLimit
+            ):
+                self.elevatorMotor1.set(
+                    Talon.ControlMode.Velocity,
+                    constants.kBeltPullDownSpeed
+                    * constants.kMotorPulleyGearRatio
+                    / (constants.kPulleyGearPitchDiameter * pi),
+                )
+                self.elevatorMotor2.set(
+                    Talon.ControlMode.Velocity,
+                    constants.kBeltPullDownSpeed
+                    * constants.kMotorPulleyGearRatio
+                    / (constants.kPulleyGearPitchDiameter * pi),
+                )
+
+            else:
+                self.state = self.ElevatorState.BottomPosition
+
+    def setElevatorMotorsAtPosition(self, beltPosition) -> None:
+        self.elevatorMotor1.set(
+            Talon.ControlMode.Position,
+            (beltPosition)
+            / (constants.kPulleyGearPitchDiameter * pi)
+            * constants.kMotorPulleyGearRatio,
+        )
+        self.elevatorMotor2.set(
+            Talon.ControlMode.Position,
+            beltPosition
+            / (constants.kPulleyGearPitchDiameter * pi)
+            * constants.kMotorPulleyGearRatio,
+        )
+
+    # the following methods are simply state setting, all actual motor control is done in periodic
+    def setBottomPosition(self) -> None:
+        self.state = self.ElevatorState.BottomPosition
+
+    def setAmpPosition(self) -> None:
+        self.state = self.ElevatorState.AmpPosition
+
+    def setTopPosition(self) -> None:
+        self.state = self.ElevatorState.TopPosition
