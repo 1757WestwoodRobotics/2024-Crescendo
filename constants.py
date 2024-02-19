@@ -229,6 +229,16 @@ kPhotonvisionFrontRightCameraKey = "frontRightCamera"
 kPhotonvisionBackLeftCameraKey = "backLeftCamera"
 kPhotonvisionBackRightCameraKey = "backRightCamera"
 
+kPhotonvisionKeyArray = [
+    kPhotonvisionFrontLeftCameraKey,
+    kPhotonvisionBackRightCameraKey,
+]
+
+kCameraFOVHorizontal = 75.9  # degrees
+kCameraFOVVertical = 47.4  # degrees
+
+kSimulationVariation = 0.001  # meters, as a standard deviation
+
 
 kRobotToFrontLeftCameraTransform = Transform3d(
     Pose3d(),
@@ -270,6 +280,11 @@ kRobotToBackRightCameraTransform = Transform3d(
         Rotation3d(0.0, 0.0, (270 + 82.829) * kRadiansPerDegree)
     ),
 )
+
+kCameraTransformsArray = [
+    kRobotToFrontLeftCameraTransform,
+    kRobotToBackRightCameraTransform,
+]
 
 # CANivore
 kCANivoreName = "canivore"
