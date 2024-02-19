@@ -4,7 +4,10 @@ import wpilib
 from wpimath.geometry import Pose2d
 import commands2
 import commands2.button
-from pathplannerlib.auto import PathPlannerAuto, NamedCommands
+from pathplannerlib.auto import (
+    PathPlannerAuto,
+    NamedCommands,
+)
 
 import constants
 
@@ -136,11 +139,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
-            DriveWaypoint(
-                self.drive,
-                self.operatorInterface.chassisControls.forwardsBackwards,
-                self.operatorInterface.chassisControls.sideToSide,
-            )
+            DriveWaypoint(self.drive)
         )
 
         ModifiableJoystickButton(self.operatorInterface.resetGyro).onTrue(
@@ -180,6 +179,8 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
+        ModifiableJoystickButton(self.operatorInterface.goToAmp).whileTrue(
+            self.drive.pathToNearestWaypoint
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)

@@ -456,6 +456,13 @@ class DriveSubsystem(Subsystem):
             pose,
         )
 
+    def getClosestWaypoint(self):
+        return (
+            self.getPose().nearest(constants.kWaypointsBlue)
+            if DriverStation.getAlliance() == DriverStation.Alliance.kBlue
+            else self.getPose().nearest(constants.kWaypointsRed)
+        )
+
     def periodic(self):
         """
         Called periodically when it can be called. Updates the robot's

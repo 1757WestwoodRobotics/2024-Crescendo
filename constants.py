@@ -40,6 +40,8 @@ from pathplannerlib.config import (
     ReplanningConfig,
 )
 
+from pathplannerlib.auto import PathConstraints
+
 from util.keyorganization import OptionalValueKeys
 
 # Basic units
@@ -899,3 +901,28 @@ kShooterMovingIterations = 5
 kAlignAnglePGain = 1.2
 kAlignAngleIGain = 0
 kAlignAngleDGain = 0
+
+kPathfindingConstraints = PathConstraints(
+    kMaxWheelLinearVelocity / 2,
+    kMaxWheelLinearAcceleration / 2,
+    kMaxRotationAngularVelocity / 2,
+    kMaxRotationAngularAcceleration / 2,
+)
+
+kAmpWaypointBlue = Pose2d(1.828, 8.208 - kRobotLength / 2, math.pi / 2)
+kSpeakerWaypointBlue = Pose2d(0.9067 + kRobotLength / 2, 5.551, 0)
+kSourceWaypointBlue = Pose2d(
+    15.62 - kRobotLength / 2 * math.cos(math.pi / 3),
+    1.081 + kRobotLength / 2 * math.sin(math.pi / 3),
+    -math.pi / 3,
+)
+kWaypointsBlue = [kAmpWaypointBlue, kSpeakerWaypointBlue, kSourceWaypointBlue]
+
+kAmpWaypointRed = Pose2d(14.69, 8.208 - kRobotLength / 2, math.pi / 2)
+kSpeakerWaypointRed = Pose2d(15.61 - kRobotLength / 2, 5.551, math.pi)
+kSourceWaypointRed = Pose2d(
+    0.8951 + kRobotLength / 2 * math.cos(math.pi / 3),
+    1.081 + kRobotLength / 2 * math.sin(math.pi / 3),
+    -2 * math.pi / 3,
+)
+kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
