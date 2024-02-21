@@ -179,8 +179,6 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
-        ModifiableJoystickButton(self.operatorInterface.goToAmp).whileTrue(
-            self.drive.pathToNearestWaypoint
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
