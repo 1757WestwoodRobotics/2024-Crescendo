@@ -12,6 +12,7 @@ from commands.intakesetting import (
 )
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
+from subsystems.shootersubsystem import ShooterSubsystem
 
 
 class GroundIntake(ParallelCommandGroup):
@@ -34,11 +35,19 @@ class PrepareTrap(ParallelCommandGroup):
 
 # scores amp or feeds to shooter depending on state
 class DynamicScore(ParallelCommandGroup):
-    def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
+    def __init__(
+        self,
+        elevator: ElevatorSubsystem,
+        intake: IntakeSubsystem,
+        shooter: ShooterSubsystem,
+    ):
         commands = []
 
         if intake.state == intake.IntakeState.Holding:
-            commands = [ElevatorBottomPosition(elevator), FeedIntakeToShooter(intake)]
+            commands = [
+                ElevatorBottomPosition(elevator),
+                FeedIntakeToShooter(intake, shooter),
+            ]
         elif intake.state == intake.IntakeState.Staging:
             commands = [ElevatorAmpPosition(elevator), ScoreAmp(intake)]
 
