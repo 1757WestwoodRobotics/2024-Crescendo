@@ -1,9 +1,9 @@
 from enum import Enum, auto
 from math import pi
 from commands2 import Subsystem
-from wpilib._wpilib import SmartDashboard
 
 from util.simtalon import Talon
+from wpilib import SmartDashboard
 import constants
 
 
@@ -39,6 +39,7 @@ class ElevatorSubsystem(Subsystem):
         self.elevatorMotor2.follow(self.elevatorMotor1, True)
 
         self.state = self.ElevatorState.BottomPosition
+        SmartDashboard.putNumber(constants.kElevatorPositionKey, 0)
 
     def periodic(self) -> None:
         if self.state == self.ElevatorState.BottomPosition:
