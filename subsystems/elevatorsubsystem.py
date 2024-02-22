@@ -94,3 +94,6 @@ class ElevatorSubsystem(Subsystem):
 
     def setTopPosition(self) -> None:
         self.state = self.ElevatorState.TopPosition
+
+    def setPullDown(self) -> None:
+        self.state = self.ElevatorState.PullDown
