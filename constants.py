@@ -767,6 +767,7 @@ kHandoffAngle = Rotation2d.fromDegrees(-7.761653)
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionangle = Rotation2d.fromDegrees(50) #Safe place roughly vertical before going to amp or trap
 kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
+kStagingPositionangle = kAmpScoringPositionAngle
 kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
