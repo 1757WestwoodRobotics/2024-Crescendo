@@ -766,11 +766,10 @@ kIntakePoseKey = "intake/pose"
 kHandoffAngle = Rotation2d.fromDegrees(-7.761653)
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionangle = Rotation2d.fromDegrees(50) #Safe place roughly vertical before going to amp or trap
-kTrapPositionAngle = Rotation2d.fromDegrees(69.939031)
-kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
+kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
+kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
-
 # Percent Voltage
 kIntakePercentageVoltage = .45
 #EncoderTicks, to be changed
