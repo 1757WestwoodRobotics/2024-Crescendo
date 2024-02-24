@@ -47,8 +47,8 @@ class LoggingSubsystem(Subsystem):
 
         armRotation = -SmartDashboard.getNumber(constants.kPivotAngleKey, 0)
         armRootPosition = elevatorPosition + Transform3d(
-            constants.kMetersPerInch,
-            -constants.kRobotToElevatorTransform.X(),
+            0,
+            constants.kRobotToElevatorTransform.Y(),
             0,
             Rotation3d(0, armRotation, 0),
         )
