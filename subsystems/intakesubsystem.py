@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from commands2 import Subsystem
 from wpilib import SmartDashboard
+from wpilib._wpilib import RobotBase
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
@@ -164,9 +165,18 @@ class IntakeSubsystem(Subsystem):
                 NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
             )
 
-        SmartDashboard.putNumber(
-            constants.kPivotAngleKey, self.pivotEncoder.getPosition().radians()
-        )
+        if RobotBase.isSimulation():
+            SmartDashboard.putNumber(
+                constants.kPivotAngleKey,
+                self.pivotMotor.get(Talon.ControlMode.Position)
+                / constants.kPivotGearRatio
+                * constants.kRadiansPerRevolution
+                + constants.kIntakeAngleOffset.radians(),
+            )
+        else:
+            SmartDashboard.putNumber(
+                constants.kPivotAngleKey, self.pivotEncoder.getPosition().radians()
+            )
         SmartDashboard.putNumber(
             constants.kIntakeSpeedKey,
             self.intakeMotor.get(NEOBrushless.ControlMode.Velocity),

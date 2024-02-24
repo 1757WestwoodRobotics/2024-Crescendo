@@ -1,13 +1,18 @@
 from functools import reduce
+from math import pi
 from operator import add
 
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 from wpilib import PowerDistribution, SmartDashboard, DriverStation
 
+from wpimath.geometry import Pose2d, Transform3d, Rotation3d
+
 from operatorinterface import OperatorInterface
 
 import constants
+from util import advantagescopeconvert
+from util.convenientmath import map_range, pose3dFrom2d
 
 
 class LoggingSubsystem(Subsystem):
@@ -20,6 +25,66 @@ class LoggingSubsystem(Subsystem):
         self.dsTable = NetworkTableInstance.getDefault().getTable(
             constants.kJoystickKeyLogPrefix
         )
+
+    def updateBotPositions(self) -> None:
+        botPose = pose3dFrom2d(
+            Pose2d(
+                *SmartDashboard.getNumberArray(
+                    constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
+                )
+            )
+        )
+
+        elevatorHeight = SmartDashboard.getNumber(constants.kElevatorPositionKey, 0)
+        elevatorPosition = (
+            botPose
+            + constants.kRobotToElevatorTransform
+            + Transform3d(0, 0, elevatorHeight, Rotation3d())
+        )
+
+        elevatorPoses = advantagescopeconvert.convertToSendablePoses([elevatorPosition])
+        SmartDashboard.putNumberArray(constants.kElevatorPoseArrayKey, elevatorPoses)
+
+        armRotation = -SmartDashboard.getNumber(constants.kPivotAngleKey, 0)
+        armRootPosition = elevatorPosition + Transform3d(
+            constants.kMetersPerInch,
+            -constants.kRobotToElevatorTransform.X(),
+            0,
+            Rotation3d(0, armRotation, 0),
+        )
+        armEndPosition = armRootPosition + Transform3d(
+            constants.kIntakeArmLength,
+            0,
+            0,
+            Rotation3d(
+                0,
+                # -armRotation,
+                map_range(
+                    armRotation,
+                    0,
+                    -constants.kFloorPositionAngle.radians(),
+                    pi - 1.022,
+                    pi / 2,
+                )
+                - armRotation,
+                0,
+            ),
+        )
+
+        intakePoses = advantagescopeconvert.convertToSendablePoses(
+            [armRootPosition, armEndPosition]
+        )
+        SmartDashboard.putNumberArray(constants.kIntakePoseKey, intakePoses)
+
+        shooterRotation = SmartDashboard.getNumber(constants.kShooterAngleKey, 0)
+        shooterPose = (
+            botPose
+            + constants.kRobotToShooterTransform
+            + Transform3d(0, 0, 0, Rotation3d(0, -shooterRotation, 0))
+        )
+
+        shooterPoses = advantagescopeconvert.convertToSendablePoses([shooterPose])
+        SmartDashboard.putNumberArray(constants.kShooterPosesKey, shooterPoses)
 
     def periodic(self) -> None:
         SmartDashboard.putData(self.pdh)
@@ -60,3 +125,5 @@ class LoggingSubsystem(Subsystem):
         self.dsTable.putNumber("AllianceStation", allianceNumber)
         station = DriverStation.getLocation()
         self.dsTable.putNumber("location", 0.0 if station is None else station)
+
+        self.updateBotPositions()

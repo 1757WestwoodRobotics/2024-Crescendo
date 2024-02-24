@@ -759,6 +759,7 @@ kPivotEncoderID = 1
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
+kIntakePoseKey = "intake/pose"
 # intake 0 degrees is handoff angle
 kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
 # all angles are relative to handoff angle
@@ -766,6 +767,8 @@ kHandoffAngle = Rotation2d(0)
 kFloorPositionAngle = Rotation2d.fromDegrees(225.045433)
 kStagingPositionAngle = Rotation2d.fromDegrees(69.939031)
 kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
+
+kIntakeArmLength = 0.251
 
 # RPM
 kIntakeSpeed = 1000
@@ -814,6 +817,7 @@ kShooterAngleEncoderCANId = 1
 
 # radians
 kShooterAngleKey = "shooter/angle"
+kShooterPosesKey = "shooter/poses"
 kLeftShootingMotorSpeedKey = "shooter/leftMotorSpeed"
 kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
 
@@ -868,15 +872,27 @@ kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2Inverted = True
 
+kElevatorPositionKey = "elevator/position"
+kElevatorStateKey = "elevator/state"
+
+kElevatorPoseArrayKey = "elevator/pose"
+
+kRobotToElevatorTransform = Transform3d(
+    9.75 * kMetersPerInch,
+    -6.75 * kMetersPerInch,
+    13.875 * kMetersPerInch,
+    Rotation3d(0, 0, math.pi),
+)
+
 kMotorPulleyGearRatio = 60 / 18 * 4 / 1
 
 kPulleyGearPitchDiameter = 1.504
 """inches"""
 
 kBottomPositionBeltPosition = 0
-kAmpPositionBeltPosition = 19.125
-kTopPositionBeltPosition = 26.5
-"""inches"""
+kAmpPositionBeltPosition = 19.125 * kMetersPerInch
+kTopPositionBeltPosition = 26.5 * kMetersPerInch
+"""meters"""
 
 kBeltPullDownSpeed = 3
 """inches per second"""

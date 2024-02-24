@@ -13,6 +13,7 @@ from phoenix6.controls.velocity_voltage import VelocityVoltage
 from phoenix6.controls.velocity_duty_cycle import VelocityDutyCycle
 from phoenix6.controls.position_voltage import PositionVoltage
 from phoenix6.controls.duty_cycle_out import DutyCycleOut
+from phoenix6.controls.follower import Follower
 from phoenix6.hardware.talon_fx import TalonFX
 from phoenix6.configs.talon_fx_configs import TalonFXConfiguration
 from phoenix6.status_code import StatusCode
@@ -113,6 +114,11 @@ class Talon:
             print(
                 f"ERROR: {c} \n ({controlMode}, {demand}, {ff}, {self.motor.device_id})"
             )
+
+    def follow(self, other, opp_direction: bool = False):
+        c = self.motor.set_control(Follower(other.id, opp_direction))
+        if c != StatusCode.OK:
+            print(f"ERROR: {c} \n {self.motor.device_id})")
 
     def updateDashboard(self):
         SmartDashboard.putNumber(

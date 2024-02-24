@@ -194,6 +194,8 @@ class OperatorInterface:
         self.hold = getButtonBindingOfName("hold")
         self.feedScore = getButtonBindingOfName("feed")
 
+        self.ampPrep = getButtonBindingOfName("amp")
+
         # shooter prep
         self.prepShotDynamic = getButtonBindingOfName("prepShotDynamic")
         self.prepShotSubwoofer = getButtonBindingOfName("prepShotSubwoofer")

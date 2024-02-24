@@ -350,6 +350,21 @@ class PhysicsEngine:
             1,
             constants.kSimulationRotationalInertia,
         )
+        self.motorsim.addFalcon(
+            robot.container.elevator.elevatorMotor1,
+            1,
+            constants.kSimulationRotationalInertia,
+        )
+        self.motorsim.addFalcon(
+            robot.container.elevator.elevatorMotor2,
+            1,
+            constants.kSimulationRotationalInertia,
+        )
+        self.motorsim.addFalcon(
+            robot.container.intake.pivotMotor,
+            1,
+            constants.kSimulationRotationalInertia,
+        )
 
         targets = []
         for target in constants.kApriltagPositionDict.values():

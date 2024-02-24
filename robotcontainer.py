@@ -17,10 +17,16 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
-from commands.intakesetting import FeedIntakeToShooter, FloorIntake, StageIntake
+from commands.intakesetting import (
+    FeedIntakeToShooter,
+    FloorIntake,
+    HoldIntakeAtHandoff,
+    StageIntake,
+)
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
 from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
+from commands.elevatorsetting import ElevatorAmpPosition, ElevatorBottomPosition
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -113,8 +119,9 @@ class RobotContainer:
                 self.operatorInterface.chassisControls.rotationX,
             )
         )
-        self.intake.setDefaultCommand(StageIntake(self.intake))
+        self.intake.setDefaultCommand(HoldIntakeAtHandoff(self.intake))
         self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
+        self.elevator.setDefaultCommand(ElevatorBottomPosition(self.elevator))
 
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)
@@ -179,6 +186,12 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.ampPrep).whileTrue(
+            commands2.ParallelCommandGroup(
+                ElevatorAmpPosition(self.elevator), StageIntake(self.intake)
+            )
         )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
