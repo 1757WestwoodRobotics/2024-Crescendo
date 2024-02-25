@@ -83,7 +83,7 @@ class DynamicScore(ParallelCommandGroup):
             intake.state in (intake.IntakeState.Staging, intake.IntakeState.Amp)
             and elevator.state == elevator.ElevatorState.AmpPosition
         ):
-            commands = [ElevatorAmpPosition(elevator), EjectInAmp(intake)]
+            commands = [EjectInAmp(intake)]
 
         ParallelCommandGroup.__init__(*commands)
         self.setName(__class__.__name__)
