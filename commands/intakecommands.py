@@ -45,17 +45,15 @@ class DynamicScore(ParallelCommandGroup):
 
         if (
             intake.state == intake.IntakeState.Holding
-            and elevator.state == elevator.ElevatorState.BottomPosition
-        ):
-            commands = [
-                ElevatorBottomPosition(elevator),
-                FeedIntakeToShooter(intake),
-            ]
+            or intake.state == intake.IntakeState.Feeding
+        ) and elevator.state == elevator.ElevatorState.BottomPosition:
+            commands = [FeedIntakeToShooter(intake)]
             shooter.addSimNote()
+
         elif (
             intake.state == intake.IntakeState.Staging
-            and elevator.state == elevator.ElevatorState.AmpPosition
-        ):
+            or intake.state == intake.IntakeState.Amp
+        ) and elevator.state == elevator.ElevatorState.AmpPosition:
             commands = [ElevatorAmpPosition(elevator), ScoreAmp(intake)]
 
         super.__init__(*commands)
