@@ -885,8 +885,8 @@ kRobotToElevatorTransform = Transform3d(
 
 kMotorPulleyGearRatio = 60 / 18 * 4 / 1
 
-kPulleyGearPitchDiameter = 1.504
-"""inches"""
+kPulleyGearPitchDiameter = 1.504 * kMetersPerInch
+"""meters"""
 
 kBottomPositionBeltPosition = 0
 kAmpPositionBeltPosition = 19.125 * kMetersPerInch
