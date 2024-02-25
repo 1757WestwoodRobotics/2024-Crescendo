@@ -167,7 +167,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
-            FeedIntakeToShooter(self.intake, self.shooter)
+            FeedIntakeToShooter(self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(

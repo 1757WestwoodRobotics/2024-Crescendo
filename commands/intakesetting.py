@@ -36,14 +36,8 @@ class HoldIntakeAtHandoff(SetIntakeState):
 
 
 class FeedIntakeToShooter(SetIntakeState):
-    def __init__(
-        self, intakeSubsystem: IntakeSubsystem, shooterSubsystem: ShooterSubsystem
-    ) -> None:
+    def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
-        self.shooter = shooterSubsystem
-
-    def initialize(self):
-        self.shooter.addSimNote()
 
     def execute(self) -> None:
         self.intake.setFeeding()

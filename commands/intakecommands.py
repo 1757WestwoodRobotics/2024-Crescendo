@@ -49,8 +49,9 @@ class DynamicScore(ParallelCommandGroup):
         ):
             commands = [
                 ElevatorBottomPosition(elevator),
-                FeedIntakeToShooter(intake, shooter),
+                FeedIntakeToShooter(intake),
             ]
+            shooter.addSimNote()
         elif (
             intake.state == intake.IntakeState.Staging
             and elevator.state == elevator.ElevatorState.AmpPosition
