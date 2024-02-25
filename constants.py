@@ -900,6 +900,11 @@ kBeltPullDownSpeed = 3
 kPullDownBandLimit = 0.1
 """Revolutions"""
 
+kElevatorPositionKey = "ElevatorPosition"
+
+kElevatorManualChange = 0.05
+""".05 meters per execute tick"""
+
 kRobotToShooterTransform = Transform3d(
     Pose3d(),
     Pose3d(

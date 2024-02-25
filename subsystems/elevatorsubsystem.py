@@ -13,6 +13,7 @@ class ElevatorSubsystem(Subsystem):
         AmpPosition = auto()
         TopPosition = auto()
         PullDown = auto()  # climber
+        ManualControl = auto()
 
     def __init__(self) -> None:
         Subsystem.__init__(self)
@@ -66,9 +67,18 @@ class ElevatorSubsystem(Subsystem):
                 self.state = self.ElevatorState.BottomPosition
 
         SmartDashboard.putString(constants.kElevatorStateKey, str(self.state))
-        SmartDashboard.putNumber(
-            constants.kElevatorPositionKey, self.getElevatorPosition()
-        )
+
+        if self.state == self.ElevatorState.ManualControl:
+            self.setElevatorMotorsAtPosition(
+                SmartDashboard.getNumber(
+                    constants.kElevatorPositionKey, self.getElevatorPosition()
+                )
+            )
+
+        else:
+            SmartDashboard.putNumber(
+                constants.kElevatorPositionKey, self.getElevatorPosition()
+            )
 
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
         self.elevatorMotor1.set(
@@ -79,6 +89,7 @@ class ElevatorSubsystem(Subsystem):
         )
 
     def getElevatorPosition(self) -> float:
+        """returns in meters from bottom position"""
         return (
             self.elevatorMotor1.get(Talon.ControlMode.Position)
             / constants.kMotorPulleyGearRatio
@@ -98,3 +109,6 @@ class ElevatorSubsystem(Subsystem):
 
     def setPullDown(self) -> None:
         self.state = self.ElevatorState.PullDown
+
+    def setManualControl(self) -> None:
+        self.state = self.ElevatorState.ManualControl
