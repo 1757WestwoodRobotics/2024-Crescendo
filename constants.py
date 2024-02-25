@@ -760,12 +760,11 @@ kPivotEncoderID = 1
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
 kIntakePoseKey = "intake/pose"
-# intake 0 degrees is handoff angle
-kIntakeAngleOffset = Rotation2d.fromDegrees(-7.761653)
-# all angles are relative to handoff angle
-kHandoffAngle = Rotation2d(0)
-kFloorPositionAngle = Rotation2d.fromDegrees(225.045433)
-kStagingPositionAngle = Rotation2d.fromDegrees(69.939031)
+
+# relative to horizontal
+kHandoffAngle = Rotation2d(-7.761653)
+kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
+kStagingPositionAngle = Rotation2d.fromDegrees(102.299316)
 kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
