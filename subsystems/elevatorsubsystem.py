@@ -1,9 +1,9 @@
 from enum import Enum, auto
 from math import pi
 from commands2 import Subsystem
+from wpilib import SmartDashboard
 
 from util.simtalon import Talon
-from wpilib import SmartDashboard
 import constants
 
 

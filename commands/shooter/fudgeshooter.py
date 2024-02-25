@@ -1,6 +1,7 @@
 from commands2 import Command
-from subsystems.shootersubsystem import ShooterSubsystem
 from wpilib import SmartDashboard
+
+from subsystems.shootersubsystem import ShooterSubsystem
 import constants
 
 
@@ -26,7 +27,7 @@ class FudgeShooter(Command):
 
 class DecreaseLeftMotorSpeed(FudgeShooter):
     def __init__(self, shooter: ShooterSubsystem) -> None:
-        super.__init__(self, shooter)
+        FudgeShooter.__init__(self, shooter)
 
     def execute(self) -> None:
         SmartDashboard.putNumber(
@@ -38,7 +39,7 @@ class DecreaseLeftMotorSpeed(FudgeShooter):
 
 class IncreaseLeftMotorSpeed(FudgeShooter):
     def __init__(self, shooter: ShooterSubsystem) -> None:
-        super.__init__(self, shooter)
+        FudgeShooter.__init__(self, shooter)
 
     def execute(self) -> None:
         SmartDashboard.putNumber(
@@ -50,7 +51,7 @@ class IncreaseLeftMotorSpeed(FudgeShooter):
 
 class DecreaseRightMotorSpeed(FudgeShooter):
     def __init__(self, shooter: ShooterSubsystem) -> None:
-        super.__init__(self, shooter)
+        FudgeShooter.__init__(self, shooter)
 
     def execute(self) -> None:
         SmartDashboard.putNumber(
@@ -62,7 +63,7 @@ class DecreaseRightMotorSpeed(FudgeShooter):
 
 class IncreaseRightMotorSpeed(FudgeShooter):
     def __init__(self, shooter: ShooterSubsystem) -> None:
-        super.__init__(self, shooter)
+        FudgeShooter.__init__(self, shooter)
 
     def execute(self) -> None:
         SmartDashboard.putNumber(
@@ -74,7 +75,7 @@ class IncreaseRightMotorSpeed(FudgeShooter):
 
 class DecreaseShooterAngle(FudgeShooter):
     def __init__(self, shooter: ShooterSubsystem) -> None:
-        super.__init__(self, shooter)
+        FudgeShooter.__init__(self, shooter)
 
     def execute(self) -> None:
         SmartDashboard.putNumber(
@@ -86,7 +87,7 @@ class DecreaseShooterAngle(FudgeShooter):
 
 class IncreaseShooterAngle(FudgeShooter):
     def __init__(self, shooter: ShooterSubsystem) -> None:
-        super.__init__(self, shooter)
+        FudgeShooter.__init__(self, shooter)
 
     def execute(self) -> None:
         SmartDashboard.putNumber(

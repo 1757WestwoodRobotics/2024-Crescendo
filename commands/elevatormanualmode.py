@@ -1,6 +1,7 @@
 from commands2 import Command
-from subsystems.elevatorsubsystem import ElevatorSubsystem
 from wpilib import SmartDashboard
+from subsystems.elevatorsubsystem import ElevatorSubsystem
+
 from util.convenientmath import clamp
 import constants
 
@@ -17,7 +18,7 @@ class AscendElevator(Command):
         SmartDashboard.putNumber(
             constants.kElevatorPositionKey,
             clamp(
-                self.elevator.getElevatorPosition() + constants.kElevatorManualRate,
+                self.elevator.getElevatorPosition() + constants.kElevatorManualChange,
                 constants.kBottomPositionBeltPosition,
                 constants.kTopPositionBeltPosition,
             ),
@@ -39,7 +40,7 @@ class DescendElevator(Command):
         SmartDashboard.putNumber(
             constants.kElevatorPositionKey,
             clamp(
-                self.elevator.getElevatorPosition() - constants.kElevatorManualRate,
+                self.elevator.getElevatorPosition() - constants.kElevatorManualChange,
                 constants.kBottomPositionBeltPosition,
                 constants.kTopPositionBeltPosition,
             ),
