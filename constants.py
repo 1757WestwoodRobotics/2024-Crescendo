@@ -96,10 +96,10 @@ kFieldWidth = 26 * kMetersPerFoot + 3.5 * kMetersPerInch
 """meters"""
 
 # Robot Physical parameters
-kRobotWidth = 26 * kMetersPerInch
+kRobotWidth = 28 * kMetersPerInch
 """meters"""
 
-kRobotLength = 24 * kMetersPerInch
+kRobotLength = 26 * kMetersPerInch
 """meters"""
 
 kSwerveModuleCenterToRobotCenterWidth = 10.375 * kMetersPerInch
