@@ -9,6 +9,8 @@ from commands.intakesetting import (
     StageIntake,
     FeedIntakeToShooter,
     ScoreAmp,
+    HoldIntakeAtHandoff,
+    ScoreTrap,
 )
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
@@ -21,6 +23,12 @@ class GroundIntake(ParallelCommandGroup):
         self.setName(__class__.__name__)
 
 
+class DefaultIntake(ParallelCommandGroup):
+    def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
+        super.__init__(ElevatorBottomPosition(elevator), HoldIntakeAtHandoff(intake))
+        self.setName(__class__.__name__)
+
+
 class PrepareAmp(ParallelCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         super.__init__(ElevatorAmpPosition(elevator), StageIntake(intake))
@@ -30,6 +38,19 @@ class PrepareAmp(ParallelCommandGroup):
 class PrepareTrap(ParallelCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         super.__init__(ElevatorTopPosition(elevator), StageIntake(intake))
+        self.setName(__class__.__name__)
+
+
+class ScoreTrap(ParallelCommandGroup):
+    def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
+        commands = []
+
+        if (
+            intake.state == intake.IntakeState.Staging or intake.IntakeState.Trap
+        ) and elevator.state == elevator.ElevatorState.TopPosition:
+            commands = [ScoreTrap(intake)]
+
+        super.__init__(*commands)
         self.setName(__class__.__name__)
 
 
