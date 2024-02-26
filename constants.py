@@ -762,7 +762,7 @@ kIntakeHasNoteKey = "intake/hasNote"
 kIntakePoseKey = "intake/pose"
 
 # relative to horizontal
-kHandoffAngle = Rotation2d(-7.761653)
+kHandoffAngle = Rotation2d.fromDegrees(-7.761653)
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionAngle = Rotation2d.fromDegrees(102.299316)
 kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
