@@ -1,4 +1,6 @@
 from commands2 import ParallelCommandGroup, Command, SequentialCommandGroup
+from wpilib import SmartDashboard
+
 from commands.elevatorsetting import (
     ElevatorBottomPosition,
     ElevatorAmpPosition,
@@ -12,7 +14,7 @@ from commands.intakesetting import (
     HoldIntakeAtHandoff,
     EjectInTrap,
 )
-from wpilib import SmartDashboard
+
 
 import constants
 from subsystems.elevatorsubsystem import ElevatorSubsystem
@@ -23,7 +25,7 @@ from subsystems.shootersubsystem import ShooterSubsystem
 class GroundIntake(ParallelCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         ParallelCommandGroup.__init__(
-            ElevatorBottomPosition(elevator), FloorIntake(intake)
+            self, ElevatorBottomPosition(elevator), FloorIntake(intake)
         )
         self.setName(__class__.__name__)
 
@@ -31,7 +33,7 @@ class GroundIntake(ParallelCommandGroup):
 class DefaultIntake(ParallelCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         ParallelCommandGroup.__init__(
-            ElevatorBottomPosition(elevator), HoldIntakeAtHandoff(intake)
+            self, ElevatorBottomPosition(elevator), HoldIntakeAtHandoff(intake)
         )
         self.setName(__class__.__name__)
 
@@ -39,7 +41,7 @@ class DefaultIntake(ParallelCommandGroup):
 class PrepareAmp(ParallelCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         ParallelCommandGroup.__init__(
-            ElevatorAmpPosition(elevator), StageIntake(intake)
+            self, ElevatorAmpPosition(elevator), StageIntake(intake)
         )
         self.setName(__class__.__name__)
 
@@ -47,7 +49,7 @@ class PrepareAmp(ParallelCommandGroup):
 class PrepareTrap(SequentialCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         SequentialCommandGroup.__init__(
-            StageIntake(intake), ElevatorTopPosition(elevator)
+            self, StageIntake(intake), ElevatorTopPosition(elevator)
         )
         self.setName(__class__.__name__)
 
@@ -61,7 +63,7 @@ class ScoreTrap(ParallelCommandGroup):
         ) and elevator.state == elevator.ElevatorState.TopPosition:
             commands = [EjectInTrap(intake)]
 
-        ParallelCommandGroup.__init__(*commands)
+        ParallelCommandGroup.__init__(self, *commands)
         self.setName(__class__.__name__)
 
 

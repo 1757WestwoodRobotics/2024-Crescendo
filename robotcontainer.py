@@ -17,12 +17,6 @@ from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ShooterManualMode
-from commands.intakesetting import (
-    FeedIntakeToShooter,
-    FloorIntake,
-    HoldIntakeAtHandoff,
-    StageIntake,
-)
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
 from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
@@ -127,7 +121,7 @@ class RobotContainer:
                 self.operatorInterface.chassisControls.rotationX,
             )
         )
-        self.intake.setDefaultCommand(DefaultIntake(self.intake, self.elevator))
+        self.intake.setDefaultCommand(DefaultIntake(self.elevator, self.intake))
         self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
         self.elevator.setDefaultCommand(ElevatorBottomPosition(self.elevator))
 
@@ -179,7 +173,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.ampPrep).whileTrue(
-            PrepareAmp(self.elevator, self.shooter)
+            PrepareAmp(self.elevator, self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.trapPrep).whileTrue(
