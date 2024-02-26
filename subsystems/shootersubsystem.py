@@ -267,6 +267,7 @@ class ShooterSubsystem(Subsystem):
             constants.kLatestNoteTrajectoryKey,
             convertToSendablePoses(latestNoteTrajectory),
         )
+        SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, False)
 
     def periodic(self) -> None:
         notePoses = []

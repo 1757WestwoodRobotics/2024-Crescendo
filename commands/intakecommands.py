@@ -95,7 +95,6 @@ class DynamicScore(Command):
             self.command = FeedIntakeToShooter(self.intake)
             if SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False):
                 self.shooter.addSimNote()
-                SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, False)
 
         elif (
             self.intake.state
