@@ -27,6 +27,14 @@ from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
 from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
 from commands.elevatorsetting import ElevatorAmpPosition, ElevatorBottomPosition
+from commands.intakecommands import (
+    GroundIntake,
+    DefaultIntake,
+    PrepareAmp,
+    PrepareTrap,
+    ScoreTrap,
+    DynamicScore,
+)
 
 # from commands.velocitysetpoint import VelocitySetpoint
 
@@ -119,7 +127,7 @@ class RobotContainer:
                 self.operatorInterface.chassisControls.rotationX,
             )
         )
-        self.intake.setDefaultCommand(HoldIntakeAtHandoff(self.intake))
+        self.intake.setDefaultCommand(DefaultIntake(self.intake, self.elevator))
         self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
         self.elevator.setDefaultCommand(ElevatorBottomPosition(self.elevator))
 
@@ -163,11 +171,23 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.floorIntake).whileTrue(
-            FloorIntake(self.intake)
+            GroundIntake(self.elevator, self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
-            FeedIntakeToShooter(self.intake)
+            DynamicScore(self.elevator, self.intake, self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.ampPrep).whileTrue(
+            PrepareAmp(self.elevator, self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.trapPrep).whileTrue(
+            PrepareTrap(self.elevator, self.intake)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.trapScore).whileTrue(
+            ScoreTrap(self.elevator, self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(

@@ -191,6 +191,7 @@ class OperatorInterface:
         self.floorIntake = getButtonBindingOfName("floorIntake")
         self.trapScore = getButtonBindingOfName("trapScore")
         self.trapPrep = getButtonBindingOfName("trapPrep")
+        self.ampPrep = getButtonBindingOfName("amp")
         self.hold = getButtonBindingOfName("hold")
         self.feedScore = getButtonBindingOfName("feed")
 
