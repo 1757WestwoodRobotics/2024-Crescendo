@@ -756,6 +756,7 @@ kIntakeInverted = False
 kPivotInverted = False
 
 kPivotEncoderID = 1
+kPivotEncoderOffset = 0  # revolutions, get from phoenix tuner
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"

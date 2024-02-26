@@ -23,7 +23,9 @@ class IntakeSubsystem(Subsystem):
         Subsystem.__init__(self)
         self.setName(__class__.__name__)  # basic subsystem boilerplate
 
-        self.pivotEncoder = CTREEncoder(constants.kPivotEncoderID, 0)
+        self.pivotEncoder = CTREEncoder(
+            constants.kPivotEncoderID, constants.kPivotEncoderOffset
+        )
 
         self.intakeMotor = NEOBrushless(
             constants.kIntakeCANID,
