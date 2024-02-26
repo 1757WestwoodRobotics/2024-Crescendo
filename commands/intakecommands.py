@@ -1,4 +1,4 @@
-from commands2 import ParallelCommandGroup
+from commands2 import ParallelCommandGroup, Command, SequentialCommandGroup
 from commands.elevatorsetting import (
     ElevatorBottomPosition,
     ElevatorAmpPosition,
@@ -12,6 +12,9 @@ from commands.intakesetting import (
     HoldIntakeAtHandoff,
     EjectInTrap,
 )
+from wpilib import SmartDashboard
+
+import constants
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.shootersubsystem import ShooterSubsystem
@@ -41,10 +44,10 @@ class PrepareAmp(ParallelCommandGroup):
         self.setName(__class__.__name__)
 
 
-class PrepareTrap(ParallelCommandGroup):
+class PrepareTrap(SequentialCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
-        ParallelCommandGroup.__init__(
-            ElevatorTopPosition(elevator), StageIntake(intake)
+        SequentialCommandGroup.__init__(
+            StageIntake(intake), ElevatorTopPosition(elevator)
         )
         self.setName(__class__.__name__)
 
@@ -63,27 +66,50 @@ class ScoreTrap(ParallelCommandGroup):
 
 
 # scores amp or feeds to shooter depending on state
-class DynamicScore(ParallelCommandGroup):
+class DynamicScore(Command):
     def __init__(
         self,
         elevator: ElevatorSubsystem,
         intake: IntakeSubsystem,
         shooter: ShooterSubsystem,
     ):
-        commands = []
+        Command.__init__(self)
+        self.setName(__class__.__name__)
 
+        self.elevator = elevator
+        self.intake = intake
+        self.shooter = shooter
+
+        self.command = Command()
+
+        self.running = False
+        self.addRequirements(self.elevator, self.intake)
+
+    def initialize(self):
+        self.running = True
         if (
-            intake.state in (intake.IntakeState.Holding, intake.IntakeState.Feeding)
-            and elevator.state == elevator.ElevatorState.BottomPosition
+            self.intake.state
+            in (self.intake.IntakeState.Holding, self.intake.IntakeState.Feeding)
+            and self.elevator.state == self.elevator.ElevatorState.BottomPosition
         ):
-            commands = [FeedIntakeToShooter(intake)]
-            shooter.addSimNote()
+            self.command = FeedIntakeToShooter(self.intake)
+            if SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False):
+                self.shooter.addSimNote()
+                SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, False)
 
         elif (
-            intake.state in (intake.IntakeState.Staging, intake.IntakeState.Amp)
-            and elevator.state == elevator.ElevatorState.AmpPosition
+            self.intake.state
+            in (self.intake.IntakeState.Staging, self.intake.IntakeState.Amp)
+            and self.elevator.state == self.elevator.ElevatorState.AmpPosition
         ):
-            commands = [EjectInAmp(intake)]
+            self.command = EjectInAmp(self.intake)
+        self.command.initialize()
 
-        ParallelCommandGroup.__init__(*commands)
-        self.setName(__class__.__name__)
+    def execute(self) -> None:
+        self.command.execute()
+        if self.command.isFinished():
+            self.command.end(False)
+            self.running = False
+
+    def isFinished(self) -> bool:
+        return False
