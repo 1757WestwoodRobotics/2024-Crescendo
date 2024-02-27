@@ -20,7 +20,7 @@ from commands.shooter.shootermanualmode import ShooterManualMode
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
 from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
-from commands.elevatorsetting import ElevatorAmpPosition, ElevatorBottomPosition
+from commands.elevatorsetting import ElevatorBottomPosition
 from commands.intakecommands import (
     GroundIntake,
     DefaultIntake,
