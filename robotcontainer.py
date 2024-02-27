@@ -202,11 +202,6 @@ class RobotContainer:
             PodiumShot(self.shooter)
         )
 
-        ModifiableJoystickButton(self.operatorInterface.ampPrep).whileTrue(
-            commands2.ParallelCommandGroup(
-                ElevatorAmpPosition(self.elevator), StageIntake(self.intake)
-            )
-        )
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
         # )
