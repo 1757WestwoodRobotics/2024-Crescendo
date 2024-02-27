@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from math import pi
 from commands2 import Subsystem
-from wpilib._wpilib import SmartDashboard
+from wpilib import SmartDashboard
 
 from util.simtalon import Talon
 import constants
@@ -13,6 +13,7 @@ class ElevatorSubsystem(Subsystem):
         AmpPosition = auto()
         TopPosition = auto()
         PullDown = auto()  # climber
+        ManualControl = auto()
 
     def __init__(self) -> None:
         Subsystem.__init__(self)
@@ -39,6 +40,7 @@ class ElevatorSubsystem(Subsystem):
         self.elevatorMotor2.follow(self.elevatorMotor1, True)
 
         self.state = self.ElevatorState.BottomPosition
+        SmartDashboard.putNumber(constants.kElevatorPositionKey, 0)
 
     def periodic(self) -> None:
         if self.state == self.ElevatorState.BottomPosition:
@@ -65,9 +67,18 @@ class ElevatorSubsystem(Subsystem):
                 self.state = self.ElevatorState.BottomPosition
 
         SmartDashboard.putString(constants.kElevatorStateKey, str(self.state))
-        SmartDashboard.putNumber(
-            constants.kElevatorPositionKey, self.getElevatorPosition()
-        )
+
+        if self.state == self.ElevatorState.ManualControl:
+            self.setElevatorMotorsAtPosition(
+                SmartDashboard.getNumber(
+                    constants.kElevatorPositionKey, self.getElevatorPosition()
+                )
+            )
+
+        else:
+            SmartDashboard.putNumber(
+                constants.kElevatorPositionKey, self.getElevatorPosition()
+            )
 
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
         self.elevatorMotor1.set(
@@ -78,6 +89,7 @@ class ElevatorSubsystem(Subsystem):
         )
 
     def getElevatorPosition(self) -> float:
+        """returns in meters from bottom position"""
         return (
             self.elevatorMotor1.get(Talon.ControlMode.Position)
             / constants.kMotorPulleyGearRatio
@@ -94,3 +106,9 @@ class ElevatorSubsystem(Subsystem):
 
     def setTopPosition(self) -> None:
         self.state = self.ElevatorState.TopPosition
+
+    def setPullDown(self) -> None:
+        self.state = self.ElevatorState.PullDown
+
+    def setManualControl(self) -> None:
+        self.state = self.ElevatorState.ManualControl

@@ -1,6 +1,5 @@
 from commands2.command import Command
 from subsystems.intakesubsystem import IntakeSubsystem
-from subsystems.shootersubsystem import ShooterSubsystem
 
 
 class SetIntakeState(
@@ -36,14 +35,8 @@ class HoldIntakeAtHandoff(SetIntakeState):
 
 
 class FeedIntakeToShooter(SetIntakeState):
-    def __init__(
-        self, intakeSubsystem: IntakeSubsystem, shooterSubsystem: ShooterSubsystem
-    ) -> None:
+    def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
-        self.shooter = shooterSubsystem
-
-    def initialize(self):
-        self.shooter.addSimNote()
 
     def execute(self) -> None:
         self.intake.setFeeding()
@@ -57,7 +50,7 @@ class StageIntake(SetIntakeState):
         self.intake.setStaging()
 
 
-class ScoreAmp(SetIntakeState):
+class EjectInAmp(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
@@ -65,7 +58,7 @@ class ScoreAmp(SetIntakeState):
         self.intake.setAmp()
 
 
-class ScoreTrap(SetIntakeState):
+class EjectInTrap(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
 
