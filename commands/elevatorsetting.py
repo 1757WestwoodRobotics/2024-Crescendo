@@ -7,7 +7,7 @@ class SetElevatorState(Command):
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.elevator = elevatorSubsystem
-        self.addRequirements([self.elevator])
+        self.addRequirements(self.elevator)
 
     def execute(self) -> None:
         raise NotImplementedError("Must be implemented by subclass")

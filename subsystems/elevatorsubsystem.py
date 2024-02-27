@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from math import pi
 from commands2 import Subsystem
+from wpilib._wpilib import SmartDashboard
 
 from util.simtalon import Talon
 import constants
@@ -35,6 +36,8 @@ class ElevatorSubsystem(Subsystem):
             constants.kElevator2Inverted,
         )
 
+        self.elevatorMotor2.follow(self.elevatorMotor1, True)
+
         self.state = self.ElevatorState.BottomPosition
 
     def periodic(self) -> None:
@@ -58,15 +61,13 @@ class ElevatorSubsystem(Subsystem):
                     * constants.kMotorPulleyGearRatio
                     / (constants.kPulleyGearPitchDiameter * pi),
                 )
-                self.elevatorMotor2.set(
-                    Talon.ControlMode.Velocity,
-                    constants.kBeltPullDownSpeed
-                    * constants.kMotorPulleyGearRatio
-                    / (constants.kPulleyGearPitchDiameter * pi),
-                )
-
             else:
                 self.state = self.ElevatorState.BottomPosition
+
+        SmartDashboard.putString(constants.kElevatorStateKey, str(self.state))
+        SmartDashboard.putNumber(
+            constants.kElevatorPositionKey, self.getElevatorPosition()
+        )
 
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
         self.elevatorMotor1.set(
@@ -75,11 +76,13 @@ class ElevatorSubsystem(Subsystem):
             / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,
         )
-        self.elevatorMotor2.set(
-            Talon.ControlMode.Position,
-            beltPosition
-            / (constants.kPulleyGearPitchDiameter * pi)
-            * constants.kMotorPulleyGearRatio,
+
+    def getElevatorPosition(self) -> float:
+        return (
+            self.elevatorMotor1.get(Talon.ControlMode.Position)
+            / constants.kMotorPulleyGearRatio
+            * constants.kPulleyGearPitchDiameter
+            * pi
         )
 
     # the following methods are simply state setting, all actual motor control is done in periodic

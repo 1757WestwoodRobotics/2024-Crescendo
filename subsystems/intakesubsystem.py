@@ -1,6 +1,8 @@
 from enum import Enum, auto
 from commands2 import Subsystem
 from wpilib import SmartDashboard
+from wpilib._wpilib import RobotBase
+from wpimath.geometry import Rotation2d
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
@@ -22,8 +24,7 @@ class IntakeSubsystem(Subsystem):
         self.setName(__class__.__name__)  # basic subsystem boilerplate
 
         self.pivotEncoder = CTREEncoder(
-            constants.kPivotEncoderID,
-            constants.kIntakeAngleOffset.degrees(),
+            constants.kPivotEncoderID, constants.kPivotEncoderOffset
         )
 
         self.intakeMotor = NEOBrushless(
@@ -68,24 +69,14 @@ class IntakeSubsystem(Subsystem):
         backLimitState = self.intakeMotor.getLimitSwitch(self.backSensor)
         self.hasPosition = backLimitState or frontLimitState
         if self.state == self.IntakeState.Intaking:
-            self.pivotMotor.set(
-                Talon.ControlMode.Position,
-                constants.kFloorPositionAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-            )
+            self.setPivotAngle(constants.kFloorPositionAngle)
 
             if self.hasPosition:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, 0)
             # If either sensor is covered, stop the motor
 
         elif self.state == self.IntakeState.Holding:
-            self.pivotMotor.set(
-                Talon.ControlMode.Position,
-                constants.kHandoffAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-            )
+            self.setPivotAngle(constants.kHandoffAngle)
             # none - intaking
             # only front - keep intaking
             # front and back - get position and hold
@@ -111,32 +102,17 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
         elif self.state == self.IntakeState.Feeding:
-            self.pivotMotor.set(
-                Talon.ControlMode.Position,
-                constants.kHandoffAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-            )
+            self.setPivotAngle(constants.kHandoffAngle)
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed
             )
 
         elif self.state == self.IntakeState.Staging:
-            self.pivotMotor.set(
-                Talon.ControlMode.Position,
-                constants.kStagingPositionAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-            )
+            self.setPivotAngle(constants.kStagingPositionAngle)
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
         elif self.state == self.IntakeState.Amp:
-            self.pivotMotor.set(
-                Talon.ControlMode.Position,
-                constants.kStagingPositionAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-            )
+            self.setPivotAngle(constants.kStagingPositionAngle)
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
             )
@@ -154,24 +130,37 @@ class IntakeSubsystem(Subsystem):
             )
 
         elif self.state == self.IntakeState.Ejecting:
-            self.pivotMotor.set(
-                Talon.ControlMode.Position,
-                constants.kFloorPositionAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-            )
+            self.setPivotAngle(constants.kFloorPositionAngle)
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Velocity, constants.kIntakeSpeed * -1
             )
 
-        SmartDashboard.putNumber(
-            constants.kPivotAngleKey, self.pivotEncoder.getPosition().radians()
-        )
+        if RobotBase.isSimulation():
+            SmartDashboard.putNumber(constants.kPivotAngleKey, self.getPivotAngle())
+        else:
+            SmartDashboard.putNumber(
+                constants.kPivotAngleKey, self.pivotEncoder.getPosition().radians()
+            )
         SmartDashboard.putNumber(
             constants.kIntakeSpeedKey,
             self.intakeMotor.get(NEOBrushless.ControlMode.Velocity),
         )
         SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, self.hasPosition)
+
+    def setPivotAngle(self, rotation: Rotation2d) -> None:
+        self.pivotMotor.set(
+            Talon.ControlMode.Position,
+            rotation.radians()
+            / constants.kRadiansPerRevolution
+            * constants.kPivotGearRatio,
+        )
+
+    def getPivotAngle(self) -> float:
+        return (
+            self.pivotMotor.get(Talon.ControlMode.Position)
+            / constants.kPivotGearRatio
+            * constants.kRadiansPerRevolution
+        )
 
     # the following methods are simply state setting, all actual motor control is done in periodic
     def setIntaking(self) -> None:
