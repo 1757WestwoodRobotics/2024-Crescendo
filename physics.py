@@ -10,13 +10,14 @@
 #
 
 import functools
+from math import pi
 import operator
 import typing
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState
 from phoenix6.sim.talon_fx_sim_state import TalonFXSimState
 from phoenix6.unmanaged import feed_enable
-from wpilib import RobotController, SmartDashboard
-from wpilib.simulation import DCMotorSim
+from wpilib import RobotController, SmartDashboard, DriverStation
+from wpilib.simulation import DCMotorSim, ElevatorSim
 from wpimath.geometry import Pose2d, Rotation2d, Transform2d, Translation2d, Pose3d
 from wpimath.system.plant import DCMotor
 import wpimath.kinematics
@@ -28,6 +29,47 @@ from subsystems.intakesubsystem import IntakeSubsystem
 from util.advantagescopeconvert import convertToSendablePoses
 from util.convenientmath import clamp, pointInCircle
 from util.motorsimulator import MotorSimulator
+
+
+class ElevatorSimTalon:
+    def __init__(self, controller: TalonFXSimState, gearbox: DCMotor) -> None:
+        self.isEnabled = False
+        self.controller = controller
+        self.sim = ElevatorSim(
+            gearbox,
+            constants.kMotorPulleyGearRatio,
+            constants.kElevatorCarriageMass,
+            constants.kPulleyGearPitchDiameter / 2,
+            constants.kBottomPositionBeltPosition,
+            constants.kTopPositionBeltPosition,
+            True,
+            0,
+        )
+
+    def setEnable(self, enable:bool) -> None:
+        self.isEnabled = enable
+    def update(self, tm_diff, robotVoltage: float):
+        self.sim.setInputVoltage(self.controller.motor_voltage if self.isEnabled else 0)
+        self.sim.update(tm_diff)
+
+        self.controller.set_raw_rotor_position(
+            self.sim.getPosition()
+            * constants.kMotorPulleyGearRatio
+            / (constants.kPulleyGearPitchDiameter * pi)
+        )
+        self.controller.set_rotor_velocity(
+            self.sim.getVelocity()
+            * constants.kMotorPulleyGearRatio
+            / (constants.kPulleyGearPitchDiameter * pi)
+        )
+        self.controller.set_supply_voltage(
+            clamp(
+                robotVoltage
+                - self.sim.getCurrentDraw() * constants.kSimMotorResistance,
+                0,
+                robotVoltage,
+            )
+        )
 
 
 class SwerveModuleSim:
@@ -351,19 +393,13 @@ class PhysicsEngine:
             constants.kSimulationRotationalInertia,
         )
         self.motorsim.addFalcon(
-            robot.container.elevator.elevatorMotor1,
-            1,
-            constants.kSimulationRotationalInertia,
-        )
-        self.motorsim.addFalcon(
-            robot.container.elevator.elevatorMotor2,
-            1,
-            constants.kSimulationRotationalInertia,
-        )
-        self.motorsim.addFalcon(
             robot.container.intake.pivotMotor,
             1,
             constants.kSimulationRotationalInertia,
+        )
+        self.elevSim = ElevatorSimTalon(
+            robot.container.elevator.elevatorMotor1.getSimCollection(),
+            DCMotor.falcon500(2),
         )
 
         targets = []
@@ -398,7 +434,9 @@ class PhysicsEngine:
         :param tm_diff: The amount of time that has passed since the last
                         time that this function was called
         """
-        feed_enable(1 / 50)
+        self.elevSim.setEnable(DriverStation.isEnabled())
+        if DriverStation.isEnabled():
+            feed_enable(1 / 50)
 
         if not self.sim_initialized:
             self.sim_initialized = True
@@ -412,6 +450,7 @@ class PhysicsEngine:
         self.motorsim.update(tm_diff, voltage)
         self.driveSim.update(tm_diff, voltage)
         self.noteSim.update(tm_diff, self.bot)
+        self.elevSim.update(tm_diff, voltage)
 
         simRobotPose = self.driveSim.getPose()
         self.physics_controller.field.setRobotPose(simRobotPose)

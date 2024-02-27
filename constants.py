@@ -885,6 +885,7 @@ kRobotToElevatorTransform = Transform3d(
 )
 
 kMotorPulleyGearRatio = 60 / 18 * 4 / 1
+kElevatorCarriageMass = 19.5 * kKilogramToLbs
 
 kPulleyGearPitchDiameter = 1.504 * kMetersPerInch
 """meters"""
