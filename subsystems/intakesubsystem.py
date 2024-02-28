@@ -86,16 +86,19 @@ class IntakeSubsystem(Subsystem):
             # front and back - get position and hold
             # only back - go to held position from front and back
 
+            # put in place to stop when in a good spot
+            #Only front to continue
+            #On rising edge of back state (both, it's a known position), intake a bit more and lock
+
             if self.putInPlace:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             elif frontLimitState and not backLimitState:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage)
             elif frontLimitState and backLimitState:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage)
-            elif not frontLimitState and backLimitState:
-                self.heldPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position) - constants.kIntakeSafetyPositionOffset
+                self.heldPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position) + constants.kIntakeSafetyPositionOffset
                 self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
                 self.putInPlace = True
+                
 
         elif self.state == self.IntakeState.Feeding:
             self.setPivotAngle(constants.kHandoffAngle)
