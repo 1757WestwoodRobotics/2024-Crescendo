@@ -48,8 +48,9 @@ class ElevatorSimTalon:
 
     def setEnable(self, enable:bool) -> None:
         self.isEnabled = enable
+
     def update(self, tm_diff, robotVoltage: float):
-        self.sim.setInputVoltage(self.controller.motor_voltage if self.isEnabled else 0)
+        self.sim.setInputVoltage(self.controller.motor_voltage)
         self.sim.update(tm_diff)
 
         self.controller.set_raw_rotor_position(

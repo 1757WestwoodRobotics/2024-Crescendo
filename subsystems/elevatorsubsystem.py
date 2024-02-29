@@ -26,6 +26,11 @@ class ElevatorSubsystem(Subsystem):
             constants.kElevator1IGain,
             constants.kElevator1DGain,
             constants.kElevator1Inverted,
+            "",
+            constants.kElevatorFFVolts,
+            0,
+            constants.kElevatorMotionMagicCruiseVelocity,
+            constants.kElevatorMotionMagicCruiseAccel
         )
 
         self.elevatorMotor2 = Talon(
@@ -82,7 +87,7 @@ class ElevatorSubsystem(Subsystem):
 
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
         self.elevatorMotor1.set(
-            Talon.ControlMode.Position,
+            Talon.ControlMode.MotionMagicPosition,
             (beltPosition)
             / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,

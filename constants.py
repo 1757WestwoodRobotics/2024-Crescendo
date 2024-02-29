@@ -872,6 +872,10 @@ kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2Inverted = True
 
+kElevatorFFVolts = 0 #Volts
+kElevatorMotionMagicCruiseVelocity = 10 # rps
+kElevatorMotionMagicCruiseAccel = 10 # rpsps
+
 kElevatorPositionKey = "elevator/position"
 kElevatorStateKey = "elevator/state"
 
