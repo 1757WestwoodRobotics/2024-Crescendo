@@ -8,6 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
+from commands.intakesetting import ResetIntake
 
 import constants
 

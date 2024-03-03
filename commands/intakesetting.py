@@ -65,7 +65,6 @@ class EjectInTrap(SetIntakeState):
     def execute(self) -> None:
         self.intake.setTrap()
 
-
 class ResetIntake(Command):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         Command.__init__(self)
