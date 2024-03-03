@@ -27,6 +27,7 @@ class ShooterManualMode(Command):
             Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleKey, 0.5))
         )
 
+
 class ResetShooter(Command):
     def __init__(self, shooter: ShooterSubsystem) -> None:
         Command.__init__(self)
