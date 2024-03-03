@@ -776,7 +776,7 @@ kIntakeSpeed = 1000
 kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"
 
-kAngleMotorRatio = (64 / 16) * (60 / 18)
+kAngleMotorRatio = (64 / 12) * (64 / 16) * (60 / 18)
 kShootingMotorRatio = 24 / 36
 
 # change numbers later
@@ -813,7 +813,8 @@ kLeftShootingMotorMappingFunction = lambda x, y: x * y
 kRightShootingMotorMappingFunction = lambda x, y: x * y
 kRobotAngleMappingFunction = lambda x, y: x * y
 
-kShooterAngleEncoderCANId = 1
+kShooterAngleEncoderCANId = 45
+kShooterAngleEncoderOffset = 0
 
 # radians
 kShooterAngleKey = "shooter/angle"
