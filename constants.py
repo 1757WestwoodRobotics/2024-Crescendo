@@ -765,13 +765,18 @@ kIntakePoseKey = "intake/pose"
 # relative to horizontal
 kHandoffAngle = Rotation2d.fromDegrees(-7.761653)
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
-kStagingPositionAngle = Rotation2d.fromDegrees(102.299316)
-kAmpScoringPositionAngle = kStagingPositionAngle + Rotation2d.fromDegrees(5)
+kStagingPositionAngle = Rotation2d.fromDegrees(
+    50
+)  # Safe place roughly vertical before going to amp or trap
+kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
+kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
-
-# RPM
-kIntakeSpeed = 1000
+# Percent Voltage
+kIntakePercentageVoltage = 0.45
+kIntakeFineControlVoltage = 0.25
+# EncoderTicks, to be changed
+kIntakeSafetyPositionOffset = 1024
 
 kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"
