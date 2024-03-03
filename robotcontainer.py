@@ -8,11 +8,11 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
-from commands.intakesetting import ResetIntake
 
 import constants
 
 from commands.resetdrive import ResetDrive
+from commands.intakesetting import ResetIntake
 from commands.drivedistance import DriveDistance
 from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
@@ -208,7 +208,6 @@ class RobotContainer:
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
         )
-
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)

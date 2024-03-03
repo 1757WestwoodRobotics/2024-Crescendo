@@ -88,7 +88,9 @@ class ShooterSubsystem(Subsystem):
             constants.kRightShootingMotorKv,
         )
 
-        self.shooterEncoder = CTREEncoder(constants.kShooterAngleEncoderCANId, constants.kShooterAngleEncoderOffset)
+        self.shooterEncoder = CTREEncoder(
+            constants.kShooterAngleEncoderCANId, constants.kShooterAngleEncoderOffset
+        )
         self.shooterInitPosition = self.shooterEncoder.getPosition()
 
         self.leftShootingMotor.setSmartCurrentLimit(
@@ -167,7 +169,7 @@ class ShooterSubsystem(Subsystem):
     def neutralShooter(self) -> None:
         self.rightShootingMotor.neutralOutput()
         self.leftShootingMotor.neutralOutput()
-        self.angleMotor.set( # in neutral ignore the fudge
+        self.angleMotor.set(  # in neutral ignore the fudge
             Talon.ControlMode.Position,
             self.shooterInitPosition.radians()
             / constants.kRadiansPerRevolution
