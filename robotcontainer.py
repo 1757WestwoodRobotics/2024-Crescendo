@@ -8,6 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
+from commands.intakesetting import ResetIntake
 
 import constants
 
@@ -156,6 +157,9 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.resetShooter).onTrue(
             ResetShooter(self.shooter)
+        )
+        ModifiableJoystickButton(self.operatorInterface.resetIntake).onTrue(
+            ResetIntake(self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.defenseStateControl).whileTrue(
