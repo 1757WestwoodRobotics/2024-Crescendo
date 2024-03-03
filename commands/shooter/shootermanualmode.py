@@ -26,3 +26,13 @@ class ShooterManualMode(Command):
         self.shooter.setShooterAngle(
             Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleKey, 0.5))
         )
+
+class ResetShooter(Command):
+    def __init__(self, shooter: ShooterSubsystem) -> None:
+        Command.__init__(self)
+        self.setName(__class__.__name__)
+        self.shooter = shooter
+        self.addRequirements(self.shooter)
+
+    def execute(self):
+        self.shooter.resetShooterPivot()
