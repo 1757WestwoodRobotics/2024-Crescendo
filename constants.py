@@ -769,12 +769,12 @@ kStagingPositionAngle = Rotation2d.fromDegrees(
     50
 )  # Safe place roughly vertical before going to amp or trap
 kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
-kStagingPositionangle = kAmpScoringPositionAngle
 kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
 # Percent Voltage
 kIntakePercentageVoltage = 0.45
+kIntakeFineControlVoltage = 0.25
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = 1024
 

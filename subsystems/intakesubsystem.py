@@ -74,6 +74,7 @@ class IntakeSubsystem(Subsystem):
 
         if self.state == self.IntakeState.Intaking:
             self.setPivotAngle(constants.kFloorPositionAngle)
+            self.intakeMotor.set(NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage)
 
             if self.hasPosition:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, 0)
@@ -96,7 +97,7 @@ class IntakeSubsystem(Subsystem):
                 )
             elif frontLimitState and not backLimitState:
                 self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
+                    NEOBrushless.ControlMode.Percent, constants.kIntakeFineControlVoltage
                 )
             elif frontLimitState and backLimitState:
                 self.heldPosition = (
