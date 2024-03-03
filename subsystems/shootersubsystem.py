@@ -169,7 +169,7 @@ class ShooterSubsystem(Subsystem):
     def neutralShooter(self) -> None:
         self.rightShootingMotor.neutralOutput()
         self.leftShootingMotor.neutralOutput()
-        self.angleMotor.set(  # in neutral ignore the fudge
+        self.angleMotor.set( # in neutral ignore the fudge
             Talon.ControlMode.Position,
             self.shooterInitPosition.radians()
             / constants.kRadiansPerRevolution
