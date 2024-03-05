@@ -13,6 +13,7 @@ from phoenix6.controls.velocity_voltage import VelocityVoltage
 from phoenix6.controls.velocity_duty_cycle import VelocityDutyCycle
 from phoenix6.controls.position_voltage import PositionVoltage
 from phoenix6.controls.duty_cycle_out import DutyCycleOut
+from phoenix6.controls.motion_magic_voltage import MotionMagicVoltage
 from phoenix6.controls.follower import Follower
 from phoenix6.hardware.talon_fx import TalonFX
 from phoenix6.configs.talon_fx_configs import TalonFXConfiguration
@@ -29,6 +30,7 @@ class Talon:
         """rotations/s"""
         Percent = auto()
         Amps = auto()
+        MotionMagic = auto()
 
     class NeutralMode(Enum):
         Brake = auto()
@@ -48,6 +50,8 @@ class Talon:
         isReversed: bool = False,
         canbus: str = "",
         kV: float = 0,
+        moMagicAccel: float = 0,
+        moMagicVel: float = 0
     ) -> None:
         print(f"Init TalonFX with port {canID} on {canbus} with name {name}")
         self.id = canID
@@ -64,6 +68,8 @@ class Talon:
             if isReversed
             else InvertedValue.CLOCKWISE_POSITIVE
         )
+        conf.motion_magic.motion_magic_acceleration = moMagicAccel
+        conf.motion_magic.motion_magic_cruise_velocity = moMagicVel
         self._nettableidentifier = f"motors/{self.name}({self.id})"
         SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/p", pGain)
         SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/i", iGain)
@@ -77,6 +83,7 @@ class Talon:
         self.velControl = VelocityVoltage(0, 0, False, 0, 0, False, False, False)
         self.posControl = PositionVoltage(0, 0, False, 0, 0, False, False, False)
         self.perControl = DutyCycleOut(0, False, False, False, False)
+        self.moMagic = MotionMagicVoltage(0)
 
         self.velControl.slot = 0
         self.posControl.slot = 0
@@ -107,6 +114,8 @@ class Talon:
             )
         elif controlMode == Talon.ControlMode.Percent:
             c = self.motor.set_control(self.perControl.with_output(demand + ff / 12))
+        elif controlMode == Talon.ControlMode.MotionMagic:
+            c = self.motor.set_control(self.moMagic.with_position(demand))
         elif controlMode == Talon.ControlMode.Amps:
             raise NotImplementedError("AMP control is currently not implemented")
 

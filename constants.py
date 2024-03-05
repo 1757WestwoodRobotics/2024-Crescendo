@@ -420,16 +420,16 @@ To determine encoder offsets (with robot ON and DISABLED):
   7. Click "Self-Test Snapshot"
   8. Record value from line: "Absolute Position (unsigned):"
 """
-kFrontLeftAbsoluteEncoderOffset = 256.113 / kDegeersPerRevolution
+kFrontLeftAbsoluteEncoderOffset = 0.417969
 """rotations"""
 
-kFrontRightAbsoluteEncoderOffset = 125.420 / kDegeersPerRevolution
+kFrontRightAbsoluteEncoderOffset = -0.055176
 """rotations"""
 
-kBackLeftAbsoluteEncoderOffset = 341.719 / kDegeersPerRevolution
+kBackLeftAbsoluteEncoderOffset = 0.452637
 """rotations"""
 
-kBackRightAbsoluteEncoderOffset = 331.260 / kDegeersPerRevolution
+kBackRightAbsoluteEncoderOffset = 0.105225
 """rotations"""
 
 kRobotPoseArrayKeys = OptionalValueKeys("RobotOdometryPose")
@@ -737,26 +737,29 @@ kVelocityControlMotorType = DCMotor.falcon500()
 kVelocityControlkV = 0.01
 
 # Intake Mechanism, need to replace values
-kIntakeCANID = 40
+kIntakeCANID = 25
 kIntakeName = "IntakeMotor"
 kIntakePIDSlot = 0
-kIntakePGain = 0.12
+kIntakePGain = 0.02
 kIntakeIGain = 0
 kIntakeDGain = 0
 
-kPivotCANID = 41
+kPivotCANID = 19
 kPivotName = "PivotMotor"
-kPivotPGain = 0.7
+kPivotPGain = 0.5
 kPivotIGain = 0
 kPivotDGain = 0
+
+kPivotAccel = 290
+kPivotVel = 90
 
 kPivotGearRatio = (4 / 1) * (50 / 16) * (84 / 16)
 
 kIntakeInverted = False
 kPivotInverted = False
 
-kPivotEncoderID = 1
-kPivotEncoderOffset = 0  # revolutions, get from phoenix tuner
+kPivotEncoderID = 46
+kPivotEncoderOffset = 0.296631 - .25  # revolutions, get from phoenix tuner
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
@@ -786,14 +789,17 @@ kShootingMotorRatio = 24 / 36
 
 # change numbers later
 
-kAngleMotorCANId = 50
+kAngleMotorCANId = 18
 kAngleMotorName = "ShooterAngleMotor"
-kAngleMotorPGain = 0.9
+kAngleMotorPGain = 0.6
 kAngleMotorIGain = 0
 kAngleMotorDGain = 0
-kAngleMotorInverted = False
+kAngleMotorInverted = True
 
-kLeftShootingMotorCANId = 51
+kAngleMotorAccel = 300
+kAngleMotorVel = 100
+
+kLeftShootingMotorCANId = 20
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
 kLeftShootingMotorPGain = 0.01
@@ -804,7 +810,7 @@ kLeftShootingMotorKv = 550
 
 # Kv taken from motor specifications
 
-kRightShootingMotorCANId = 52
+kRightShootingMotorCANId = 21
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
 kRightShootingMotorPGain = 0.01
@@ -819,7 +825,7 @@ kRightShootingMotorMappingFunction = lambda x, y: x * y
 kRobotAngleMappingFunction = lambda x, y: x * y
 
 kShooterAngleEncoderCANId = 45
-kShooterAngleEncoderOffset = 0
+kShooterAngleEncoderOffset = 0.154785 - .25 # revolutions
 
 # radians
 kShooterAngleKey = "shooter/angle"
@@ -864,19 +870,19 @@ kShootingMotorFudgeAmount = 50
 kShootingAngleFudgeAmount = 0.01
 # Elevator constants, replace values
 
-kElevator1CANID = 60
+kElevator1CANID = 55
 kElevator1Name = "Elevator1Motor"
 kElevator1PGain = 0.12
 kElevator1IGain = 0
 kElevator1DGain = 0
-kElevator1Inverted = False
+kElevator1Inverted = True
 
-kElevator2CANID = 60
+kElevator2CANID = 56
 kElevator2Name = "Elevator2Motor"
 kElevator2PGain = 0.12
 kElevator2IGain = 0
 kElevator2DGain = 0
-kElevator2Inverted = True
+kElevator2Inverted = False
 
 kElevatorPositionKey = "elevator/position"
 kElevatorStateKey = "elevator/state"

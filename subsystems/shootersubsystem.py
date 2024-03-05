@@ -112,7 +112,6 @@ class ShooterSubsystem(Subsystem):
             self.shooterEncoder.getPosition().radians()
             / constants.kRadiansPerRevolution
             * constants.kAngleMotorRatio
-            * -1
         )
 
         self.targetAngle = Rotation2d()
@@ -143,7 +142,7 @@ class ShooterSubsystem(Subsystem):
         ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
 
         self.angleMotor.set(
-            Talon.ControlMode.Position,
+            Talon.ControlMode.MotionMagic,
             self.targetAngle.radians()
             / constants.kRadiansPerRevolution
             * constants.kAngleMotorRatio,
