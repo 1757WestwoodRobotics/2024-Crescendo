@@ -66,6 +66,8 @@ class ShooterSubsystem(Subsystem):
             constants.kAngleMotorIGain,
             constants.kAngleMotorDGain,
             constants.kAngleMotorInverted,
+            moMagicAccel=constants.kAngleMotorAccel,
+            moMagicVel=constants.kAngleMotorVel,
         )
         self.leftShootingMotor = NEOBrushless(
             constants.kLeftShootingMotorCANId,

@@ -35,6 +35,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeIGain,
             constants.kIntakeDGain,
             constants.kIntakeInverted,
+            enableLimitSwitches=False
         )
         self.pivotMotor = Talon(
             constants.kPivotCANID,
@@ -61,7 +62,7 @@ class IntakeSubsystem(Subsystem):
         self.frontSensor = NEOBrushless.LimitSwitch.Forwards
         self.backSensor = NEOBrushless.LimitSwitch.Backwards
         self.hasPosition = False
-        self.heldPosition = 0
+        self.heldPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position)
         self.putInPlace = False
 
     def resetPivot(self) -> None:
@@ -84,16 +85,39 @@ class IntakeSubsystem(Subsystem):
 
         if self.state == self.IntakeState.Intaking:
             self.setPivotAngle(constants.kFloorPositionAngle)
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
-            )
 
             if self.hasPosition:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Velocity, 0)
-            # If either sensor is covered, stop the motor
+                self.intakeMotor.enableLimitSwitch(NEOBrushless.LimitSwitch.Forwards, False)
+            else:
+                self.intakeMotor.enableLimitSwitch(NEOBrushless.LimitSwitch.Forwards, True)
+            # If either sensor is covered, stop the h
+
+            if self.putInPlace:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
+            elif frontLimitState and backLimitState:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent,
+                    constants.kIntakeFineControlVoltage,
+                )
+            elif not frontLimitState and backLimitState:
+                self.heldPosition = (
+                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+                    + constants.kIntakeSafetyPositionOffset
+                )
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
+                self.putInPlace = True
+            else:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
+                )
 
         elif self.state == self.IntakeState.Holding:
             self.setPivotAngle(constants.kHandoffAngle)
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             # none - intaking
             # only front - keep intaking
             # front and back - get position and hold
@@ -103,24 +127,6 @@ class IntakeSubsystem(Subsystem):
             # Only front to continue
             # On rising edge of back state (both, it's a known position), intake a bit more and lock
 
-            if self.putInPlace:
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position, self.heldPosition
-                )
-            elif frontLimitState and not backLimitState:
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Percent,
-                    constants.kIntakeFineControlVoltage,
-                )
-            elif frontLimitState and backLimitState:
-                self.heldPosition = (
-                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
-                    + constants.kIntakeSafetyPositionOffset
-                )
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position, self.heldPosition
-                )
-                self.putInPlace = True
 
         elif self.state == self.IntakeState.Feeding:
             self.setPivotAngle(constants.kHandoffAngle)

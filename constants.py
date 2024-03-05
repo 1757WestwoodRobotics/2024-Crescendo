@@ -740,7 +740,7 @@ kVelocityControlkV = 0.01
 kIntakeCANID = 25
 kIntakeName = "IntakeMotor"
 kIntakePIDSlot = 0
-kIntakePGain = 0.02
+kIntakePGain = 0.1
 kIntakeIGain = 0
 kIntakeDGain = 0
 
@@ -755,7 +755,7 @@ kPivotVel = 90
 
 kPivotGearRatio = (4 / 1) * (50 / 16) * (84 / 16)
 
-kIntakeInverted = False
+kIntakeInverted = True
 kPivotInverted = False
 
 kPivotEncoderID = 46
@@ -766,7 +766,7 @@ kIntakeHasNoteKey = "intake/hasNote"
 kIntakePoseKey = "intake/pose"
 
 # relative to horizontal
-kHandoffAngle = Rotation2d.fromDegrees(-7.761653)
+kHandoffAngle = Rotation2d.fromDegrees(-4.3)
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionAngle = Rotation2d.fromDegrees(
     50
@@ -777,9 +777,9 @@ kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 kIntakeArmLength = 0.251
 # Percent Voltage
 kIntakePercentageVoltage = 0.45
-kIntakeFineControlVoltage = 0.25
+kIntakeFineControlVoltage = 0.1
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = 1024
+kIntakeSafetyPositionOffset = -1
 
 kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"

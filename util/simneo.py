@@ -100,6 +100,11 @@ class NEOBrushless:
             else CANSparkFlex.IdleMode.kCoast
         )
 
+    def enableLimitSwitch(self,switch: LimitSwitch, enable: True):
+        if switch == NEOBrushless.LimitSwitch.Forwards:
+            self.forwardSwitch.enableLimitSwitch(enable)
+        if switch == NEOBrushless.LimitSwitch.Backwards:
+            self.reverseSwitch.enableLimitSwitch(enable)
     def neutralOutput(self) -> None:
         self.motor.set(0)
 
