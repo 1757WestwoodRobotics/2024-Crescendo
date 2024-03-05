@@ -43,6 +43,8 @@ class IntakeSubsystem(Subsystem):
             constants.kPivotIGain,
             constants.kPivotDGain,
             constants.kPivotInverted,
+            moMagicAccel=constants.kPivotAccel,
+            moMagicVel=constants.kPivotVel,
         )
 
         # pivot motor spins 60 times per arm revolution
@@ -171,7 +173,7 @@ class IntakeSubsystem(Subsystem):
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:
         self.pivotMotor.set(
-            Talon.ControlMode.Position,
+            Talon.ControlMode.MotionMagic,
             rotation.radians()
             / constants.kRadiansPerRevolution
             * constants.kPivotGearRatio,
