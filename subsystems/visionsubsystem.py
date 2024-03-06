@@ -81,18 +81,19 @@ class VisionSubsystemReal(Subsystem):
 
             currentCamera = VisionCamera(camera)
 
+            ambiguity = 10
             if not multitagresult.estimatedPose.isPresent:
-                ambiguity = 10
                 for result in photonResult.targets:
-                    if result.poseAmbiguity < ambiguity:
-                        bestRelativeTransform = (
-                            Transform3d(
-                                Pose3d(),
-                                constants.kApriltagPositionDict[result.fiducialId],
+                    if result.fiducialId in constants.kApriltagPositionDict.keys():
+                        if result.poseAmbiguity < ambiguity:
+                            bestRelativeTransform = (
+                                Transform3d(
+                                    Pose3d(),
+                                    constants.kApriltagPositionDict[result.fiducialId],
+                                )
+                                + result.bestCameraToTarget.inverse()
                             )
-                            + result.bestCameraToTarget.inverse()
-                        )
-                        ambiguity = result.poseAmbiguity
+                            ambiguity = result.poseAmbiguity
 
             VisionSubsystemReal.updateAdvantagescopePose(
                 Pose3d() + bestRelativeTransform,
@@ -105,9 +106,10 @@ class VisionSubsystemReal(Subsystem):
                 Pose3d() + bestRelativeTransform + currentCamera.cameraToRobotTransform
             )
 
-            self.poseList.append(
-                EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
-            )
+            if ambiguity < 10:
+                self.poseList.append(
+                    EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
+                )
 
     @staticmethod
     def updateAdvantagescopePose(
