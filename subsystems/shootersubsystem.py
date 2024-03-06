@@ -77,7 +77,6 @@ class ShooterSubsystem(Subsystem):
             constants.kLeftShootingMotorIGain,
             constants.kLeftShootingMotorDGain,
             constants.kLeftShootingMotorInverted,
-            constants.kLeftShootingMotorKv,
         )
         self.rightShootingMotor = NEOBrushless(
             constants.kRightShootingMotorCANId,
@@ -87,7 +86,6 @@ class ShooterSubsystem(Subsystem):
             constants.kRightShootingMotorIGain,
             constants.kRightShootingMotorDGain,
             constants.kRightShootingMotorInverted,
-            constants.kRightShootingMotorKv,
         )
 
         self.shooterEncoder = CTREEncoder(
@@ -155,7 +153,9 @@ class ShooterSubsystem(Subsystem):
             rpm + SmartDashboard.getNumber(constants.kLeftMotorFudgeKey, 0)
         ) * constants.kShootingMotorRatio
         self.leftShootingMotor.set(
-            NEOBrushless.ControlMode.Velocity, self.leftTargetSpeed
+            NEOBrushless.ControlMode.Velocity,
+            self.leftTargetSpeed,
+            constants.kLeftShootingMotorKv * self.leftTargetSpeed,
         )
 
     def setRightShootingMotorSpeed(self, rpm: float) -> None:
@@ -165,13 +165,14 @@ class ShooterSubsystem(Subsystem):
         self.rightShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             self.rightTargetSpeed,
+            constants.kRightShootingMotorKv * self.rightTargetSpeed,
         )
 
     def neutralShooter(self) -> None:
         self.rightShootingMotor.neutralOutput()
         self.leftShootingMotor.neutralOutput()
         self.angleMotor.set(  # in neutral ignore the fudge
-            Talon.ControlMode.Position,
+            Talon.ControlMode.MotionMagic,
             self.shooterInitPosition.radians()
             / constants.kRadiansPerRevolution
             * constants.kAngleMotorRatio,

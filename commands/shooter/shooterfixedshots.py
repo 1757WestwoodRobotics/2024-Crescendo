@@ -23,7 +23,7 @@ class SubwooferShot(Command):
         self.shooter.setLeftShootingMotorSpeed(
             constants.kShooterSubwooferSpeed - spinAmount
         )
-        self.shooter.setLeftShootingMotorSpeed(
+        self.shooter.setRightShootingMotorSpeed(
             constants.kShooterSubwooferSpeed + spinAmount
         )
 
@@ -44,7 +44,7 @@ class PodiumShot(Command):
         self.shooter.setLeftShootingMotorSpeed(
             constants.kPodiumShooterSpeed - spinAmount
         )
-        self.shooter.setLeftShootingMotorSpeed(
+        self.shooter.setRightShootingMotorSpeed(
             constants.kPodiumShooterSpeed + spinAmount
         )
 

@@ -401,10 +401,10 @@ kSteerPGain = 2
 kSteerIGain = 0.0
 kSteerDGain = 0
 
-kFrontLeftDriveInverted = False
-kFrontRightDriveInverted = True
-kBackLeftDriveInverted = False
-kBackRightDriveInverted = True
+kFrontLeftDriveInverted = True
+kFrontRightDriveInverted = False
+kBackLeftDriveInverted = True
+kBackRightDriveInverted = False
 
 kFrontLeftSteerInverted = False
 kFrontRightSteerInverted = False
@@ -780,8 +780,9 @@ kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
 kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
+kIntakePivotTolerance = 0.1
 # Percent Voltage
-kIntakePercentageVoltage = 0.45
+kIntakePercentageVoltage = 0.3
 kIntakeFineControlVoltage = 0.1
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = -1
@@ -807,22 +808,22 @@ kAngleMotorVel = 100
 kLeftShootingMotorCANId = 20
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
-kLeftShootingMotorPGain = 0.01
+kLeftShootingMotorPGain = 0.3
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 550
+kLeftShootingMotorKv = 1 / (DCMotor.neoVortex().Kv / kRadiansPerRevolution) # V / rpm
 
 # Kv taken from motor specifications
 
 kRightShootingMotorCANId = 21
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
-kRightShootingMotorPGain = 0.01
+kRightShootingMotorPGain = 0.3
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0
 kRightShootingMotorInverted = False
-kRightShootingMotorKv = 550
+kRightShootingMotorKv = 1 / (DCMotor.neoVortex().Kv / kRadiansPerRevolution) # V / rpm
 
 kAngleMotorMappingFunction = lambda x, y: x * y
 kLeftShootingMotorMappingFunction = lambda x, y: x * y
@@ -852,13 +853,13 @@ kReadyToShoot = "shooter/ready"
 kShooterMaxAngle = Rotation2d.fromDegrees(64.028164)
 kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 
-kShootingMotorCurrentLimit = 40
-kAngleMotorCurrentLimit = 40
+kShootingMotorCurrentLimit = 80
+kAngleMotorCurrentLimit = 80
 
 kShooterSubwooferSpeed = 2000  # NEEDS UPDATE
 
 kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
-kPodiumShooterSpeed = 2100  # NEEDS UPDATE
+kPodiumShooterSpeed = 2500  # NEEDS UPDATE
 
 kShooterManualModeKey = "shooter/manualMode"
 kShooterAngleFudgeKey = "shooter/fudge/angle"
