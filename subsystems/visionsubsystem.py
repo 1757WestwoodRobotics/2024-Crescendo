@@ -21,15 +21,15 @@ class EstimatedPose:
         self.timestamp = timestamp
 
 
-class VisionCamera:
+class VisionCamera: # hi its landon here
     def __init__(self, camera: PhotonCamera):
         self.camera = camera
         self.name = camera.getName()
 
         cameraKeys = {
             "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
-            # "frontRight": constants.kPhotonvisionFrontRightCameraKey,
-            # "backLeft": constants.kPhotonvisionBackLeftCameraKey,
+            "frontRight": constants.kPhotonvisionFrontRightCameraKey,
+            "backLeft": constants.kPhotonvisionBackLeftCameraKey,
             "backRight": constants.kPhotonvisionBackRightCameraKey,
         }
 
@@ -37,8 +37,8 @@ class VisionCamera:
 
         cameraTransforms = {
             "frontLeft": constants.kRobotToFrontLeftCameraTransform,
-            # "frontRight": constants.kRobotToFrontRightCameraTransform,
-            # "backLeft": constants.kRobotToBackLeftCameraTransform,
+            "frontRight": constants.kRobotToFrontRightCameraTransform,
+            "backLeft": constants.kRobotToBackLeftCameraTransform,
             "backRight": constants.kRobotToBackRightCameraTransform,
         }
 
