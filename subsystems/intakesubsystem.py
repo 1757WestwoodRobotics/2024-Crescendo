@@ -117,7 +117,8 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Holding:
             self.setPivotAngle(constants.kHandoffAngle)
-            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+            if self.hasPosition:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             # none - intaking
             # only front - keep intaking
             # front and back - get position and hold
