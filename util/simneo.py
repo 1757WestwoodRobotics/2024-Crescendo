@@ -74,12 +74,12 @@ class NEOBrushless:
 
         self.motor.setInverted(isInverted)
 
-    def set(self, controlMode: ControlMode, demand: float):
+    def set(self, controlMode: ControlMode, demand: float, ff: float = 0):
         """input is in rotations or rpm"""
         if controlMode == NEOBrushless.ControlMode.Velocity:
-            self.controller.setReference(demand, CANSparkFlex.ControlType.kVelocity)
+            self.controller.setReference(demand, CANSparkFlex.ControlType.kVelocity, arbFeedforward=ff)
         elif controlMode == NEOBrushless.ControlMode.Position:
-            self.controller.setReference(demand, CANSparkFlex.ControlType.kPosition)
+            self.controller.setReference(demand, CANSparkFlex.ControlType.kPosition, arbFeedforward=ff)
         elif controlMode == NEOBrushless.ControlMode.Percent:
             # self.controller.setReference(demand, CANSparkFlex.ControlType.kDutyCycle)
             self.motor.setVoltage(demand * 12)

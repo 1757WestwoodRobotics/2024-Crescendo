@@ -72,6 +72,8 @@ class IntakeSubsystem(Subsystem):
             * constants.kPivotGearRatio
         )
         self.pivotMotor.setEncoderPosition(pivotMotorPosition)
+        self.holdPosition = 0
+        self.holdSet = False
 
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
@@ -117,8 +119,25 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Holding:
             self.setPivotAngle(constants.kHandoffAngle)
-            if self.hasPosition:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+            if (abs(self.getPivotAngle() - constants.kHandoffAngle.radians()) < constants.kIntakePivotTolerance):
+                self.canMoveNote = True
+            else:
+                self.canMoveNote = False
+            
+            if self.hasPosition and self.canMoveNote:
+                if backLimitState:
+                    self.intakeMotor.set(NEOBrushless.ControlMode.Percent, -constants.kIntakeFineControlVoltage)
+                    self.holdSet = False
+                else:
+                    if self.holdSet:
+                        self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.shooterPosition)
+                    else:
+                        self.holdSet = True
+                        self.shooterPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+
+                
+            else:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
             # none - intaking
             # only front - keep intaking
             # front and back - get position and hold
@@ -142,8 +161,8 @@ class IntakeSubsystem(Subsystem):
         elif self.state == self.IntakeState.Amp:
             self.setPivotAngle(constants.kStagingPositionAngle)
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Velocity,
-                constants.kIntakePercentageVoltage * -1,
+                NEOBrushless.ControlMode.Percent,
+                -constants.kIntakePercentageVoltage,
             )
 
         elif self.state == self.IntakeState.Trap:
