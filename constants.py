@@ -224,15 +224,17 @@ kLimelightRelativeToRobotTransform = Transform3d(
 
 # Photonvision related
 kPhotonvisionCameraName = "camcam"
-kPhotonvisionCameraArray = ["frontLeft", "backRight"]
+kPhotonvisionCameraArray = ["frontLeft", "frontRight", "backLeft", "backRight"]
 
-kPhotonvisionFrontLeftCameraKey = "frontLeftCamera"
-kPhotonvisionFrontRightCameraKey = "frontRightCamera"
-kPhotonvisionBackLeftCameraKey = "backLeftCamera"
-kPhotonvisionBackRightCameraKey = "backRightCamera"
+kPhotonvisionFrontLeftCameraKey = "cameras/frontLeftCamera"
+kPhotonvisionFrontRightCameraKey = "cameras/frontRightCamera"
+kPhotonvisionBackLeftCameraKey = "cameras/backLeftCamera"
+kPhotonvisionBackRightCameraKey = "cameras/backRightCamera"
 
 kPhotonvisionKeyArray = [
     kPhotonvisionFrontLeftCameraKey,
+    kPhotonvisionFrontRightCameraKey,
+    kPhotonvisionBackLeftCameraKey,
     kPhotonvisionBackRightCameraKey,
 ]
 
@@ -245,46 +247,49 @@ kSimulationVariation = 0.001  # meters, as a standard deviation
 kRobotToFrontLeftCameraTransform = Transform3d(
     Pose3d(),
     Pose3d(
-        10.698 * kMetersPerInch,
-        9.707 * kMetersPerInch,
-        6.063 * kMetersPerInch,
-        Rotation3d(),
-    ),
-) + Transform3d(
-    0.006,
-    -0.006,
-    0.051,
-    Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-        Rotation3d(0.0, 0.0, (270 + 82.829) * kRadiansPerDegree)
+        11.306 * kMetersPerInch,
+        10.256 * kMetersPerInch,
+        9.238 * kMetersPerInch,
+        Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
+            Rotation3d(0.0, 0.0, 30.0 * kRadiansPerDegree)
+        ),
     ),
 )
 kRobotToFrontRightCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(0.25, -0.25, 0.18, Rotation3d()),
+    Pose3d(
+        11.306 * kMetersPerInch,
+        -12.749 * kMetersPerInch,
+        9.238 * kMetersPerInch,
+        Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0)
+    ),
 )
 kRobotToBackLeftCameraTransform = Transform3d(
     Pose3d(),
-    Pose3d(-0.25, 0.25, 0.18, Rotation3d()),
+    Pose3d(
+        -11.306 * kMetersPerInch,
+        10.256 * kMetersPerInch,
+        9.238 * kMetersPerInch,
+        Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
+            Rotation3d(0.0, 0.0, (180- 30.0) * kRadiansPerDegree)
+        ),
+    ),
 )
 kRobotToBackRightCameraTransform = Transform3d(
     Pose3d(),
     Pose3d(
-        -10.698 * kMetersPerInch,
-        -9.707 * kMetersPerInch,
-        6.063 * kMetersPerInch,
-        Rotation3d(0, 0, math.pi),
+        -11.306 * kMetersPerInch,
+        -10.256 * kMetersPerInch,
+        9.238 * kMetersPerInch,
+        Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
+            Rotation3d(0.0, 0.0, (180+ 30.0) * kRadiansPerDegree)
+        ),
     ),
-) + Transform3d(
-    0.006,
-    -0.006,
-    0.051,
-    Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-        Rotation3d(0.0, 0.0, (270 + 82.829) * kRadiansPerDegree)
-    ),
-)
-
+) 
 kCameraTransformsArray = [
     kRobotToFrontLeftCameraTransform,
+    kRobotToFrontRightCameraTransform,
+    kRobotToBackLeftCameraTransform,
     kRobotToBackRightCameraTransform,
 ]
 
@@ -759,7 +764,7 @@ kIntakeInverted = True
 kPivotInverted = False
 
 kPivotEncoderID = 46
-kPivotEncoderOffset = 0.296631 - .25  # revolutions, get from phoenix tuner
+kPivotEncoderOffset = 0.296631 - 0.25  # revolutions, get from phoenix tuner
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
@@ -825,7 +830,7 @@ kRightShootingMotorMappingFunction = lambda x, y: x * y
 kRobotAngleMappingFunction = lambda x, y: x * y
 
 kShooterAngleEncoderCANId = 45
-kShooterAngleEncoderOffset = 0.154785 - .25 # revolutions
+kShooterAngleEncoderOffset = 0.154785 - 0.25  # revolutions
 
 # radians
 kShooterAngleKey = "shooter/angle"
