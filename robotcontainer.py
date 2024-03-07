@@ -8,6 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
+from commands.autospecific import AimAndFire
 
 import constants
 
@@ -88,13 +89,7 @@ class RobotContainer:
 
         # Add commands to the autonomous command chooser
         NamedCommands.registerCommand(
-            "log",
-            FunctionalCommand(
-                (lambda: None),
-                (lambda: print("hello")),
-                (lambda _: None),
-                (lambda: True),
-            ),
+            "aimAndFire", AimAndFire(self.shooter, self.drive, self.intake)
         )
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")

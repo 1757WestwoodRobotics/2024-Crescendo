@@ -1,5 +1,8 @@
 from commands2.command import Command
+from wpilib import SmartDashboard
 from subsystems.intakesubsystem import IntakeSubsystem
+
+import constants
 
 
 class SetIntakeState(
@@ -40,6 +43,9 @@ class FeedIntakeToShooter(SetIntakeState):
 
     def execute(self) -> None:
         self.intake.setFeeding()
+
+    def isFinished(self) -> bool:
+        return not SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, True) # command is finished when no note is detected
 
 
 class StageIntake(SetIntakeState):

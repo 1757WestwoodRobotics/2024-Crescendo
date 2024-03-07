@@ -774,7 +774,7 @@ kIntakePoseKey = "intake/pose"
 kHandoffAngle = Rotation2d.fromDegrees(-4.3)
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionAngle = Rotation2d.fromDegrees(
-    50
+    90
 )  # Safe place roughly vertical before going to amp or trap
 kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
 kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)

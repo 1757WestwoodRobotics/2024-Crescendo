@@ -219,7 +219,7 @@ class ShooterSubsystem(Subsystem):
             self.angleOnTarget()
             and self.leftMotorSpeedOnTarget()
             and self.rightMotorSpeedOnTarget()
-            and SmartDashboard.getBoolean(constants.kRobotAngleOnTargetKey, False)
+            and self.angleOnTarget()
         )
 
     def addSimNote(self) -> None:
