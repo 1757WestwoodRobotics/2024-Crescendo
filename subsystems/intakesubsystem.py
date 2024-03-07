@@ -35,7 +35,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeIGain,
             constants.kIntakeDGain,
             constants.kIntakeInverted,
-            enableLimitSwitches=False
+            enableLimitSwitches=False,
         )
         self.pivotMotor = Talon(
             constants.kPivotCANID,
@@ -64,6 +64,7 @@ class IntakeSubsystem(Subsystem):
         self.hasPosition = False
         self.heldPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position)
         self.putInPlace = False
+        self.targetAngle = Rotation2d()
 
     def resetPivot(self) -> None:
         pivotMotorPosition = (
@@ -83,9 +84,7 @@ class IntakeSubsystem(Subsystem):
         # If either sensor is covered, stop the h
 
         if self.putInPlace:
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Position, self.heldPosition
-            )
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent,
@@ -96,9 +95,7 @@ class IntakeSubsystem(Subsystem):
                 self.intakeMotor.get(NEOBrushless.ControlMode.Position)
                 + constants.kIntakeSafetyPositionOffset
             )
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Position, self.heldPosition
-            )
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             self.putInPlace = True
         else:
             self.intakeMotor.set(
@@ -121,23 +118,32 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Holding:
             self.setPivotAngle(constants.kHandoffAngle)
-            if (abs(self.getPivotAngle() - constants.kHandoffAngle.radians()) < constants.kIntakePivotTolerance):
+            if (
+                abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
+                < constants.kIntakePivotTolerance
+            ):
                 self.canMoveNote = True
             else:
                 self.canMoveNote = False
-            
+
             if self.hasPosition and self.canMoveNote:
                 if backLimitState:
-                    self.intakeMotor.set(NEOBrushless.ControlMode.Percent, -constants.kIntakeFineControlVoltage)
+                    self.intakeMotor.set(
+                        NEOBrushless.ControlMode.Percent,
+                        -constants.kIntakeFineControlVoltage,
+                    )
                     self.holdSet = False
                 else:
                     if self.holdSet:
-                        self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.shooterPosition)
+                        self.intakeMotor.set(
+                            NEOBrushless.ControlMode.Position, self.shooterPosition
+                        )
                     else:
                         self.holdSet = True
-                        self.shooterPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+                        self.shooterPosition = self.intakeMotor.get(
+                            NEOBrushless.ControlMode.Position
+                        )
 
-                
             else:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
             # none - intaking
@@ -148,7 +154,6 @@ class IntakeSubsystem(Subsystem):
             # put in place to stop when in a good spot
             # Only front to continue
             # On rising edge of back state (both, it's a known position), intake a bit more and lock
-
 
         elif self.state == self.IntakeState.Feeding:
             self.setPivotAngle(constants.kHandoffAngle)
@@ -198,8 +203,12 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.get(NEOBrushless.ControlMode.Velocity),
         )
         SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, self.hasPosition)
+        SmartDashboard.putBoolean(
+            constants.kIntakeAtPositionKey, self.intakeAtPosition()
+        )
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:
+        self.targetAngle = rotation
         self.pivotMotor.set(
             Talon.ControlMode.MotionMagic,
             rotation.radians()
@@ -235,3 +244,9 @@ class IntakeSubsystem(Subsystem):
 
     def setEjecting(self) -> None:
         self.state = self.IntakeState.Ejecting
+
+    def intakeAtPosition(self) -> bool:
+        return (
+            abs(self.targetAngle.radians() - self.getPivotAngle())
+            < constants.kIntakePivotTolerance
+        )
