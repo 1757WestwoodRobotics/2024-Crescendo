@@ -813,7 +813,8 @@ kLeftShootingMotorPGain = 0.3
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 1 / (DCMotor.neoVortex().Kv / kRadiansPerRevolution) # V / rpm
+kLeftShootingMotorKv = 0.00083 # V / rpm
+kLeftShootingMotorKs = 0.33329
 
 # Kv taken from motor specifications
 
@@ -839,6 +840,8 @@ kShooterAngleKey = "shooter/angle"
 kShooterPosesKey = "shooter/poses"
 kLeftShootingMotorSpeedKey = "shooter/leftMotorSpeed"
 kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
+kLeftShootingMotorTargetKey = "shooter/leftTarget"
+kRightShootingMotorTargetKey = "shooter/rightTarget"
 
 kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
 # in RPM
