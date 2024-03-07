@@ -798,7 +798,7 @@ kShootingMotorRatio = 24 / 36
 
 kAngleMotorCANId = 18
 kAngleMotorName = "ShooterAngleMotor"
-kAngleMotorPGain = 0.6
+kAngleMotorPGain = 0.9
 kAngleMotorIGain = 0
 kAngleMotorDGain = 0
 kAngleMotorInverted = True
@@ -809,11 +809,11 @@ kAngleMotorVel = 100
 kLeftShootingMotorCANId = 20
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
-kLeftShootingMotorPGain = 0.3
+kLeftShootingMotorPGain = 0.0003
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 0.00083 # V / rpm
+kLeftShootingMotorKv = 0.00200 # V / rpm
 kLeftShootingMotorKs = 0.33329
 
 # Kv taken from motor specifications
@@ -821,7 +821,7 @@ kLeftShootingMotorKs = 0.33329
 kRightShootingMotorCANId = 21
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
-kRightShootingMotorPGain = 0.3
+kRightShootingMotorPGain = 0.0003
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0
 kRightShootingMotorInverted = False
