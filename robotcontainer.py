@@ -1,5 +1,6 @@
 import os
 from commands2.functionalcommand import FunctionalCommand
+from commands2.repeatcommand import RepeatCommand
 import wpilib
 from wpimath.geometry import Pose2d
 import commands2
@@ -13,7 +14,7 @@ from commands.autospecific import AimAndFire
 import constants
 
 from commands.resetdrive import ResetDrive
-from commands.intakesetting import ResetIntake
+from commands.intakesetting import FloorIntake, ResetIntake
 from commands.drivedistance import DriveDistance
 from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
@@ -90,6 +91,9 @@ class RobotContainer:
         # Add commands to the autonomous command chooser
         NamedCommands.registerCommand(
             "aimAndFire", AimAndFire(self.shooter, self.drive, self.intake)
+        )
+        NamedCommands.registerCommand(
+            "intake", FloorIntake(self.intake)
         )
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
@@ -187,13 +191,15 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
-            AlignAndAim(
-                self.shooter,
-                self.drive,
-                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                * constants.kNormalSpeedMultiplier,
-                lambda: self.operatorInterface.chassisControls.sideToSide()
-                * constants.kNormalSpeedMultiplier,
+            RepeatCommand(
+                AlignAndAim(
+                    self.shooter,
+                    self.drive,
+                    lambda: self.operatorInterface.chassisControls.forwardsBackwards()
+                    * constants.kNormalSpeedMultiplier,
+                    lambda: self.operatorInterface.chassisControls.sideToSide()
+                    * constants.kNormalSpeedMultiplier,
+                )
             )
         )
 

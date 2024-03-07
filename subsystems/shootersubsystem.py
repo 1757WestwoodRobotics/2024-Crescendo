@@ -141,12 +141,15 @@ class ShooterSubsystem(Subsystem):
             )
         ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
 
-        self.angleMotor.set(
-            Talon.ControlMode.MotionMagic,
-            self.targetAngle.radians()
-            / constants.kRadiansPerRevolution
-            * constants.kAngleMotorRatio,
-        )
+        if SmartDashboard.getBoolean(constants.kIntakeAtPositionKey, False):
+            self.angleMotor.set(
+                Talon.ControlMode.MotionMagic,
+                self.targetAngle.radians()
+                / constants.kRadiansPerRevolution
+                * constants.kAngleMotorRatio,
+            )
+        else:
+            self.safePivot()
 
     def setLeftShootingMotorSpeed(self, rpm: float) -> None:
         self.leftTargetSpeed = (
@@ -171,6 +174,9 @@ class ShooterSubsystem(Subsystem):
     def neutralShooter(self) -> None:
         self.rightShootingMotor.neutralOutput()
         self.leftShootingMotor.neutralOutput()
+        self.safePivot()
+
+    def safePivot(self) -> None:
         self.angleMotor.set(  # in neutral ignore the fudge
             Talon.ControlMode.MotionMagic,
             self.shooterInitPosition.radians()

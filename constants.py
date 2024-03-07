@@ -768,6 +768,7 @@ kPivotEncoderOffset = 0.296631 - 0.25  # revolutions, get from phoenix tuner
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
+kIntakeAtPositionKey = "intake/atPosition"
 kIntakePoseKey = "intake/pose"
 
 # relative to horizontal
@@ -780,7 +781,7 @@ kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
 kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
-kIntakePivotTolerance = 0.1
+kIntakePivotTolerance = 0.1 # radians
 # Percent Voltage
 kIntakePercentageVoltage = 0.3
 kIntakeFineControlVoltage = 0.1
