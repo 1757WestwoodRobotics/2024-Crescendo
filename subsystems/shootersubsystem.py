@@ -1,7 +1,7 @@
 import math
 from commands2 import Subsystem
 from wpilib import SmartDashboard, Timer
-from wpimath.controller import SimpleMotorFeedforwardMeters
+from wpimath.controller import SimpleMotorFeedforwardMeters, ArmFeedforward
 from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d
 from phoenix6.configs import CurrentLimitsConfigs
 from util.simtalon import Talon
@@ -121,6 +121,7 @@ class ShooterSubsystem(Subsystem):
 
 
         self.ff = SimpleMotorFeedforwardMeters(constants.kLeftShootingMotorKs, constants.kLeftShootingMotorKv)
+        self.pivotff = ArmFeedforward(0,0, 0)
 
         SmartDashboard.putNumber(constants.kLeftMotorFudgeKey, 0)
         SmartDashboard.putNumber(constants.kRightMotorFudgeKey, 0)
@@ -151,6 +152,7 @@ class ShooterSubsystem(Subsystem):
                 self.targetAngle.radians()
                 / constants.kRadiansPerRevolution
                 * constants.kAngleMotorRatio,
+                self.pivotff.calculate(self.targetAngle.radians(),0)
             )
         else:
             self.safePivot()
