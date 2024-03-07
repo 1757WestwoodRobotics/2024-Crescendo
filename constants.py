@@ -783,10 +783,10 @@ kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1 # radians
 # Percent Voltage
-kIntakePercentageVoltage = 0.3
-kIntakeFineControlVoltage = 0.1
+kIntakePercentageVoltage = 0.2
+kIntakeFineControlVoltage = 0.05
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = -1
+kIntakeSafetyPositionOffset = -2
 
 kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"
@@ -842,8 +842,9 @@ kLeftShootingMotorSpeedKey = "shooter/leftMotorSpeed"
 kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
 kLeftShootingMotorTargetKey = "shooter/leftTarget"
 kRightShootingMotorTargetKey = "shooter/rightTarget"
+kShooterPivotTargetKey = "shooter/pivotTarget"
 
-kShooterAngleTolerance = Rotation2d.fromDegrees(0.5)
+kShooterAngleTolerance = Rotation2d(.05)
 # in RPM
 kShooterSpeedTolerance = 100
 
@@ -860,10 +861,10 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 kShootingMotorCurrentLimit = 80
 kAngleMotorCurrentLimit = 80
 
-kShooterSubwooferSpeed = 2000  # NEEDS UPDATE
+kShooterSubwooferSpeed = 3000  # NEEDS UPDATE
 
 kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
-kPodiumShooterSpeed = 2500  # NEEDS UPDATE
+kPodiumShooterSpeed = 4000  # NEEDS UPDATE
 
 kShooterManualModeKey = "shooter/manualMode"
 kShooterAngleFudgeKey = "shooter/fudge/angle"

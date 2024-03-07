@@ -121,7 +121,7 @@ class ShooterSubsystem(Subsystem):
 
 
         self.ff = SimpleMotorFeedforwardMeters(constants.kLeftShootingMotorKs, constants.kLeftShootingMotorKv)
-        self.pivotff = ArmFeedforward(0,0, 0)
+        self.pivotff = ArmFeedforward(0,0.13, 0)
 
         SmartDashboard.putNumber(constants.kLeftMotorFudgeKey, 0)
         SmartDashboard.putNumber(constants.kRightMotorFudgeKey, 0)
@@ -198,7 +198,7 @@ class ShooterSubsystem(Subsystem):
         )
 
     def getShooterAngleAbsolute(self) -> Rotation2d:
-        return Rotation2d(self.shooterEncoder.getPosition().radians() * -1)
+        return Rotation2d(self.shooterEncoder.getPosition().radians())
 
     def getLeftShooterSpeed(self) -> int:
         # RPM
@@ -326,6 +326,9 @@ class ShooterSubsystem(Subsystem):
                 constants.kRightShootingMotorSpeedKey, self.getRightShooterSpeed()
             )
 
+        SmartDashboard.putNumber(
+            constants.kShooterPivotTargetKey, self.targetAngle.radians()
+        )
         SmartDashboard.putNumber(
             constants.kLeftShootingMotorTargetKey, self.leftTargetSpeed
         )
