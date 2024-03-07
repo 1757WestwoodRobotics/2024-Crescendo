@@ -149,3 +149,6 @@ class AlignAndAim(Command):
                 rotation,
                 DriveSubsystem.CoordinateMode.FieldRelative,
             )
+
+    def isFinished(self) -> bool:
+        return self.shooter.readyToShoot()

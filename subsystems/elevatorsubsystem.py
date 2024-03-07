@@ -81,13 +81,12 @@ class ElevatorSubsystem(Subsystem):
             )
 
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
-        pass
-        # self.elevatorMotor1.set(
-        #     Talon.ControlMode.Position,
-        #     (beltPosition)
-        #     / (constants.kPulleyGearPitchDiameter * pi)
-        #     * constants.kMotorPulleyGearRatio,
-        # )
+        self.elevatorMotor1.set(
+            Talon.ControlMode.Position,
+            (beltPosition)
+            / (constants.kPulleyGearPitchDiameter * pi)
+            * constants.kMotorPulleyGearRatio,
+        )
 
     def getElevatorPosition(self) -> float:
         """returns in meters from bottom position"""
