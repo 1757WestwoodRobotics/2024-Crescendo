@@ -1,6 +1,7 @@
 import math
 from commands2 import Subsystem
 from wpilib import SmartDashboard, Timer
+from wpimath.controller import SimpleMotorFeedforwardMeters
 from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d
 from phoenix6.configs import CurrentLimitsConfigs
 from util.simtalon import Talon
@@ -118,6 +119,9 @@ class ShooterSubsystem(Subsystem):
         self.leftTargetSpeed = 0
         self.rightTargetSpeed = 0
 
+
+        self.ff = SimpleMotorFeedforwardMeters(constants.kLeftShootingMotorKs, constants.kLeftShootingMotorKv)
+
         SmartDashboard.putNumber(constants.kLeftMotorFudgeKey, 0)
         SmartDashboard.putNumber(constants.kRightMotorFudgeKey, 0)
         SmartDashboard.putNumber(constants.kShooterAngleFudgeKey, 0)
@@ -158,7 +162,7 @@ class ShooterSubsystem(Subsystem):
         self.leftShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             self.leftTargetSpeed,
-            constants.kLeftShootingMotorKv * self.leftTargetSpeed,
+            self.ff.calculate(self.leftTargetSpeed)
         )
 
     def setRightShootingMotorSpeed(self, rpm: float) -> None:
@@ -168,7 +172,7 @@ class ShooterSubsystem(Subsystem):
         self.rightShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             self.rightTargetSpeed,
-            constants.kRightShootingMotorKv * self.rightTargetSpeed,
+            self.ff.calculate(self.rightTargetSpeed)
         )
 
     def neutralShooter(self) -> None:
@@ -319,6 +323,13 @@ class ShooterSubsystem(Subsystem):
             SmartDashboard.putNumber(
                 constants.kRightShootingMotorSpeedKey, self.getRightShooterSpeed()
             )
+
+        SmartDashboard.putNumber(
+            constants.kLeftShootingMotorTargetKey, self.leftTargetSpeed
+        )
+        SmartDashboard.putNumber(
+            constants.kRightShootingMotorTargetKey, self.rightTargetSpeed
+        )
 
         SmartDashboard.putBoolean(
             constants.kShooterAngleOnTargetKey, self.angleOnTarget()
