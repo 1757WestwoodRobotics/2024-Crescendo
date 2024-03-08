@@ -1,10 +1,11 @@
 from collections import deque
-from math import hypot, sin
+from math import hypot, sin, tan, atan
 
 # import numpy as np
 
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
+from photonlibpy.photonTrackedTarget import PhotonTrackedTarget
 from wpilib import SmartDashboard
 from wpilib import RobotBase, Timer
 from wpimath.geometry import (
@@ -64,6 +65,9 @@ class VisionSubsystemReal(Subsystem):
             PhotonCamera(camera) for camera in constants.kPhotonvisionCameraArray
         ]
         self.robotToTags = []
+
+        self.noteCamera = PhotonCamera(constants.kPhotonvisionNoteCameraKey)
+
         self.poseList = deque([])
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
@@ -80,6 +84,18 @@ class VisionSubsystemReal(Subsystem):
         robotPose = SmartDashboard.getNumberArray(
             constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
         )
+
+        noteResult = self.noteCamera.getLatestResult()
+        if noteResult.hasTargets():
+            notes = noteResult.getTargets()
+            notePositions = [
+                Pose2d(*robotPose)
+                + constants.kRobotToNoteCameraTransform
+                + self.getNoteToCamera(note)
+                for note in notes
+            ]
+            closestNote = Pose2d(*robotPose).nearest(notePositions)
+
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
         for camera in self.cameras:
@@ -146,6 +162,15 @@ class VisionSubsystemReal(Subsystem):
             [cameraPose3d, botPose + cameraToRobotTransform.inverse()]
         )
         SmartDashboard.putNumberArray(cameraKey, cameraPose)
+
+    def getNoteToCamera(note: PhotonTrackedTarget) -> Pose2d:
+        x = constants.kNoteCameraHeight / tan(
+            constants.kNoteCameraPitch - note.getPitch() * constants.kRadiansPerDegree
+        )
+        dist = (constants.kNoteCameraHeight**2 + x**2) ** 0.5
+        y = dist * tan(-note.getYaw() * constants.kRadiansPerDegree)
+
+        return Pose2d(x, y, atan(y / x))
 
 
 class CameraTargetRelation:

@@ -238,6 +238,16 @@ kPhotonvisionKeyArray = [
     kPhotonvisionBackRightCameraKey,
 ]
 
+kPhotonvisionNoteCameraKey = "noteCamera"
+
+# UPDATE LATER
+kNoteCameraPitch = 30 * kRadiansPerDegree  # below horizontal
+kNoteCameraYaw = 30 * kRadiansPerDegree
+kNoteCameraHeight = 0.5  # meters
+kRobotToNoteCameraTransform = Transform3d(
+    Pose3d(), Pose3d(0.1, -0.1, 0.5, Rotation3d(0, kNoteCameraPitch, kNoteCameraYaw))
+)
+
 kCameraFOVHorizontal = 75.9  # degrees
 kCameraFOVVertical = 47.4  # degrees
 
