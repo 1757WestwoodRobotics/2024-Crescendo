@@ -456,6 +456,9 @@ kTargetFacingAngleRelativeToRobotKeys = OptionalValueKeys(
 )
 kTargetPoseArrayKeys = OptionalValueKeys("TargetPoseArray")
 kRobotVisionPoseArrayKeys = OptionalValueKeys("EstimatedRobotPose")
+kRobotToTagPoseKey = "vision/poses"
+kRobotToTagIdKey = "vision/ids"
+kRobotToTagAmbiguityKey = "vision/ambiguity"
 
 kTargetName = "Target"
 
@@ -861,6 +864,7 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 kShootingMotorCurrentLimit = 80
 kAngleMotorCurrentLimit = 80
 
+kShooterSubwooferAngle = Rotation2d(1.117)
 kShooterSubwooferSpeed = 3000  # NEEDS UPDATE
 
 kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
