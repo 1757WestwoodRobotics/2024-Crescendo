@@ -7,7 +7,14 @@ from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
 from wpilib import SmartDashboard
 from wpilib import RobotBase, Timer
-from wpimath.geometry import Transform3d, Pose3d, Pose2d, Rotation2d
+from wpimath.geometry import (
+    Transform3d,
+    Pose3d,
+    Pose2d,
+    Rotation2d,
+    Translation3d,
+    Rotation3d,
+)
 
 import constants
 from util import advantagescopeconvert
@@ -21,7 +28,7 @@ class EstimatedPose:
         self.timestamp = timestamp
 
 
-class VisionCamera: # hi its landon here
+class VisionCamera:  # hi its landon here
     def __init__(self, camera: PhotonCamera):
         self.camera = camera
         self.name = camera.getName()
@@ -56,6 +63,7 @@ class VisionSubsystemReal(Subsystem):
         self.cameras = [
             PhotonCamera(camera) for camera in constants.kPhotonvisionCameraArray
         ]
+        self.robotToTags = []
         self.poseList = deque([])
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
@@ -73,6 +81,7 @@ class VisionSubsystemReal(Subsystem):
             constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
         )
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
+        self.robotToTags = []
         for camera in self.cameras:
             photonResult = camera.getLatestResult()
             hasTargets = len(photonResult.getTargets()) > 0
@@ -85,6 +94,13 @@ class VisionSubsystemReal(Subsystem):
             if not multitagresult.estimatedPose.isPresent:
                 for result in photonResult.targets:
                     if result.fiducialId in constants.kApriltagPositionDict.keys():
+                        botToTagPose = (
+                            currentCamera.cameraToRobotTransform.inverse()
+                            + result.bestCameraToTarget
+                        )
+                        self.robotToTags.append(
+                            (botToTagPose, result.fiducialId, result.poseAmbiguity),
+                        )
                         if result.poseAmbiguity < ambiguity:
                             bestRelativeTransform = (
                                 Transform3d(
@@ -110,6 +126,13 @@ class VisionSubsystemReal(Subsystem):
                 self.poseList.append(
                     EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
                 )
+
+        poses, ids, ambiguitys = list(zip(*self.robotToTags))
+
+        poses3d = advantagescopeconvert.convertToSendablePoses(poses)
+        SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
+        SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
+        SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
     @staticmethod
     def updateAdvantagescopePose(
@@ -191,6 +214,7 @@ class VisionSubsystemSim(Subsystem):
             )
         ]
         self.poseList = []
+        self.robotToTags = []
 
         self.rng = RNG(constants.kSimulationVariation)
 
@@ -200,18 +224,37 @@ class VisionSubsystemSim(Subsystem):
         )
         simPose3d = pose3dFrom2d(simPose)
 
+        self.robotToTags = []
         for camera in self.cameras:
             seeTag = False
             botPose = Pose3d()
-            for _id, apriltag in constants.kApriltagPositionDict.items():
+            for id, apriltag in constants.kApriltagPositionDict.items():
                 if camera.canSeeTarget(simPose3d, apriltag):
+                    rngOffset = Transform3d(
+                        Translation3d(
+                            self.rng.getNormalRandom(),
+                            self.rng.getNormalRandom(),
+                            self.rng.getNormalRandom(),
+                        ),
+                        Rotation3d(),
+                    )
+                    botToTagPose = Pose3d() + Transform3d(simPose3d, apriltag)
+                    botToTagPose = botToTagPose + rngOffset * botToTagPose.translation().norm()
+                    self.robotToTags.append(
+                        (
+                            botToTagPose,
+                            id,
+                            botToTagPose.translation().norm()
+                            * self.rng.getNormalRandom(),
+                        ),
+                    )
                     seeTag = True
                     botPose = Pose3d(
-                        simPose3d.X() + self.rng.getNormalRandom(),
-                        simPose3d.Y() + self.rng.getNormalRandom(),
-                        simPose3d.Z() + self.rng.getNormalRandom(),
+                        simPose3d.X() ,
+                        simPose3d.Y(),
+                        simPose3d.Z(),
                         simPose3d.rotation(),
-                    )
+                    ) + rngOffset
 
             rel = CameraTargetRelation(simPose3d + camera.location, botPose)
             VisionSubsystemReal.updateAdvantagescopePose(
@@ -221,6 +264,13 @@ class VisionSubsystemSim(Subsystem):
             self.poseList.append(
                 EstimatedPose(botPose, seeTag, Timer.getFPGATimestamp())
             )
+
+        poses, ids, ambiguitys = list(zip(*self.robotToTags))
+
+        poses3d = advantagescopeconvert.convertToSendablePoses(poses)
+        SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
+        SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
+        SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
 
 class RNG:
