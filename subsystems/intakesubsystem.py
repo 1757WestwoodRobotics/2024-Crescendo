@@ -65,6 +65,7 @@ class IntakeSubsystem(Subsystem):
         self.heldPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position)
         self.putInPlace = False
         self.targetAngle = Rotation2d()
+        self.holdSet = False
 
     def resetPivot(self) -> None:
         pivotMotorPosition = (

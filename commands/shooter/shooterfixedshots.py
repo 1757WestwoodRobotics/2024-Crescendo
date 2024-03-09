@@ -17,7 +17,7 @@ class SubwooferShot(Command):
         self.addRequirements(shooterSubsystem)
 
     def execute(self):
-        self.shooter.setShooterAngle(constants.kShooterMaxAngle)
+        self.shooter.setShooterAngle(constants.kShooterSubwooferAngle)
 
         spinAmount = Preferences.getDouble("Spin Amount", 100)
         self.shooter.setLeftShootingMotorSpeed(
