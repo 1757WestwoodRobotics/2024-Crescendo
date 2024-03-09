@@ -119,9 +119,10 @@ class ShooterSubsystem(Subsystem):
         self.leftTargetSpeed = 0
         self.rightTargetSpeed = 0
 
-
-        self.ff = SimpleMotorFeedforwardMeters(constants.kLeftShootingMotorKs, constants.kLeftShootingMotorKv)
-        self.pivotff = ArmFeedforward(0,0.13, 0)
+        self.ff = SimpleMotorFeedforwardMeters(
+            constants.kLeftShootingMotorKs, constants.kLeftShootingMotorKv
+        )
+        self.pivotff = ArmFeedforward(0, 0.13, 0)
 
         SmartDashboard.putNumber(constants.kLeftMotorFudgeKey, 0)
         SmartDashboard.putNumber(constants.kRightMotorFudgeKey, 0)
@@ -152,7 +153,7 @@ class ShooterSubsystem(Subsystem):
                 self.targetAngle.radians()
                 / constants.kRadiansPerRevolution
                 * constants.kAngleMotorRatio,
-                self.pivotff.calculate(self.targetAngle.radians(),0)
+                self.pivotff.calculate(self.targetAngle.radians(), 0),
             )
         else:
             self.safePivot()
@@ -164,7 +165,7 @@ class ShooterSubsystem(Subsystem):
         self.leftShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             self.leftTargetSpeed,
-            self.ff.calculate(self.leftTargetSpeed)
+            self.ff.calculate(self.leftTargetSpeed),
         )
 
     def setRightShootingMotorSpeed(self, rpm: float) -> None:
@@ -174,7 +175,7 @@ class ShooterSubsystem(Subsystem):
         self.rightShootingMotor.set(
             NEOBrushless.ControlMode.Velocity,
             self.rightTargetSpeed,
-            self.ff.calculate(self.rightTargetSpeed)
+            self.ff.calculate(self.rightTargetSpeed),
         )
 
     def neutralShooter(self) -> None:

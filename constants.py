@@ -261,7 +261,7 @@ kRobotToFrontRightCameraTransform = Transform3d(
         11.306 * kMetersPerInch,
         -12.749 * kMetersPerInch,
         9.238 * kMetersPerInch,
-        Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0)
+        Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0),
     ),
 )
 kRobotToBackLeftCameraTransform = Transform3d(
@@ -271,7 +271,7 @@ kRobotToBackLeftCameraTransform = Transform3d(
         10.256 * kMetersPerInch,
         9.238 * kMetersPerInch,
         Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-            Rotation3d(0.0, 0.0, (180- 30.0) * kRadiansPerDegree)
+            Rotation3d(0.0, 0.0, (180 - 30.0) * kRadiansPerDegree)
         ),
     ),
 )
@@ -282,10 +282,10 @@ kRobotToBackRightCameraTransform = Transform3d(
         -10.256 * kMetersPerInch,
         9.238 * kMetersPerInch,
         Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-            Rotation3d(0.0, 0.0, (180+ 30.0) * kRadiansPerDegree)
+            Rotation3d(0.0, 0.0, (180 + 30.0) * kRadiansPerDegree)
         ),
     ),
-) 
+)
 kCameraTransformsArray = [
     kRobotToFrontLeftCameraTransform,
     kRobotToFrontRightCameraTransform,
@@ -784,7 +784,7 @@ kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
 kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 
 kIntakeArmLength = 0.251
-kIntakePivotTolerance = 0.1 # radians
+kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
 kIntakePercentageVoltage = 0.2
 kIntakeFineControlVoltage = 0.05
@@ -816,7 +816,7 @@ kLeftShootingMotorPGain = 0.0003
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 0.00200 # V / rpm
+kLeftShootingMotorKv = 0.00200  # V / rpm
 kLeftShootingMotorKs = 0.33329
 
 # Kv taken from motor specifications
@@ -828,7 +828,7 @@ kRightShootingMotorPGain = 0.0003
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0
 kRightShootingMotorInverted = False
-kRightShootingMotorKv = 1 / (DCMotor.neoVortex().Kv / kRadiansPerRevolution) # V / rpm
+kRightShootingMotorKv = 1 / (DCMotor.neoVortex().Kv / kRadiansPerRevolution)  # V / rpm
 
 kAngleMotorMappingFunction = lambda x, y: x * y
 kLeftShootingMotorMappingFunction = lambda x, y: x * y
@@ -847,7 +847,7 @@ kLeftShootingMotorTargetKey = "shooter/leftTarget"
 kRightShootingMotorTargetKey = "shooter/rightTarget"
 kShooterPivotTargetKey = "shooter/pivotTarget"
 
-kShooterAngleTolerance = Rotation2d(.05)
+kShooterAngleTolerance = Rotation2d(0.05)
 # in RPM
 kShooterSpeedTolerance = 100
 

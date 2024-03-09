@@ -77,9 +77,13 @@ class NEOBrushless:
     def set(self, controlMode: ControlMode, demand: float, ff: float = 0):
         """input is in rotations or rpm"""
         if controlMode == NEOBrushless.ControlMode.Velocity:
-            self.controller.setReference(demand, CANSparkFlex.ControlType.kVelocity, arbFeedforward=ff)
+            self.controller.setReference(
+                demand, CANSparkFlex.ControlType.kVelocity, arbFeedforward=ff
+            )
         elif controlMode == NEOBrushless.ControlMode.Position:
-            self.controller.setReference(demand, CANSparkFlex.ControlType.kPosition, arbFeedforward=ff)
+            self.controller.setReference(
+                demand, CANSparkFlex.ControlType.kPosition, arbFeedforward=ff
+            )
         elif controlMode == NEOBrushless.ControlMode.Percent:
             # self.controller.setReference(demand, CANSparkFlex.ControlType.kDutyCycle)
             self.motor.setVoltage(demand * 12)
@@ -100,11 +104,12 @@ class NEOBrushless:
             else CANSparkFlex.IdleMode.kCoast
         )
 
-    def enableLimitSwitch(self,switch: LimitSwitch, enable: True):
+    def enableLimitSwitch(self, switch: LimitSwitch, enable: True):
         if switch == NEOBrushless.LimitSwitch.Forwards:
             self.forwardSwitch.enableLimitSwitch(enable)
         if switch == NEOBrushless.LimitSwitch.Backwards:
             self.reverseSwitch.enableLimitSwitch(enable)
+
     def neutralOutput(self) -> None:
         self.motor.set(0)
 

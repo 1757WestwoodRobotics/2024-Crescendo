@@ -45,7 +45,9 @@ class FeedIntakeToShooter(SetIntakeState):
         self.intake.setFeeding()
 
     def isFinished(self) -> bool:
-        return not SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, True) # command is finished when no note is detected
+        return not SmartDashboard.getBoolean(
+            constants.kIntakeHasNoteKey, True
+        )  # command is finished when no note is detected
 
 
 class StageIntake(SetIntakeState):

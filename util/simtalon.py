@@ -40,6 +40,7 @@ class Talon:
         Forwards = auto()
         Backwards = auto()
 
+    # pylint:disable-next=too-many-arguments
     def __init__(
         self,
         canID: int,
@@ -51,7 +52,7 @@ class Talon:
         canbus: str = "",
         kV: float = 0,
         moMagicAccel: float = 0,
-        moMagicVel: float = 0
+        moMagicVel: float = 0,
     ) -> None:
         print(f"Init TalonFX with port {canID} on {canbus} with name {name}")
         self.id = canID
