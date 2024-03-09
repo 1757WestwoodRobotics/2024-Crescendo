@@ -209,6 +209,7 @@ class OperatorInterface:
         # resets
         self.resetIntake = getButtonBindingOfName("resetIntake")
         self.resetElevator = getButtonBindingOfName("resetElevator")
+        self.resetShooter = getButtonBindingOfName("resetShooter")
 
         # overrides / offsets
 

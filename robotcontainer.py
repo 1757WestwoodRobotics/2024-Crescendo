@@ -12,11 +12,12 @@ from pathplannerlib.auto import (
 import constants
 
 from commands.resetdrive import ResetDrive
+from commands.intakesetting import ResetIntake
 from commands.drivedistance import DriveDistance
 from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
 from commands.defensestate import DefenseState
-from commands.shooter.shootermanualmode import ShooterManualMode
+from commands.shooter.shootermanualmode import ResetShooter, ShooterManualMode
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
 from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
@@ -153,6 +154,12 @@ class RobotContainer:
 
         ModifiableJoystickButton(self.operatorInterface.resetGyro).onTrue(
             ResetDrive(self.drive, Pose2d(0, 0, 0))
+        )
+        ModifiableJoystickButton(self.operatorInterface.resetShooter).onTrue(
+            ResetShooter(self.shooter)
+        )
+        ModifiableJoystickButton(self.operatorInterface.resetIntake).onTrue(
+            ResetIntake(self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.defenseStateControl).whileTrue(

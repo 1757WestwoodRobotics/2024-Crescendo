@@ -62,6 +62,14 @@ class IntakeSubsystem(Subsystem):
         self.heldPosition = 0
         self.putInPlace = False
 
+    def resetPivot(self) -> None:
+        pivotMotorPosition = (
+            self.pivotEncoder.getPosition().radians()
+            / constants.kRadiansPerRevolution
+            * constants.kPivotGearRatio
+        )
+        self.pivotMotor.setEncoderPosition(pivotMotorPosition)
+
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
         # get actual velocity values for intake motor later

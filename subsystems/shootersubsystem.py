@@ -88,7 +88,10 @@ class ShooterSubsystem(Subsystem):
             constants.kRightShootingMotorKv,
         )
 
-        self.shooterEncoder = CTREEncoder(constants.kShooterAngleEncoderCANId, 0)
+        self.shooterEncoder = CTREEncoder(
+            constants.kShooterAngleEncoderCANId, constants.kShooterAngleEncoderOffset
+        )
+        self.shooterInitPosition = self.shooterEncoder.getPosition()
 
         self.leftShootingMotor.setSmartCurrentLimit(
             constants.kShootingMotorCurrentLimit
@@ -120,6 +123,15 @@ class ShooterSubsystem(Subsystem):
         SmartDashboard.putNumber(constants.kRightMotorFudgeKey, 0)
         SmartDashboard.putNumber(constants.kShooterAngleFudgeKey, 0)
         # speeds are in RPM, same as velocity control mode
+
+    def resetShooterPivot(self):
+        SmartDashboard.putNumber(constants.kShooterAngleFudgeKey, 0)
+        self.angleMotor.setEncoderPosition(
+            self.shooterEncoder.getPosition().radians()
+            / constants.kRadiansPerRevolution
+            * constants.kAngleMotorRatio
+            * -1
+        )
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
         self.targetAngle = Rotation2d(
@@ -157,6 +169,12 @@ class ShooterSubsystem(Subsystem):
     def neutralShooter(self) -> None:
         self.rightShootingMotor.neutralOutput()
         self.leftShootingMotor.neutralOutput()
+        self.angleMotor.set(  # in neutral ignore the fudge
+            Talon.ControlMode.Position,
+            self.shooterInitPosition.radians()
+            / constants.kRadiansPerRevolution
+            * constants.kAngleMotorRatio,
+        )
 
     def getShooterAngle(self) -> Rotation2d:
         return Rotation2d(
