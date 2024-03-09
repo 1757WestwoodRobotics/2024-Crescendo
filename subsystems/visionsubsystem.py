@@ -93,6 +93,7 @@ class VisionSubsystemReal(Subsystem):
             ambiguity = 10
             if not multitagresult.estimatedPose.isPresent:
                 for result in photonResult.targets:
+                    # pylint:disable-next=consider-iterating-dictionary
                     if result.fiducialId in constants.kApriltagPositionDict.keys():
                         botToTagPose = (
                             currentCamera.cameraToRobotTransform.inverse()
@@ -228,7 +229,7 @@ class VisionSubsystemSim(Subsystem):
         for camera in self.cameras:
             seeTag = False
             botPose = Pose3d()
-            for id, apriltag in constants.kApriltagPositionDict.items():
+            for tagId, apriltag in constants.kApriltagPositionDict.items():
                 if camera.canSeeTarget(simPose3d, apriltag):
                     rngOffset = Transform3d(
                         Translation3d(
@@ -239,22 +240,27 @@ class VisionSubsystemSim(Subsystem):
                         Rotation3d(),
                     )
                     botToTagPose = Pose3d() + Transform3d(simPose3d, apriltag)
-                    botToTagPose = botToTagPose + rngOffset * botToTagPose.translation().norm()
+                    botToTagPose = (
+                        botToTagPose + rngOffset * botToTagPose.translation().norm()
+                    )
                     self.robotToTags.append(
                         (
                             botToTagPose,
-                            id,
+                            tagId,
                             botToTagPose.translation().norm()
                             * self.rng.getNormalRandom(),
                         ),
                     )
                     seeTag = True
-                    botPose = Pose3d(
-                        simPose3d.X() ,
-                        simPose3d.Y(),
-                        simPose3d.Z(),
-                        simPose3d.rotation(),
-                    ) + rngOffset
+                    botPose = (
+                        Pose3d(
+                            simPose3d.X(),
+                            simPose3d.Y(),
+                            simPose3d.Z(),
+                            simPose3d.rotation(),
+                        )
+                        + rngOffset
+                    )
 
             rel = CameraTargetRelation(simPose3d + camera.location, botPose)
             VisionSubsystemReal.updateAdvantagescopePose(

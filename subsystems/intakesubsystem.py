@@ -66,6 +66,9 @@ class IntakeSubsystem(Subsystem):
         self.putInPlace = False
         self.targetAngle = Rotation2d()
         self.holdSet = False
+        self.holdPosition = 0
+        self.canMoveNote = False
+        self.shooterPosition = 0
 
     def resetPivot(self) -> None:
         pivotMotorPosition = (
@@ -103,6 +106,37 @@ class IntakeSubsystem(Subsystem):
                 NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
             )
 
+    def holdingState(self, backLimitState: bool) -> None:
+        self.setPivotAngle(constants.kHandoffAngle)
+        if (
+            abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
+            < constants.kIntakePivotTolerance
+        ):
+            self.canMoveNote = True
+        else:
+            self.canMoveNote = False
+
+        if self.hasPosition and self.canMoveNote:
+            if backLimitState:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent,
+                    -constants.kIntakeFineControlVoltage,
+                )
+                self.holdSet = False
+            else:
+                if self.holdSet:
+                    self.intakeMotor.set(
+                        NEOBrushless.ControlMode.Position, self.shooterPosition
+                    )
+                else:
+                    self.holdSet = True
+                    self.shooterPosition = self.intakeMotor.get(
+                        NEOBrushless.ControlMode.Position
+                    )
+
+        else:
+            self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
         # get actual velocity values for intake motor later
@@ -118,35 +152,7 @@ class IntakeSubsystem(Subsystem):
             self.centerNote(frontLimitState, backLimitState)
 
         elif self.state == self.IntakeState.Holding:
-            self.setPivotAngle(constants.kHandoffAngle)
-            if (
-                abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
-                < constants.kIntakePivotTolerance
-            ):
-                self.canMoveNote = True
-            else:
-                self.canMoveNote = False
-
-            if self.hasPosition and self.canMoveNote:
-                if backLimitState:
-                    self.intakeMotor.set(
-                        NEOBrushless.ControlMode.Percent,
-                        -constants.kIntakeFineControlVoltage,
-                    )
-                    self.holdSet = False
-                else:
-                    if self.holdSet:
-                        self.intakeMotor.set(
-                            NEOBrushless.ControlMode.Position, self.shooterPosition
-                        )
-                    else:
-                        self.holdSet = True
-                        self.shooterPosition = self.intakeMotor.get(
-                            NEOBrushless.ControlMode.Position
-                        )
-
-            else:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+            self.holdingState(backLimitState)
             # none - intaking
             # only front - keep intaking
             # front and back - get position and hold

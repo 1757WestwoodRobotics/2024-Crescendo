@@ -1,5 +1,4 @@
 import os
-from commands2.functionalcommand import FunctionalCommand
 from commands2.repeatcommand import RepeatCommand
 import wpilib
 from wpimath.geometry import Pose2d
@@ -9,10 +8,10 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
-from commands.autospecific import AimAndFire
 
 import constants
 
+from commands.autospecific import AimAndFire
 from commands.resetdrive import ResetDrive
 from commands.intakesetting import FloorIntake, ResetIntake
 from commands.drivedistance import DriveDistance
@@ -92,9 +91,7 @@ class RobotContainer:
         NamedCommands.registerCommand(
             "aimAndFire", AimAndFire(self.shooter, self.drive, self.intake)
         )
-        NamedCommands.registerCommand(
-            "intake", FloorIntake(self.intake)
-        )
+        NamedCommands.registerCommand("intake", FloorIntake(self.intake))
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
         for file in os.listdir(pathsPath):
