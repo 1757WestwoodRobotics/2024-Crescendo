@@ -59,5 +59,4 @@ class SafetyPosition(Command):
         self.addRequirements(shooterSubsystem)
 
     def execute(self):
-        self.shooter.setShooterAngle(constants.kShooterMinAngle)
         self.shooter.neutralShooter()
