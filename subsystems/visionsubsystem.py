@@ -95,6 +95,13 @@ class VisionSubsystemReal(Subsystem):
                 for note in notes
             ]
             closestNote = Pose2d(*robotPose).nearest(notePositions)
+            intakePickupPosition = robotPose + constants.kRobotToIntakePickupTransform
+
+            # angle robot needs to rotate by to pick up note by driving forward
+            dRobotAngle = (
+                Rotation2d(robotPose[2])
+                - Transform2d(intakePickupPosition, closestNote).rotation()
+            )
 
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
