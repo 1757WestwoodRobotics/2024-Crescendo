@@ -184,6 +184,7 @@ class ShooterSubsystem(Subsystem):
         self.safePivot()
 
     def safePivot(self) -> None:
+        self.targetAngle = self.shooterInitPosition
         self.angleMotor.set(  # in neutral ignore the fudge
             Talon.ControlMode.MotionMagic,
             self.shooterInitPosition.radians()
