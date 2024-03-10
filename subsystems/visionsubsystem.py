@@ -69,6 +69,8 @@ class VisionSubsystemReal(Subsystem):
         self.noteCamera = PhotonCamera(constants.kPhotonvisionNoteCameraKey)
 
         self.poseList = deque([])
+
+        self.dRobotAngle = Rotation2d()
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
         #     inst.stopServer()
@@ -98,7 +100,7 @@ class VisionSubsystemReal(Subsystem):
             intakePickupPosition = robotPose + constants.kRobotToIntakePickupTransform
 
             # angle robot needs to rotate by to pick up note by driving forward
-            dRobotAngle = (
+            self.dRobotAngle = (
                 Rotation2d(robotPose[2])
                 - Transform2d(intakePickupPosition, closestNote).rotation()
             )

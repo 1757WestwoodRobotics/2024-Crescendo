@@ -31,6 +31,7 @@ from wpimath.geometry import (
     Rotation2d,
     Rotation3d,
     Transform3d,
+    Transform2d,
     Translation2d,
 )
 from wpimath.system.plant import DCMotor
@@ -984,3 +985,9 @@ kSourceWaypointRed = Pose2d(
     -2 * math.pi / 3,
 )
 kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
+
+# temp numbers, change when we actually measure
+kRobotToIntakePickupTransform = Transform2d(
+    Pose2d(), Pose2d(0.2, 0.05, Rotation2d.fromDegrees(5))
+)
+kAutoNotePickupAngleTolerance = Rotation2d(0.01)
