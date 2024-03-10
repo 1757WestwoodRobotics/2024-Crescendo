@@ -240,7 +240,7 @@ kPhotonvisionKeyArray = [
 ]
 
 kPhotonvisionNoteCameraKey = "noteCamera"
-
+kNoteInViewKey = "noteInView"
 # UPDATE LATER
 kNoteCameraPitch = 30 * kRadiansPerDegree  # below horizontal
 kNoteCameraYaw = 30 * kRadiansPerDegree

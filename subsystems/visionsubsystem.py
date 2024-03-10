@@ -71,6 +71,8 @@ class VisionSubsystemReal(Subsystem):
         self.poseList = deque([])
 
         self.dRobotAngle = Rotation2d()
+
+        SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
         #     inst.stopServer()
@@ -104,6 +106,12 @@ class VisionSubsystemReal(Subsystem):
                 Rotation2d(robotPose[2])
                 - Transform2d(intakePickupPosition, closestNote).rotation()
             )
+
+            SmartDashboard.putBoolean(constants.kNoteInViewKey, True)
+        else:
+            # rotate around if no note in vision
+            self.dRobotAngle = Rotation2d(0.1)
+            SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
 
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
@@ -172,7 +180,7 @@ class VisionSubsystemReal(Subsystem):
         )
         SmartDashboard.putNumberArray(cameraKey, cameraPose)
 
-    def getNoteToCamera(note: PhotonTrackedTarget) -> Pose2d:
+    def getNoteToCamera(self, note: PhotonTrackedTarget) -> Pose2d:
         x = constants.kNoteCameraHeight / tan(
             constants.kNoteCameraPitch - note.getPitch() * constants.kRadiansPerDegree
         )

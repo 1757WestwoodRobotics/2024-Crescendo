@@ -1,10 +1,11 @@
 from commands2 import Command, SequentialCommandGroup
+from wpilib import SmartDashboard
+
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 from subsystems.visionsubsystem import VisionSubsystem
 
-from wpilib import SmartDashboard
 
 import constants
 
