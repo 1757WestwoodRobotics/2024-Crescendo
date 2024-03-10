@@ -148,7 +148,11 @@ class IntakeSubsystem(Subsystem):
             self.putInPlace = False
 
         if self.state == self.IntakeState.Intaking:
-            self.setPivotAngle(constants.kFloorPositionAngle)
+            if SmartDashboard.getBoolean(constants.kShooterAngleOnTargetKey, False):
+                self.setPivotAngle(constants.kFloorPositionAngle)
+            else:
+                self.setPivotAngle(constants.kHandoffAngle)
+                self.targetAngle = constants.kFloorPositionAngle
             self.centerNote(frontLimitState, backLimitState)
 
         elif self.state == self.IntakeState.Holding:

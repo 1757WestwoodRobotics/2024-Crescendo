@@ -147,7 +147,11 @@ class ShooterSubsystem(Subsystem):
             )
         ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
 
-        if SmartDashboard.getBoolean(constants.kIntakeAtPositionKey, False):
+        if (
+            SmartDashboard.getBoolean(constants.kIntakeAtPositionKey, False)
+            and SmartDashboard.getString(constants.kIntakeStateKey, "Intaking")
+            != "Intaking"
+        ):
             self.angleMotor.set(
                 Talon.ControlMode.MotionMagic,
                 self.targetAngle.radians()
