@@ -240,13 +240,15 @@ kPhotonvisionKeyArray = [
 ]
 
 kPhotonvisionNoteCameraKey = "noteCamera"
-kNoteInViewKey = "noteInView"
-# UPDATE LATER
+kNoteInViewKey = OptionalValueKeys("noteInView")
+
 kNoteCameraPitch = 30 * kRadiansPerDegree  # below horizontal
-kNoteCameraYaw = 30 * kRadiansPerDegree
-kNoteCameraHeight = 0.5  # meters
+kNoteCameraYaw = 20 * kRadiansPerDegree
 kRobotToNoteCameraTransform = Transform3d(
-    Pose3d(), Pose3d(0.1, -0.1, 0.5, Rotation3d(0, kNoteCameraPitch, kNoteCameraYaw))
+    Pose3d(),
+    Pose3d(
+        0.330296, -0.333443, 0.570646, Rotation3d(0, kNoteCameraPitch, kNoteCameraYaw)
+    ),
 )
 
 kCameraFOVHorizontal = 75.9  # degrees
@@ -988,6 +990,11 @@ kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
 
 # temp numbers, change when we actually measure
 kRobotToIntakePickupTransform = Transform2d(
-    Pose2d(), Pose2d(0.2, 0.05, Rotation2d.fromDegrees(5))
+    Pose2d(),
+    Pose2d(
+        0.446088,
+        0.222375 - 0.342900 / 2,
+        Rotation2d.fromDegrees(math.tan((0.222375 - 0.342900 / 2) / 0.446088)),
+    ),
 )
-kAutoNotePickupAngleTolerance = Rotation2d(0.01)
+kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(5)
