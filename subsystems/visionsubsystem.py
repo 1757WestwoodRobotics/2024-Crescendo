@@ -14,6 +14,7 @@ from wpimath.geometry import (
     Pose2d,
     Rotation2d,
     Translation3d,
+    Transform2d,
     Rotation3d,
 )
 
@@ -93,9 +94,9 @@ class VisionSubsystemReal(Subsystem):
         if noteResult.hasTargets():
             notes = noteResult.getTargets()
             notePositions = [
-                Pose2d(*robotPose)
+                Pose3d(robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2]))
                 + constants.kRobotToNoteCameraTransform
-                + self.getNoteToCamera(note)
+                + self.getCameraToNote(note)
                 for note in notes
             ]
             closestNote = Pose2d(*robotPose).nearest(notePositions)
@@ -180,14 +181,14 @@ class VisionSubsystemReal(Subsystem):
         )
         SmartDashboard.putNumberArray(cameraKey, cameraPose)
 
-    def getNoteToCamera(self, note: PhotonTrackedTarget) -> Pose2d:
-        x = constants.kNoteCameraHeight / tan(
+    def getCameraToNote(self, note: PhotonTrackedTarget) -> Transform3d:
+        x = constants.kRobotToNoteCameraTransform.Z() / tan(
             constants.kNoteCameraPitch - note.getPitch() * constants.kRadiansPerDegree
         )
-        dist = (constants.kNoteCameraHeight**2 + x**2) ** 0.5
+        dist = (constants.kRobotToNoteCameraTransform.Z() ** 2 + x**2) ** 0.5
         y = dist * tan(-note.getYaw() * constants.kRadiansPerDegree)
 
-        return Pose2d(x, y, atan(y / x))
+        return Transform3d(x, y, 0, Rotation3d(0, 0, atan(y / x)))
 
 
 class CameraTargetRelation:
