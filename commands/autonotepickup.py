@@ -1,5 +1,6 @@
-from commands2 import Command, SequentialCommandGroup
+from commands2 import Command
 from wpilib import SmartDashboard
+from wpimath.controller import PIDController
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
@@ -10,48 +11,7 @@ from subsystems.visionsubsystem import VisionSubsystem
 import constants
 
 
-class RotateToNote(Command):
-    def __init__(self, drive: DriveSubsystem, vision: VisionSubsystem) -> None:
-        Command.__init__(self)
-        self.setName(__class__.__name__)
-        self.drive = drive
-        self.vision = vision
-
-    def execute(self):
-        self.drive.arcadeDriveWithFactors(
-            0, 0, self.vision.dRobotAngle, self.drive.CoordinateMode.RobotRelative
-        )
-
-    def isFinished(self) -> bool:
-        return (
-            abs(self.vision.dRobotAngle.radians())
-            < constants.kAutoNotePickupAngleTolerance.radians()
-        )
-
-
-class IntakeDriveUntilNote(Command):
-    def __init__(
-        self,
-        drive: DriveSubsystem,
-        intake: IntakeSubsystem,
-        elevator: ElevatorSubsystem,
-    ) -> None:
-        Command.__init__(self)
-        self.setName(__class__.__name__)
-        self.drive = drive
-        self.intake = intake
-        self.elevator = elevator
-
-    def execute(self):
-        self.drive.arcadeDriveWithFactors(
-            0.5, 0, 0, self.drive.CoordinateMode.RobotRelative
-        )
-
-    def isFinished(self) -> bool:
-        return SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
-
-
-class AutoNotePickup(SequentialCommandGroup):
+class AutoNotePickup(Command):
     def __init__(
         self,
         drive: DriveSubsystem,
@@ -59,7 +19,34 @@ class AutoNotePickup(SequentialCommandGroup):
         intake: IntakeSubsystem,
         elevator: ElevatorSubsystem,
     ) -> None:
-        SequentialCommandGroup.__init__(
-            RotateToNote(drive, vision), IntakeDriveUntilNote(drive, intake, elevator)
-        )
+        Command.__init__(self)
         self.setName(__class__.__name__)
+        self.drive = drive
+        self.vision = vision
+        self.intake = intake
+        self.elevator = elevator
+        self.addRequirements(self.drive, self.vision, self.intake, self.elevator)
+        self.rotationPID = PIDController(
+            constants.kRotationPGain, constants.kRotationIGain, constants.kRotationDGain
+        )
+
+    def execute(self):
+        self.intake.setIntaking()
+        self.elevator.setBottomPosition()
+
+        angleOutput = self.rotationPID.calculate(self.vision.dRobotAngle)
+
+        if (
+            abs(self.vision.dRobotAngle.radians())
+            < constants.kAutoNotePickupAngleTolerance.radians()
+        ):
+            self.drive.arcadeDriveWithFactors(
+                0.5, 0, angleOutput, self.drive.CoordinateMode.RobotRelative
+            )
+        else:
+            self.drive.arcadeDriveWithFactors(
+                0, 0, angleOutput, self.drive.CoordinateMode.RobotRelative
+            )
+
+    def isFinished(self) -> bool:
+        return SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
