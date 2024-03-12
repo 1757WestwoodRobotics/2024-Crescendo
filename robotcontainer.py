@@ -176,7 +176,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.ampPrep).whileTrue(
-            PrepareAmp(self.elevator, self.intake)
+            PrepareAmp(self.elevator, self.intake).repeatedly()
         )
 
         ModifiableJoystickButton(self.operatorInterface.trapPrep).whileTrue(

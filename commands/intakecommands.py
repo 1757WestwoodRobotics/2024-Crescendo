@@ -1,4 +1,5 @@
 from commands2 import ParallelCommandGroup, Command, SequentialCommandGroup
+from commands2.waitcommand import WaitCommand
 from wpilib import SmartDashboard
 
 from commands.elevatorsetting import (
@@ -30,18 +31,20 @@ class GroundIntake(ParallelCommandGroup):
         self.setName(__class__.__name__)
 
 
-class DefaultIntake(ParallelCommandGroup):
+class DefaultIntake(SequentialCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
-        ParallelCommandGroup.__init__(
-            self, ElevatorBottomPosition(elevator), HoldIntakeAtHandoff(intake)
+        SequentialCommandGroup.__init__(
+            self,
+            ElevatorBottomPosition(elevator),
+            HoldIntakeAtHandoff(intake),
         )
         self.setName(__class__.__name__)
 
 
-class PrepareAmp(ParallelCommandGroup):
+class PrepareAmp(SequentialCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
-        ParallelCommandGroup.__init__(
-            self, ElevatorAmpPosition(elevator), StageIntake(intake)
+        SequentialCommandGroup.__init__(
+            self, StageIntake(intake), ElevatorAmpPosition(elevator)
         )
         self.setName(__class__.__name__)
 

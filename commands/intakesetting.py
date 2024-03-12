@@ -1,5 +1,6 @@
 from commands2.command import Command
 from wpilib import SmartDashboard
+from wpilib._wpilib import Timer
 from subsystems.intakesubsystem import IntakeSubsystem
 
 import constants
@@ -53,9 +54,17 @@ class FeedIntakeToShooter(SetIntakeState):
 class StageIntake(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
         SetIntakeState.__init__(self, intakeSubsystem)
+        self.t = Timer()
+
+    def initialize(self):
+        self.t.reset()
+        self.t.start()
 
     def execute(self) -> None:
         self.intake.setStaging()
+
+    def isFinished(self) -> bool:
+        return self.intake.intakeAtPosition() and self.t.get() > 0.1 # allow debounce time
 
 
 class EjectInAmp(SetIntakeState):

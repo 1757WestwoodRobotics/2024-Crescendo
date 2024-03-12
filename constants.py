@@ -780,7 +780,7 @@ kIntakeInverted = True
 kPivotInverted = False
 
 kPivotEncoderID = 46
-kPivotEncoderOffset = 0.602783 - 0.25  # revolutions, get from phoenix tuner
+kPivotEncoderOffset = 0.650879 - 0.25  # revolutions, get from phoenix tuner
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
@@ -900,10 +900,13 @@ kShootingAngleFudgeAmount = 0.01
 
 kElevator1CANID = 55
 kElevator1Name = "Elevator1Motor"
-kElevator1PGain = 0.12
+kElevator1PGain = 0.6
 kElevator1IGain = 0
 kElevator1DGain = 0
 kElevator1Inverted = True
+
+kElevatorMaxAccel = 390
+kElevatorMaxVel = 300
 
 kElevator2CANID = 56
 kElevator2Name = "Elevator2Motor"
@@ -911,6 +914,8 @@ kElevator2PGain = 0.12
 kElevator2IGain = 0
 kElevator2DGain = 0
 kElevator2Inverted = False
+
+kElevatorTolerance = 0.05  # meters
 
 kElevatorPositionKey = "elevator/position"
 kElevatorStateKey = "elevator/state"

@@ -26,6 +26,8 @@ class ElevatorSubsystem(Subsystem):
             constants.kElevator1IGain,
             constants.kElevator1DGain,
             constants.kElevator1Inverted,
+            moMagicAccel=constants.kElevatorMaxAccel,
+            moMagicVel=constants.kElevatorMaxVel,
         )
 
         self.elevatorMotor2 = Talon(
@@ -38,6 +40,7 @@ class ElevatorSubsystem(Subsystem):
         )
 
         self.elevatorMotor2.follow(self.elevatorMotor1, True)
+        self.targetPosition = 0
 
         self.state = self.ElevatorState.BottomPosition
         SmartDashboard.putNumber(constants.kElevatorPositionKey, 0)
@@ -81,11 +84,18 @@ class ElevatorSubsystem(Subsystem):
             )
 
     def setElevatorMotorsAtPosition(self, beltPosition) -> None:
+        self.targetPosition = beltPosition
         self.elevatorMotor1.set(
-            Talon.ControlMode.Position,
+            Talon.ControlMode.MotionMagic,
             (beltPosition)
             / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,
+        )
+
+    def atPosition(self) -> bool:
+        return (
+            abs(self.getElevatorPosition() - self.targetPosition)
+            < constants.kElevatorTolerance
         )
 
     def getElevatorPosition(self) -> float:
