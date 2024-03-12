@@ -106,6 +106,7 @@ class IntakeSubsystem(Subsystem):
             pass
         else:
             self.centerNote(frontLimitState, backLimitState)
+            self.setPivotAngle(constants.kStagingPositionAngle)
         self.setPivotAngle(constants.kHandoffAngle)
         if (
             abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
@@ -181,10 +182,13 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Amp:
             self.setPivotAngle(constants.kStagingPositionAngle)
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent,
-                -constants.kIntakePercentageVoltage,
-            )
+            if (abs(self.getPivotAngle() - constants.kStagingPositionAngle.radians())< constants.kIntakePivotTolerance):
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent,
+                    -constants.kIntakePercentageVoltage,
+                )
+            else:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.shooterPosition) #maybe
 
         elif self.state == self.IntakeState.Trap:
             # move with timeout
@@ -195,15 +199,15 @@ class IntakeSubsystem(Subsystem):
                 1,
             )
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Velocity,
-                constants.kIntakePercentageVoltage * -1,
+                NEOBrushless.ControlMode.Percent,
+                -constants.kIntakePercentageVoltage,
             )
 
         elif self.state == self.IntakeState.Ejecting:
             self.setPivotAngle(constants.kFloorPositionAngle)
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Velocity,
-                constants.kIntakePercentageVoltage * -1,
+                NEOBrushless.ControlMode.Percent,
+                -constants.kIntakePercentageVoltage,
             )
 
         if RobotBase.isSimulation():
