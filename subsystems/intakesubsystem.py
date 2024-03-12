@@ -154,10 +154,16 @@ class IntakeSubsystem(Subsystem):
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.targetAngle = constants.kFloorPositionAngle
             if self.hasPosition:
-                self.intakeMotor.enableLimitSwitch(NEOBrushless.LimitSwitch.Forwards, False)
+                self.intakeMotor.enableLimitSwitch(
+                    NEOBrushless.LimitSwitch.Forwards, False
+                )
             else:
-                self.intakeMotor.enableLimitSwitch(NEOBrushless.LimitSwitch.Forwards, True)
-            self.intakeMotor.set(NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage)
+                self.intakeMotor.enableLimitSwitch(
+                    NEOBrushless.LimitSwitch.Forwards, True
+                )
+            self.intakeMotor.set(
+                NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
+            )
 
         elif self.state == self.IntakeState.Holding:
             self.holdingState(frontLimitState, backLimitState)
@@ -182,13 +188,18 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Amp:
             self.setPivotAngle(constants.kStagingPositionAngle)
-            if (abs(self.getPivotAngle() - constants.kStagingPositionAngle.radians())< constants.kIntakePivotTolerance):
+            if (
+                abs(self.getPivotAngle() - constants.kStagingPositionAngle.radians())
+                < constants.kIntakePivotTolerance
+            ):
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Percent,
                     -constants.kIntakePercentageVoltage,
                 )
             else:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.shooterPosition) #maybe
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.shooterPosition
+                )  # maybe
 
         elif self.state == self.IntakeState.Trap:
             # move with timeout
