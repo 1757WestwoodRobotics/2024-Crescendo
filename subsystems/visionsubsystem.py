@@ -1,10 +1,11 @@
 from collections import deque
-from math import hypot, sin
+from math import hypot, sin, tan, atan
 
 # import numpy as np
 
 from commands2 import Subsystem
 from photonlibpy.photonCamera import PhotonCamera
+from photonlibpy.photonTrackedTarget import PhotonTrackedTarget
 from wpilib import SmartDashboard
 from wpilib import RobotBase, Timer
 from wpimath.geometry import (
@@ -13,6 +14,7 @@ from wpimath.geometry import (
     Pose2d,
     Rotation2d,
     Translation3d,
+    Transform2d,
     Rotation3d,
 )
 
@@ -64,7 +66,14 @@ class VisionSubsystemReal(Subsystem):
             PhotonCamera(camera) for camera in constants.kPhotonvisionCameraArray
         ]
         self.robotToTags = []
+
+        self.noteCamera = PhotonCamera(constants.kPhotonvisionNoteCameraKey)
+
         self.poseList = deque([])
+
+        self.dRobotAngle = Rotation2d()
+
+        SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
         #     inst.stopServer()
@@ -80,6 +89,30 @@ class VisionSubsystemReal(Subsystem):
         robotPose = SmartDashboard.getNumberArray(
             constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
         )
+
+        noteResult = self.noteCamera.getLatestResult()
+        if noteResult.hasTargets():
+            notes = noteResult.getTargets()
+            notePositions = [
+                Pose3d(robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2]))
+                + constants.kRobotToNoteCameraTransform
+                + self.getCameraToNote(note)
+                for note in notes
+            ]
+            closestNote = Pose2d(*robotPose).nearest(notePositions)
+            intakePickupPosition = robotPose + constants.kRobotToIntakePickupTransform
+
+            # angle robot needs to rotate by to pick up note by driving forward
+            self.dRobotAngle = (
+                Rotation2d(robotPose[2])
+                - Transform2d(intakePickupPosition, closestNote).rotation()
+            )
+
+            SmartDashboard.putBoolean(constants.kNoteInViewKey, True)
+        else:
+            # rotate around if no note in vision
+            SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
+
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
         for camera in self.cameras:
@@ -146,6 +179,15 @@ class VisionSubsystemReal(Subsystem):
             [cameraPose3d, botPose + cameraToRobotTransform.inverse()]
         )
         SmartDashboard.putNumberArray(cameraKey, cameraPose)
+
+    def getCameraToNote(self, note: PhotonTrackedTarget) -> Transform3d:
+        x = constants.kRobotToNoteCameraTransform.Z() / tan(
+            constants.kNoteCameraPitch - note.getPitch() * constants.kRadiansPerDegree
+        )
+        dist = (constants.kRobotToNoteCameraTransform.Z() ** 2 + x**2) ** 0.5
+        y = dist * tan(-note.getYaw() * constants.kRadiansPerDegree)
+
+        return Transform3d(x, y, 0, Rotation3d(0, 0, atan(y / x)))
 
 
 class CameraTargetRelation:

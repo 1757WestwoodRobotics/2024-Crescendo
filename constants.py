@@ -31,6 +31,7 @@ from wpimath.geometry import (
     Rotation2d,
     Rotation3d,
     Transform3d,
+    Transform2d,
     Translation2d,
 )
 from wpimath.system.plant import DCMotor
@@ -237,6 +238,18 @@ kPhotonvisionKeyArray = [
     kPhotonvisionBackLeftCameraKey,
     kPhotonvisionBackRightCameraKey,
 ]
+
+kPhotonvisionNoteCameraKey = "noteCamera"
+kNoteInViewKey = OptionalValueKeys("noteInView")
+
+kNoteCameraPitch = 30 * kRadiansPerDegree  # below horizontal
+kNoteCameraYaw = 20 * kRadiansPerDegree
+kRobotToNoteCameraTransform = Transform3d(
+    Pose3d(),
+    Pose3d(
+        0.330296, -0.333443, 0.570646, Rotation3d(0, kNoteCameraPitch, kNoteCameraYaw)
+    ),
+)
 
 kCameraFOVHorizontal = 75.9  # degrees
 kCameraFOVVertical = 47.4  # degrees
@@ -974,3 +987,19 @@ kSourceWaypointRed = Pose2d(
     -2 * math.pi / 3,
 )
 kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
+
+kRobotToIntakePickupTransform = Transform2d(
+    Pose2d(),
+    Pose2d(
+        0.446088,
+        0.222375 - 0.342900 / 2,
+        Rotation2d.fromDegrees(math.tan((0.222375 - 0.342900 / 2) / 0.446088)),
+    ),
+)
+kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(5)
+kNoteCameraDebounceTime = 1  # seconds
+kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
+
+kAutoNotePickupPGain = 0.001
+kAutoNotePickupIGain = 0
+kAutoNotePickupDGain = 0
