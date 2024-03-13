@@ -111,7 +111,6 @@ class VisionSubsystemReal(Subsystem):
             SmartDashboard.putBoolean(constants.kNoteInViewKey, True)
         else:
             # rotate around if no note in vision
-            self.dRobotAngle = Rotation2d(0.1)
             SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
 
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))

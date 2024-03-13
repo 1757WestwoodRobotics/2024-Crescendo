@@ -1,7 +1,7 @@
 from commands2 import Command
 from wpilib import SmartDashboard
 from wpimath.controller import PIDController
-
+from wpimath.filter import Debouncer
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.elevatorsubsystem import ElevatorSubsystem
@@ -29,19 +29,36 @@ class AutoNotePickup(Command):
         self.rotationPID = PIDController(
             constants.kRotationPGain, constants.kRotationIGain, constants.kRotationDGain
         )
+        self.drivePID = PIDController(
+            constants.kAutoNotePickupPGain,
+            constants.kAutoNotePickupIGain,
+            constants.kAutoNotePickupDGain,
+        )
+        self.debouncer = Debouncer(
+            constants.kNoteCameraDebounceTime, Debouncer.DebounceType.kFalling
+        )
 
     def execute(self):
         self.intake.setIntaking()
         self.elevator.setBottomPosition()
 
         angleOutput = self.rotationPID.calculate(self.vision.dRobotAngle)
+        driveOutput = self.drivePID.calculate(
+            (
+                self.drive.getRobotRelativeSpeeds().vx ** 2
+                + self.drive.getRobotRelativeSpeeds().vy ** 2
+            )
+            ** (1 / 2)
+            / constants.kMaxWheelLinearVelocity,
+            constants.kMaxAutoNotePickupSpeed,
+        )
 
         if (
             abs(self.vision.dRobotAngle.radians())
             < constants.kAutoNotePickupAngleTolerance.radians()
         ):
             self.drive.arcadeDriveWithFactors(
-                0.5, 0, angleOutput, self.drive.CoordinateMode.RobotRelative
+                driveOutput, 0, angleOutput, self.drive.CoordinateMode.RobotRelative
             )
         else:
             self.drive.arcadeDriveWithFactors(
@@ -49,4 +66,8 @@ class AutoNotePickup(Command):
             )
 
     def isFinished(self) -> bool:
-        return SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
+        return SmartDashboard.getBoolean(
+            constants.kIntakeHasNoteKey, False
+        ) or self.debouncer.calculate(
+            SmartDashboard.getBoolean(constants.kNoteInViewKey, False)
+        )

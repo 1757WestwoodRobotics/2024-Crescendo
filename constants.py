@@ -988,7 +988,6 @@ kSourceWaypointRed = Pose2d(
 )
 kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
 
-# temp numbers, change when we actually measure
 kRobotToIntakePickupTransform = Transform2d(
     Pose2d(),
     Pose2d(
@@ -998,3 +997,9 @@ kRobotToIntakePickupTransform = Transform2d(
     ),
 )
 kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(5)
+kNoteCameraDebounceTime = 1  # seconds
+kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
+
+kAutoNotePickupPGain = 0.001
+kAutoNotePickupIGain = 0
+kAutoNotePickupDGain = 0
