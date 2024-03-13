@@ -168,7 +168,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.floorIntake).whileTrue(
-            GroundIntake(self.elevator, self.intake)
+            GroundIntake(self.elevator, self.intake).repeatedly()
         )
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(

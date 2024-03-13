@@ -100,39 +100,42 @@ class IntakeSubsystem(Subsystem):
 
     def holdingState(self, frontLimitState: bool, backLimitState: bool) -> None:
         if self.putInPlace:
-            pass
-        else:
-            self.centerNote(frontLimitState, backLimitState)
-            self.setPivotAngle(constants.kStagingPositionAngle)
-        self.setPivotAngle(constants.kHandoffAngle)
-        if (
-            abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
-            < constants.kIntakePivotTolerance
-        ):
-            self.canMoveNote = True
-        else:
-            self.canMoveNote = False
-
-        if self.hasPosition and self.canMoveNote:
-            if backLimitState:
-                self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Percent,
-                    -constants.kIntakeFineControlVoltage,
-                )
-                self.holdSet = False
+            self.setPivotAngle(constants.kHandoffAngle)
+            if (
+                abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
+                < constants.kIntakePivotTolerance
+            ):
+                self.canMoveNote = True
             else:
-                if self.holdSet:
-                    self.intakeMotor.set(
-                        NEOBrushless.ControlMode.Position, self.shooterPosition
-                    )
-                else:
-                    self.holdSet = True
-                    self.shooterPosition = self.intakeMotor.get(
-                        NEOBrushless.ControlMode.Position
-                    )
+                self.canMoveNote = False
 
+            if self.hasPosition and self.canMoveNote:
+                if backLimitState:
+                    self.intakeMotor.set(
+                        NEOBrushless.ControlMode.Percent,
+                        -constants.kIntakeFineControlVoltage,
+                    )
+                    self.holdSet = False
+                else:
+                    if self.holdSet:
+                        self.intakeMotor.set(
+                            NEOBrushless.ControlMode.Position, self.shooterPosition
+                        )
+                    else:
+                        self.holdSet = True
+                        self.shooterPosition = self.intakeMotor.get(
+                            NEOBrushless.ControlMode.Position
+                        )
+            else:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
         else:
-            self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+            if self.hasPosition:
+                self.centerNote(frontLimitState, backLimitState)
+                self.setPivotAngle(constants.kStagingPositionAngle)
+            else:
+                self.setPivotAngle(constants.kHandoffAngle)
+                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+
 
     # pylint: disable=too-many-branches
     def periodic(self) -> None:
