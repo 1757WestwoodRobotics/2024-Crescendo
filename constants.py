@@ -786,6 +786,8 @@ kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
 kIntakeAtPositionKey = "intake/atPosition"
 kIntakePoseKey = "intake/pose"
+kIntakeFrontSwitchKey = "intake/limits/front"
+kIntakeBackSwitchKey = "intake/limits/back"
 
 # relative to horizontal
 kHandoffAngle = Rotation2d.fromDegrees(-4.3)  # we should change this bc it's too far

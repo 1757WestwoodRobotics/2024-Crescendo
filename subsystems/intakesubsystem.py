@@ -81,7 +81,6 @@ class IntakeSubsystem(Subsystem):
         self.holdSet = False
 
     def centerNote(self, frontLimitState, backLimitState) -> None:
-
         if self.putInPlace:
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
@@ -235,6 +234,12 @@ class IntakeSubsystem(Subsystem):
         SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, self.hasPosition)
         SmartDashboard.putBoolean(
             constants.kIntakeAtPositionKey, self.intakeAtPosition()
+        )
+        SmartDashboard.putBoolean(
+            constants.kIntakeFrontSwitchKey, frontLimitState
+        )
+        SmartDashboard.putBoolean(
+            constants.kIntakeBackSwitchKey, backLimitState
         )
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:
