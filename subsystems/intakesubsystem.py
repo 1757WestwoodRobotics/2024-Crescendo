@@ -137,6 +137,7 @@ class IntakeSubsystem(Subsystem):
         else:
             self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
 
+    # pylint: disable=too-many-branches
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
         # get actual velocity values for intake motor later
