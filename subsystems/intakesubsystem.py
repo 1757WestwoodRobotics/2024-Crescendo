@@ -69,6 +69,7 @@ class IntakeSubsystem(Subsystem):
         self.holdPosition = 0
         self.canMoveNote = False
         self.shooterPosition = 0
+        self.overrideIntake = False
 
     def resetPivot(self) -> None:
         pivotMotorPosition = (
@@ -100,10 +101,7 @@ class IntakeSubsystem(Subsystem):
     def holdingState(self, frontLimitState: bool, backLimitState: bool) -> None:
         if self.putInPlace:
             self.setPivotAngle(constants.kHandoffAngle)
-            if (
-                abs(self.getPivotAngle() - constants.kHandoffAngle.radians())
-                < constants.kIntakePivotTolerance
-            ):
+            if self.intakeAtPosition():
                 self.canMoveNote = True
             else:
                 self.canMoveNote = False
@@ -146,8 +144,14 @@ class IntakeSubsystem(Subsystem):
         self.hasPosition = backLimitState or frontLimitState
         if not self.hasPosition:
             self.putInPlace = False
+            self.overrideIntake = False
+        else:
+            if self.state == self.IntakeState.Intaking:
+                self.overrideIntake = True
 
-        if self.state == self.IntakeState.Intaking:
+
+
+        if not self.overrideIntake and self.state == self.IntakeState.Intaking:
             if SmartDashboard.getBoolean(constants.kShooterAngleOnTargetKey, False):
                 self.setPivotAngle(constants.kFloorPositionAngle)
             else:
@@ -165,7 +169,7 @@ class IntakeSubsystem(Subsystem):
                 NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
             )
 
-        elif self.state == self.IntakeState.Holding:
+        elif self.state == self.IntakeState.Holding or self.overrideIntake:
             self.holdingState(frontLimitState, backLimitState)
             # none - intaking
             # only front - keep intaking
@@ -240,6 +244,15 @@ class IntakeSubsystem(Subsystem):
         )
         SmartDashboard.putBoolean(
             constants.kIntakeBackSwitchKey, backLimitState
+        )
+        SmartDashboard.putBoolean(
+            constants.kIntakeCanMoveKey, self.canMoveNote
+        )
+        SmartDashboard.putBoolean(
+            constants.kIntakeHoldSetKey, self.holdSet
+        )
+        SmartDashboard.putBoolean(
+            constants.kIntakePutInPlaceKey, self.putInPlace
         )
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:

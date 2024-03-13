@@ -216,6 +216,8 @@ class NoteSim:
         # check whether intaking, update sensors according to position on field
 
         intaking = bot.container.intake.state == IntakeSubsystem.IntakeState.Intaking
+        holding = bot.container.intake.state == IntakeSubsystem.IntakeState.Holding or bot.container.intake.overrideIntake
+        atPose = bot.container.intake.intakeAtPosition()
 
         botPose = Pose2d(
             *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
@@ -251,6 +253,15 @@ class NoteSim:
                 f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
                 notestate,
             )
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/bckLimit",
+                notestate,
+            )
+        if holding and atPose:
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
+                False,
+            )
 
         # shooting a note clears the note
         feeding = bot.container.intake.state == IntakeSubsystem.IntakeState.Feeding
@@ -261,6 +272,10 @@ class NoteSim:
 
             SmartDashboard.putBoolean(
                 f"{bot.container.intake.intakeMotor.getNettableIden()}/fwdLimit",
+                False,
+            )
+            SmartDashboard.putBoolean(
+                f"{bot.container.intake.intakeMotor.getNettableIden()}/bckLimit",
                 False,
             )
 
