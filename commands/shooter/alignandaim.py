@@ -5,7 +5,7 @@ from commands2.command import Command
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 from wpimath.geometry import Pose3d, Rotation2d, Translation3d, Translation2d
-from wpilib import DriverStation, SmartDashboard, Preferences
+from wpilib import DriverStation, SmartDashboard, Preferences, Timer
 
 
 from subsystems.shootersubsystem import ShooterSubsystem
@@ -28,6 +28,7 @@ class AlignAndAim(Command):
 
         self.shooter = shooterSubsystem
         self.drive = driveSubsystem
+        self.t = Timer()
 
         self.forward = forward
         self.sideways = sideways
@@ -44,6 +45,7 @@ class AlignAndAim(Command):
             ),
         )
         self.thetaController.enableContinuousInput(-pi, pi)
+        self.thetaController.setTolerance(0.1)
 
         self.addRequirements(shooterSubsystem, driveSubsystem)
 
@@ -57,12 +59,14 @@ class AlignAndAim(Command):
             else constants.kSpeakerCenterBlue
         )
 
-        currentPose = self.drive.getPose()
-        currentVel = SmartDashboard.getNumberArray(
-            constants.kDriveVelocityKeys, [0, 0, 0]
-        )
+        # currentVel = SmartDashboard.getNumberArray(
+        #     constants.kDriveVelocityKeys, [0, 0, 0]
+        # )
 
-        self.thetaController.reset(currentPose.rotation().radians(), currentVel[2])
+        # self.thetaController.reset(currentPose.rotation().radians(), currentVel[2])
+
+        self.t.reset()
+        self.t.start()
 
     def calculateTimeVelocityAngle(
         self, position: Translation3d
@@ -151,4 +155,4 @@ class AlignAndAim(Command):
             )
 
     def isFinished(self) -> bool:
-        return self.shooter.readyToShoot()
+        return self.shooter.readyToShoot() and self.t.get() > 0.5 and self.thetaController.atGoal()

@@ -60,3 +60,6 @@ class SafetyPosition(Command):
 
     def execute(self):
         self.shooter.neutralShooter()
+
+    def isFinished(self) -> bool:
+        return self.shooter.angleOnTarget()

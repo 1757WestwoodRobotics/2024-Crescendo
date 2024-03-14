@@ -25,7 +25,7 @@ class SetIntakeState(
         raise NotImplementedError("Must be implemented by subclass")
 
     def isFinished(self) -> bool:
-        return self.intake.intakeAtPosition() and self.t.get() < 0.1
+        return self.intake.intakeAtPosition() and self.t.get() > 0.1
 
 
 class FloorIntake(SetIntakeState):

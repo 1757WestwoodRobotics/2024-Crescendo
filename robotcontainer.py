@@ -92,7 +92,7 @@ class RobotContainer:
             "aimAndFire", AimAndFire(self.shooter, self.drive, self.intake)
         )
         NamedCommands.registerCommand(
-            "intake", IntakeAuto(self.intake, self.shooter, self.elevator)
+            "intake", IntakeAuto(self.intake, self.shooter)
         )
         NamedCommands.registerCommand(
             "holding", DefaultIntake(self.elevator, self.intake)
@@ -196,16 +196,14 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
-            RepeatCommand(
-                AlignAndAim(
-                    self.shooter,
-                    self.drive,
-                    lambda: self.operatorInterface.chassisControls.forwardsBackwards()
-                    * constants.kNormalSpeedMultiplier,
-                    lambda: self.operatorInterface.chassisControls.sideToSide()
-                    * constants.kNormalSpeedMultiplier,
-                )
-            )
+            AlignAndAim(
+                self.shooter,
+                self.drive,
+                lambda: self.operatorInterface.chassisControls.forwardsBackwards()
+                * constants.kNormalSpeedMultiplier,
+                lambda: self.operatorInterface.chassisControls.sideToSide()
+                * constants.kNormalSpeedMultiplier,
+            ).repeatedly()
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotSubwoofer).whileTrue(
