@@ -73,7 +73,7 @@ class VisionSubsystemReal(Subsystem):
 
         self.dRobotAngle = Rotation2d()
 
-        SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
+        SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
         # if RobotBase.isSimulation():
         #     inst = NetworkTableInstance.getDefault()
         #     inst.stopServer()
@@ -94,13 +94,13 @@ class VisionSubsystemReal(Subsystem):
         if noteResult.hasTargets():
             notes = noteResult.getTargets()
             notePositions = [
-                Pose3d(robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2]))
+               (Pose3d(robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2]))
                 + constants.kRobotToNoteCameraTransform
-                + self.getCameraToNote(note)
+                + VisionSubsystemReal.getCameraToNote(self, note)).toPose2d()
                 for note in notes
             ]
             closestNote = Pose2d(*robotPose).nearest(notePositions)
-            intakePickupPosition = robotPose + constants.kRobotToIntakePickupTransform
+            intakePickupPosition = Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
 
             # angle robot needs to rotate by to pick up note by driving forward
             self.dRobotAngle = (
@@ -108,10 +108,10 @@ class VisionSubsystemReal(Subsystem):
                 - Transform2d(intakePickupPosition, closestNote).rotation()
             )
 
-            SmartDashboard.putBoolean(constants.kNoteInViewKey, True)
+            SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
         else:
             # rotate around if no note in vision
-            SmartDashboard.putBoolean(constants.kNoteInViewKey, False)
+            SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
 
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
