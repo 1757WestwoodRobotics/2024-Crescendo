@@ -767,12 +767,12 @@ kIntakeDGain = 0
 
 kPivotCANID = 19
 kPivotName = "PivotMotor"
-kPivotPGain = 0.5
+kPivotPGain = 0.9
 kPivotIGain = 0
 kPivotDGain = 0
 
-kPivotAccel = 290
-kPivotVel = 90
+kPivotAccel = 400
+kPivotVel = 150
 
 kPivotGearRatio = (4 / 1) * (50 / 16) * (84 / 16)
 
@@ -791,6 +791,7 @@ kIntakeBackSwitchKey = "intake/limits/back"
 kIntakeCanMoveKey = "intake/debug/canMove"
 kIntakeHoldSetKey = "intake/debug/holdSet"
 kIntakePutInPlaceKey = "intake/debug/putInPlace"
+kIntakeSubsystemKey = "intake/subsystem"
 
 # relative to horizontal
 kHandoffAngle = Rotation2d.fromDegrees(-4.3)  # we should change this bc it's too far
@@ -864,6 +865,7 @@ kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
 kLeftShootingMotorTargetKey = "shooter/leftTarget"
 kRightShootingMotorTargetKey = "shooter/rightTarget"
 kShooterPivotTargetKey = "shooter/pivotTarget"
+kShooterSubsystemKey = "shooter/subsystem"
 
 kShooterAngleTolerance = Rotation2d(0.05)
 # in RPM

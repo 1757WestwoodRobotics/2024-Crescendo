@@ -11,9 +11,9 @@ from pathplannerlib.auto import (
 
 import constants
 
-from commands.autospecific import AimAndFire
+from commands.autospecific import AimAndFire, IntakeAuto
 from commands.resetdrive import ResetDrive
-from commands.intakesetting import FloorIntake, ResetIntake
+from commands.intakesetting import ResetIntake
 from commands.drivedistance import DriveDistance
 from commands.drive.robotrelativedrive import RobotRelativeDrive
 from commands.drive.fieldrelativedrive import FieldRelativeDrive
@@ -91,7 +91,12 @@ class RobotContainer:
         NamedCommands.registerCommand(
             "aimAndFire", AimAndFire(self.shooter, self.drive, self.intake)
         )
-        NamedCommands.registerCommand("intake", FloorIntake(self.intake))
+        NamedCommands.registerCommand(
+            "intake", IntakeAuto(self.intake, self.shooter, self.elevator)
+        )
+        NamedCommands.registerCommand(
+            "holding", DefaultIntake(self.elevator, self.intake)
+        )
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
         for file in os.listdir(pathsPath):
@@ -121,6 +126,9 @@ class RobotContainer:
         self.intake.setDefaultCommand(DefaultIntake(self.elevator, self.intake))
         self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
         self.elevator.setDefaultCommand(ElevatorBottomPosition(self.elevator))
+
+        wpilib.SmartDashboard.putData(constants.kIntakeSubsystemKey, self.intake)
+        wpilib.SmartDashboard.putData(constants.kShooterSubsystemKey, self.shooter)
 
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)

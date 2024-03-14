@@ -32,6 +32,12 @@
         {
           "type": "named",
           "data": {
+            "name": "holding"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "aimAndFire"
           }
         },
@@ -45,6 +51,12 @@
           "type": "path",
           "data": {
             "pathName": "wing2 to wing1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
           }
         },
         {

@@ -314,12 +314,13 @@ class VisionSubsystemSim(Subsystem):
                 EstimatedPose(botPose, seeTag, Timer.getFPGATimestamp())
             )
 
-        poses, ids, ambiguitys = list(zip(*self.robotToTags))
+        if len(self.robotToTags) > 0:
+            poses, ids, ambiguitys = list(zip(*self.robotToTags))
 
-        poses3d = advantagescopeconvert.convertToSendablePoses(poses)
-        SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
-        SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
-        SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
+            poses3d = advantagescopeconvert.convertToSendablePoses(poses)
+            SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
+            SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
+            SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
 
 class RNG:
