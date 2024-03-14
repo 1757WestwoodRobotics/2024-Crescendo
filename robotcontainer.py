@@ -1,5 +1,4 @@
 import os
-from commands2.repeatcommand import RepeatCommand
 import wpilib
 from wpimath.geometry import Pose2d
 import commands2
@@ -23,6 +22,7 @@ from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
 from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
 from commands.elevatorsetting import ElevatorBottomPosition
+from commands.shooter.fudgeshooter import DecreaseShooterAngle, IncreaseShooterAngle
 from commands.intakecommands import (
     GroundIntake,
     DefaultIntake,
@@ -180,7 +180,7 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.feedScore).whileTrue(
-            DynamicScore(self.elevator, self.intake, self.shooter)
+            DynamicScore(self.elevator, self.intake, self.shooter).repeatedly()
         )
 
         ModifiableJoystickButton(self.operatorInterface.ampPrep).whileTrue(
@@ -211,6 +211,13 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.shooterPivotUp).onTrue(
+            IncreaseShooterAngle(self.shooter)
+        )
+        ModifiableJoystickButton(self.operatorInterface.shooterPivotDown).onTrue(
+            DecreaseShooterAngle(self.shooter)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(

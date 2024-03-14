@@ -10,7 +10,7 @@ class FudgeShooter(Command):
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.shooter = shooter
-        self.addRequirements([self.shooter])
+        self.addRequirements(self.shooter)
 
     def initialize(self) -> None:
         print(f"Command: {self.getName()}")
@@ -81,7 +81,7 @@ class DecreaseShooterAngle(FudgeShooter):
         SmartDashboard.putNumber(
             constants.kShooterAngleFudgeKey,
             SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0)
-            - constants.kShooterAngleFudgeKey,
+            - constants.kShootingAngleFudgeAmount,
         )
 
 
@@ -93,5 +93,5 @@ class IncreaseShooterAngle(FudgeShooter):
         SmartDashboard.putNumber(
             constants.kShooterAngleFudgeKey,
             SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0)
-            + constants.kShooterAngleFudgeKey,
+            + constants.kShootingAngleFudgeAmount,
         )
