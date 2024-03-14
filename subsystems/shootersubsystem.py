@@ -204,7 +204,7 @@ class ShooterSubsystem(Subsystem):
         )
 
     def getShooterAngleAbsolute(self) -> Rotation2d:
-        return Rotation2d(self.shooterEncoder.getPosition().radians())
+        return self.shooterEncoder.getPosition()
 
     def getLeftShooterSpeed(self) -> int:
         # RPM
@@ -216,7 +216,7 @@ class ShooterSubsystem(Subsystem):
 
     def angleOnTarget(self) -> bool:
         return (
-            abs(self.targetAngle.radians() - self.getShooterAngle().radians())
+            abs(self.targetAngle.radians() - self.getShooterAngleAbsolute().radians())
             < constants.kShooterAngleTolerance.radians()
         )
 
@@ -323,7 +323,7 @@ class ShooterSubsystem(Subsystem):
         # logging
         if not SmartDashboard.getBoolean(constants.kShooterManualModeKey, False):
             SmartDashboard.putNumber(
-                constants.kShooterAngleKey, self.getShooterAngle().radians()
+                constants.kShooterAngleKey, self.getShooterAngleAbsolute().radians()
             )
             SmartDashboard.putNumber(
                 constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()
