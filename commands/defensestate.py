@@ -25,5 +25,8 @@ class DefenseState(Command):
         setModuleTo(self.drive.backLeftModule, Rotation2d.fromDegrees(135))
         setModuleTo(self.drive.backRightModule, Rotation2d.fromDegrees(-135))
 
+    def isFinished(self) -> bool:
+        return True
+
     def end(self, _interrupted: bool) -> None:
         DataLogManager.log("... DONE")

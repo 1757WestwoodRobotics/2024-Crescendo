@@ -973,7 +973,7 @@ kShooterMovingIterations = 5
 
 kAlignAnglePGain = 1.2
 kAlignAngleIGain = 0
-kAlignAngleDGain = 0
+kAlignAngleDGain = 0.015
 
 kPathfindingConstraints = PathConstraints(
     kMaxWheelLinearVelocity / 2,
