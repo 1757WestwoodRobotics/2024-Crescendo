@@ -37,6 +37,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeInverted,
             enableLimitSwitches=False,
         )
+        self.intakeMotor.setSmartCurrentLimit(80)
         self.pivotMotor = Talon(
             constants.kPivotCANID,
             constants.kPivotName,
@@ -85,7 +86,9 @@ class IntakeSubsystem(Subsystem):
         if self.putInPlace:
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
-            self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+            self.intakeMotor.set(
+                NEOBrushless.ControlMode.Percent, constants.kIntakeFineControlVoltage
+            )
         elif not frontLimitState and backLimitState:
             self.heldPosition = (
                 self.intakeMotor.get(NEOBrushless.ControlMode.Position)
@@ -133,7 +136,6 @@ class IntakeSubsystem(Subsystem):
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
 
-
     # pylint: disable=too-many-branches
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kIntakeStateKey, self.state.name)
@@ -148,8 +150,8 @@ class IntakeSubsystem(Subsystem):
         else:
             if self.state == self.IntakeState.Intaking:
                 self.overrideIntake = True
-
-
+            else:
+                self.overrideIntake = False
 
         if not self.overrideIntake and self.state == self.IntakeState.Intaking:
             if SmartDashboard.getBoolean(constants.kShooterAngleOnTargetKey, False):
@@ -157,14 +159,14 @@ class IntakeSubsystem(Subsystem):
             else:
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.targetAngle = constants.kFloorPositionAngle
-            if self.hasPosition:
-                self.intakeMotor.enableLimitSwitch(
-                    NEOBrushless.LimitSwitch.Forwards, False
-                )
-            else:
-                self.intakeMotor.enableLimitSwitch(
-                    NEOBrushless.LimitSwitch.Forwards, True
-                )
+            # if self.hasPosition:
+            #     self.intakeMotor.enableLimitSwitch(
+            #         NEOBrushless.LimitSwitch.Forwards, False
+            #     )
+            # else:
+            #     self.intakeMotor.enableLimitSwitch(
+            #         NEOBrushless.LimitSwitch.Forwards, False
+            #     )
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
             )
@@ -239,21 +241,11 @@ class IntakeSubsystem(Subsystem):
         SmartDashboard.putBoolean(
             constants.kIntakeAtPositionKey, self.intakeAtPosition()
         )
-        SmartDashboard.putBoolean(
-            constants.kIntakeFrontSwitchKey, frontLimitState
-        )
-        SmartDashboard.putBoolean(
-            constants.kIntakeBackSwitchKey, backLimitState
-        )
-        SmartDashboard.putBoolean(
-            constants.kIntakeCanMoveKey, self.canMoveNote
-        )
-        SmartDashboard.putBoolean(
-            constants.kIntakeHoldSetKey, self.holdSet
-        )
-        SmartDashboard.putBoolean(
-            constants.kIntakePutInPlaceKey, self.putInPlace
-        )
+        SmartDashboard.putBoolean(constants.kIntakeFrontSwitchKey, frontLimitState)
+        SmartDashboard.putBoolean(constants.kIntakeBackSwitchKey, backLimitState)
+        SmartDashboard.putBoolean(constants.kIntakeCanMoveKey, self.canMoveNote)
+        SmartDashboard.putBoolean(constants.kIntakeHoldSetKey, self.holdSet)
+        SmartDashboard.putBoolean(constants.kIntakePutInPlaceKey, self.putInPlace)
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:
         self.targetAngle = rotation
