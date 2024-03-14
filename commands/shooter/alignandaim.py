@@ -63,7 +63,7 @@ class AlignAndAim(Command):
         #     constants.kDriveVelocityKeys, [0, 0, 0]
         # )
 
-        # self.thetaController.reset(currentPose.rotation().radians(), currentVel[2])
+        self.thetaController.reset(self.drive.getRotation().radians())
 
         self.t.reset()
         self.t.start()

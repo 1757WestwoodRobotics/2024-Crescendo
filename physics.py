@@ -10,6 +10,7 @@
 #
 
 import functools
+from math import pi
 import operator
 import typing
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState
@@ -79,6 +80,9 @@ class SwerveDriveSim:
         )
         self.pose = constants.kSimDefaultRobotLocation
         self.outputs = None
+
+    def resetPose(self, pose) -> None:
+        self.pose = pose
 
     def getPose(self) -> Pose2d:
         return self.pose
@@ -354,6 +358,8 @@ class PhysicsEngine:
 
         self.driveSim = SwerveDriveSim(tuple(self.swerveModuleSims))
         self.noteSim = NoteSim()
+        
+        driveSubsystem.resetSimPosition = self.driveSim.resetPose
 
         self.gyroSim = driveSubsystem.gyro.sim_state
 

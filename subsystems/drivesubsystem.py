@@ -395,6 +395,9 @@ class DriveSubsystem(Subsystem):
         self.rotationOffset = pose.rotation().degrees()
         self.resetOdometryAtPosition(pose)
 
+        if RobotBase.isSimulation():
+            self.resetSimPosition(pose)
+
     def getPose(self) -> Pose2d:
         translation = self.estimator.getEstimatedPosition().translation()
         rotation = self.getRotation()
@@ -446,6 +449,16 @@ class DriveSubsystem(Subsystem):
 
     def resetOdometryAtPosition(self, pose: Pose2d):
         self.odometry.resetPosition(
+            self.getRotation(),
+            (
+                self.frontLeftModule.getPosition(),
+                self.frontRightModule.getPosition(),
+                self.backLeftModule.getPosition(),
+                self.backRightModule.getPosition(),
+            ),
+            pose,
+        )
+        self.estimator.resetPosition(
             self.getRotation(),
             (
                 self.frontLeftModule.getPosition(),
