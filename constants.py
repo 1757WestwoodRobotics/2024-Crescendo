@@ -984,6 +984,19 @@ kClimberDGain = 0
 kClimberInverted = False
 kClimberName = "Climber Motor"
 
+kAutoNotePickupPGain = 0.001
+kAutoNotePickupIGain = 0
+kAutoNotePickupDGain = 0
+
+# Climber stuff
+kClimberCANID = 0
+kClimberPIDSlot = 0
+kClimberPGain = 0
+kClimberIGain = 0
+kClimberDGain = 0
+kClimberInverted = False
+kClimberName = "Climber Motor"
+
 kClimberRetractTime = 0
 """seconds"""
 
