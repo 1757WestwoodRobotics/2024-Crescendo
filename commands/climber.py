@@ -9,6 +9,27 @@ class SetClimberState(Command):
         self.addRequirements(self.climber)
 
     def execute(self) -> None:
-        self.climber
+        raise NotImplementedError("Must be implemented by subclass")
     def isFinished(self) -> bool:
         return True
+    
+class ExtendClimberPosition(SetClimberState):
+    def __init__(self, climberSubsystem: ClimberSubsystem):
+        SetClimberState.__init__(self, climberSubsystem)
+
+    def execute(self) -> None:
+        self.climber.setClimberExtend
+
+class RetractClimberPosition(SetClimberState):
+    def __init__(self, climberSubsystem: ClimberSubsystem):
+        SetClimberState.__init__(self, climberSubsystem)
+    
+    def execute(self) -> None:
+        self.climber.setClimberRetract
+
+class NeutralClimberState(SetClimberState):
+    def __init__(self, climberSubsystem: ClimberSubsystem):
+        SetClimberState.__init__(self, climberSubsystem)
+
+    def execute(self) -> None:
+        self.climber.setClimberHold

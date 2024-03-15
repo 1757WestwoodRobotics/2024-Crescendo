@@ -1005,4 +1005,6 @@ kClimberExtensionTIme = 0
 
 kClimberMotorPercent = 0
 
+kClimberGearRatio = 0
+
 kClimberStateKey = "climber/state"

@@ -11,7 +11,7 @@ class ClimberSubsystem(Subsystem):
     class ClimberState(Enum):
         ClimberRetract = auto()
         ClimberExtend = auto()
-        ClimberDefault = auto()
+        ClimberNeutral = auto()
         
     def __init__(self):
      Subsystem.__init__(self)
@@ -29,23 +29,27 @@ class ClimberSubsystem(Subsystem):
      self.climberMotor.setCurrentLimit(
          
      )
-     self.state = ClimberSubsystem.ClimberState.ClimberDefault
+     self.state = ClimberSubsystem.ClimberState.ClimberNeutral
 
 
             
     def periodic(self) -> None:
-         SmartDashboard.putString(constants.k)
+         SmartDashboard.putString(constants.kClimberStateKey, str(self.state))
+
          if self.state == self.ClimberState.ClimberRetract:
-              self.climberMotor.set(constants.kClimberMotorPercent)
+              self.climberMotor.set(-constants.kClimberMotorPercent)
          elif self.state == self.ClimberState.ClimberExtend:
-              self.climberMotor.set
-         elif self.state == self.ClimberState.ClimberDefault:
+              self.climberMotor.set(constants.kClimberMotorPercent)
+         elif self.state == self.ClimberState.ClimberNeutral:
               self.climberMotor.setNeutralMode
 
 
-    def setClimberDown(self) -> None:
+    def setClimberRetract(self) -> None:
          self.state = self.ClimberState.ClimberRetract
 
-    def setClimberUp(self) -> None:
+    def setClimberExtend(self) -> None:
          self.state = self.ClimberState.ClimberExtend
+     
+    def setClimberHold(self) -> None:
+         self.state = self.ClimberState.ClimberNeutral
     
