@@ -806,7 +806,7 @@ kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
 kIntakePercentageVoltage = 0.3
-kIntakeFineControlVoltage = 0.07
+kIntakeFineControlVoltage = 0.14
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = -0.75
 
