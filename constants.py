@@ -806,9 +806,9 @@ kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
 kIntakePercentageVoltage = 0.3
-kIntakeFineControlVoltage = 0.05
+kIntakeFineControlVoltage = 0.07
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = -2
+kIntakeSafetyPositionOffset = -0.75
 
 kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"
@@ -971,9 +971,9 @@ kNoteTrajectoryTimeInterval = 0.15
 kShooterWheelRadius = kShooterWheelDiameter / 2
 kShooterMovingIterations = 5
 
-kAlignAnglePGain = 1.2
+kAlignAnglePGain = 0.5
 kAlignAngleIGain = 0
-kAlignAngleDGain = 0.015
+kAlignAngleDGain = 0.0
 
 kPathfindingConstraints = PathConstraints(
     kMaxWheelLinearVelocity / 2,
