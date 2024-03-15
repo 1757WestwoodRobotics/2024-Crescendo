@@ -974,3 +974,22 @@ kSourceWaypointRed = Pose2d(
     -2 * math.pi / 3,
 )
 kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
+
+# Climber stuff
+kClimberCANID = 0
+kClimberPIDSlot = 0
+kClimberPGain = 0
+kClimberIGain = 0
+kClimberDGain = 0
+kClimberInverted = False
+kClimberName = "Climber Motor"
+
+kClimberRetractTime = 0
+"""seconds"""
+
+kClimberExtensionTIme = 0
+"""seconds"""
+
+kClimberMotorPercent = 0
+
+kClimberStateKey = "climber/state"
