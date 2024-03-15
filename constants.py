@@ -705,8 +705,8 @@ kCANdleID = 2
 
 # Field
 
-kSpeakerCenterBlue = Pose3d(0.2167, 5.549, 2.12, Rotation3d())
-kSpeakerCenterRed = Pose3d(16.3, 5.549, 2.12, Rotation3d())
+kSpeakerCenterBlue = Pose3d(0, 5.549, 2.12, Rotation3d())
+kSpeakerCenterRed = Pose3d(16.5, 5.549, 2.12, Rotation3d())
 
 kNotesStartingMidline = [
     Pose3d(8.258, 7.462, 0.03018, Rotation3d()),
