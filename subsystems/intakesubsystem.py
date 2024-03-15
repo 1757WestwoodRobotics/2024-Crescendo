@@ -1,7 +1,6 @@
 from enum import Enum, auto
 from commands2 import Subsystem
-from wpilib import SmartDashboard
-from wpilib._wpilib import RobotBase
+from wpilib import SmartDashboard, DriverStation, RobotBase
 from wpimath.geometry import Rotation2d
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
@@ -152,6 +151,11 @@ class IntakeSubsystem(Subsystem):
                 self.overrideIntake = True
             else:
                 self.overrideIntake = False
+
+        if DriverStation.isDisabled():
+            # allow preload
+            if self.hasPosition:
+                self.putInPlace = True
 
         if not self.overrideIntake and self.state == self.IntakeState.Intaking:
             if SmartDashboard.getBoolean(constants.kShooterAngleOnTargetKey, False):
