@@ -70,7 +70,7 @@ class AlignAndAim(Command):
 
     def calculateTimeVelocityAngle(
         self, position: Translation3d
-    ) -> typing.Tuple[float, float, Rotation2d, Rotation2d]:
+    ) -> typing.Tuple[float, float, Rotation2d, Rotation2d, float]:
         botPose = self.drive.getPose()
         target2d = position.toTranslation2d()
 
@@ -94,14 +94,14 @@ class AlignAndAim(Command):
         angleAdjust = constants.kShooterAngleAdjustmentMappingFunction(distanceToTarget)
         launch_vel = sqrt(vx**2 + vy**2)  # m/s
 
-        return airtime, launch_vel, Rotation2d(launchAngle + angleAdjust), angleToTarget
+        return airtime, launch_vel, Rotation2d(launchAngle + angleAdjust), angleToTarget, distanceToTarget
 
     def execute(self):
         botPose = self.drive.getPose()
         robotVelocity = SmartDashboard.getNumberArray(
             constants.kDriveVelocityKeys, [0, 0, 0]
         )
-        time, velocity, psi, theta = 0, 0, Rotation2d(), Rotation2d()
+        time, velocity, psi, theta, distance = 0, 0, Rotation2d(), Rotation2d(), 0
         target = self.targetPose.translation()
 
         newTarget = target
@@ -109,7 +109,7 @@ class AlignAndAim(Command):
         for _ in range(
             constants.kShooterMovingIterations
         ):  # iterative solver for moving shot
-            time, velocity, psi, theta = self.calculateTimeVelocityAngle(newTarget)
+            time, velocity, psi, theta, distance = self.calculateTimeVelocityAngle(newTarget)
 
             positionChange = Translation2d(
                 robotVelocity[0] * time, robotVelocity[1] * time
@@ -127,6 +127,7 @@ class AlignAndAim(Command):
         )
 
         SmartDashboard.putNumber(constants.kShooterCalcSpeed, velocity)
+        SmartDashboard.putNumber(constants.kShooterCalcDistance, distance)
         SmartDashboard.putNumber(constants.kShooterCalcAngle, psi.radians())
 
         spinAmount = Preferences.getDouble("Spin Amount", 100)

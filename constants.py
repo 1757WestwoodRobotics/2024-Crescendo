@@ -901,6 +901,7 @@ kRightMotorFudgeKey = "shooter/fudge/rightMotor"
 
 kShooterCalcSpeed = "shooter/calculated/speed"
 kShooterCalcAngle = "shooter/calculated/angle"
+kShooterCalcDistance = "shooter/calculated/distance"
 
 kShootingMotorFudgeAmount = 50
 
