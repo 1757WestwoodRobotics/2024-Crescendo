@@ -975,21 +975,9 @@ kSourceWaypointRed = Pose2d(
 )
 kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
 
-# Climber stuff
-kClimberCANID = 0
-kClimberPIDSlot = 0
-kClimberPGain = 0
-kClimberIGain = 0
-kClimberDGain = 0
-kClimberInverted = False
-kClimberName = "Climber Motor"
-
-kAutoNotePickupPGain = 0.001
-kAutoNotePickupIGain = 0
-kAutoNotePickupDGain = 0
 
 # Climber stuff
-kClimberCANID = 0
+kClimberCANID = 58
 kClimberPIDSlot = 0
 kClimberPGain = 0
 kClimberIGain = 0
@@ -1008,3 +996,22 @@ kClimberMotorPercent = 0
 kClimberGearRatio = 0
 
 kClimberStateKey = "climber/state"
+
+# shout out Ivan for this fr
+kClimberHeightKey = "climber/ClimberHeight"
+kClimberPositionKey = "climber/ClimberPosition"
+kClimberCurrentLimit = (
+    CurrentLimitsConfigs()
+    .with_stator_current_limit(35)
+    .with_stator_current_limit_enable(True)
+    .with_supply_current_limit(35)
+    .with_supply_current_limit_enable(True)
+) # copied from drive current limits cuz temp
+kRobotToClimberTransform = Transform3d(
+    0 * kMetersPerInch,
+    0 * kMetersPerInch,
+    0 * kMetersPerInch,
+    Rotation3d(0, 0, math.pi),
+)
+
+kClimberWinchRadius = 0.03 # get actual value ltr

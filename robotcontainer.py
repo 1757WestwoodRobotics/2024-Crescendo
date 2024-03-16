@@ -42,6 +42,7 @@ from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.shootersubsystem import ShooterSubsystem
 from subsystems.elevatorsubsystem import ElevatorSubsystem
+from subsystems.climbersubsystem import ClimberSubsystem
 
 from operatorinterface import OperatorInterface
 from util.helpfultriggerwrappers import ModifiableJoystickButton, SmartDashboardButton
@@ -66,6 +67,7 @@ class RobotContainer:
         self.intake = IntakeSubsystem()
         self.elevator = ElevatorSubsystem()
         self.shooter = ShooterSubsystem()
+        self.climber = ClimberSubsystem()
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()

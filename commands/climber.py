@@ -18,18 +18,18 @@ class ExtendClimberPosition(SetClimberState):
         SetClimberState.__init__(self, climberSubsystem)
 
     def execute(self) -> None:
-        self.climber.setClimberExtend
+        self.climber.setClimberExtend()
 
 class RetractClimberPosition(SetClimberState):
     def __init__(self, climberSubsystem: ClimberSubsystem):
         SetClimberState.__init__(self, climberSubsystem)
     
     def execute(self) -> None:
-        self.climber.setClimberRetract
+        self.climber.setClimberRetract()
 
 class NeutralClimberState(SetClimberState):
     def __init__(self, climberSubsystem: ClimberSubsystem):
         SetClimberState.__init__(self, climberSubsystem)
 
     def execute(self) -> None:
-        self.climber.setClimberHold
+        self.climber.setClimberHold()
