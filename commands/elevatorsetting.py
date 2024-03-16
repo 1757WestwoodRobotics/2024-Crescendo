@@ -19,7 +19,7 @@ class SetElevatorState(Command):
         raise NotImplementedError("Must be implemented by subclass")
 
     def isFinished(self) -> bool:
-        return self.elevator.atPosition() and self.t.get() > 0.1
+        return self.elevator.atPosition() and self.t.get() > 0.5
 
 
 class ElevatorBottomPosition(SetElevatorState):

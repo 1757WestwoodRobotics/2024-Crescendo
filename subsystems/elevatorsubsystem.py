@@ -70,6 +70,7 @@ class ElevatorSubsystem(Subsystem):
                 self.state = self.ElevatorState.BottomPosition
 
         SmartDashboard.putString(constants.kElevatorStateKey, str(self.state))
+        SmartDashboard.putBoolean(constants.kElevatorAtPositionKey, self.atPosition())
 
         if self.state == self.ElevatorState.ManualControl:
             self.setElevatorMotorsAtPosition(
