@@ -219,7 +219,7 @@ class ShooterSubsystem(Subsystem):
 
     def angleOnTarget(self) -> bool:
         return (
-            abs(self.targetAngle.radians() - self.getShooterAngleAbsolute().radians())
+            abs(self.targetAngle.radians() - (self.getShooterAngleAbsolute().radians() if RobotBase.isReal() else self.getShooterAngle().radians()))
             < constants.kShooterAngleTolerance.radians()
         )
 
@@ -326,7 +326,7 @@ class ShooterSubsystem(Subsystem):
         # logging
         if not SmartDashboard.getBoolean(constants.kShooterManualModeKey, False):
             SmartDashboard.putNumber(
-                constants.kShooterAngleKey, self.getShooterAngleAbsolute().radians() if RobotBase.isReal() else self.getShooterAngle()
+                constants.kShooterAngleKey, (self.getShooterAngleAbsolute().radians() if RobotBase.isReal() else self.getShooterAngle().radians())
             )
             SmartDashboard.putNumber(
                 constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()

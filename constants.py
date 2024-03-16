@@ -867,7 +867,7 @@ kRightShootingMotorTargetKey = "shooter/rightTarget"
 kShooterPivotTargetKey = "shooter/pivotTarget"
 kShooterSubsystemKey = "shooter/subsystem"
 
-kShooterAngleTolerance = Rotation2d(0.05)
+kShooterAngleTolerance = Rotation2d(.05)
 # in RPM
 kShooterSpeedTolerance = 100
 
