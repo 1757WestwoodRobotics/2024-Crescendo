@@ -49,6 +49,25 @@ class PodiumShot(Command):
         )
 
 
+class PassShot(Command):
+    def __init__(self, shooterSubsystem: ShooterSubsystem):
+        Command.__init__(self)
+        self.setName(__class__.__name__)
+
+        self.shooter = shooterSubsystem
+
+        self.addRequirements(shooterSubsystem)
+
+    def execute(self):
+        self.shooter.setShooterAngle(constants.kShooterPassAngle)
+
+        spinAmount = Preferences.getDouble("Spin Amount", 100)
+        self.shooter.setLeftShootingMotorSpeed(constants.kShooterPassSpeed - spinAmount)
+        self.shooter.setRightShootingMotorSpeed(
+            constants.kShooterPassSpeed + spinAmount
+        )
+
+
 class SafetyPosition(Command):
     def __init__(self, shooterSubsystem: ShooterSubsystem):
         Command.__init__(self)

@@ -890,6 +890,9 @@ kShooterSubwooferSpeed = 3000  # NEEDS UPDATE
 kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
 kPodiumShooterSpeed = 4000  # NEEDS UPDATE
 
+kShooterPassAngle = kShooterMinAngle
+kShooterPassSpeed = 4000
+
 kShooterManualModeKey = "shooter/manualMode"
 kShooterAngleFudgeKey = "shooter/fudge/angle"
 kLeftMotorFudgeKey = "shooter/fudge/leftMotor"
