@@ -805,7 +805,7 @@ kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
-kIntakePercentageVoltage = 0.3
+kIntakePercentageVoltage = 0.1
 kIntakeFineControlVoltage = 0.07
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = -0.75
@@ -884,7 +884,7 @@ kShooterMinAngle = Rotation2d.fromDegrees(10.207848)
 kShootingMotorCurrentLimit = 80
 kAngleMotorCurrentLimit = 80
 
-kShooterSubwooferAngle = Rotation2d(1)
+kShooterSubwooferAngle = Rotation2d(0.9)
 kShooterSubwooferSpeed = 3000  # NEEDS UPDATE
 
 kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
@@ -977,7 +977,7 @@ kNoteTrajectoryTimeInterval = 0.15
 kShooterWheelRadius = kShooterWheelDiameter / 2
 kShooterMovingIterations = 5
 
-kAlignAnglePGain = 1
+kAlignAnglePGain = 0.8
 kAlignAngleIGain = 0
 kAlignAngleDGain = 0.0
 
