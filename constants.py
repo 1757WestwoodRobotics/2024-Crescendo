@@ -902,7 +902,7 @@ kShooterCalcAngle = "shooter/calculated/angle"
 kShootingMotorFudgeAmount = 50
 
 # radians
-kShootingAngleFudgeAmount = 0.01
+kShootingAngleFudgeAmount = 0.005
 # Elevator constants, replace values
 
 kElevator1CANID = 55
@@ -1015,3 +1015,8 @@ kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
 kAutoNotePickupPGain = 0.001
 kAutoNotePickupIGain = 0
 kAutoNotePickupDGain = 0
+
+kSpeakerDistanceKey = "SpeakerDistance"
+
+# NEEDS TEST DATA
+kShooterAngleAdjustmentMappingFunction = lambda x: 0

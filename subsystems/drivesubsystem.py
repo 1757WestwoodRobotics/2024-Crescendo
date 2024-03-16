@@ -16,7 +16,7 @@ from wpilib import (
     DriverStation,
 )
 
-from wpimath.geometry import Pose2d, Rotation2d, Translation2d
+from wpimath.geometry import Pose2d, Rotation2d, Translation2d, Transform3d, Pose3d
 from wpimath.filter import SlewRateLimiter
 from wpimath.kinematics import (
     ChassisSpeeds,
@@ -557,6 +557,22 @@ class DriveSubsystem(Subsystem):
 
         self.visionEstimate = self.estimator.getEstimatedPosition()
 
+        # I swear there's an easier way to do this but I couldn't figure it out
+        speakerDistance = (
+            Transform3d(Pose3d(), convenientmath.pose3dFrom2d(robotPose))
+            .translation()
+            .distance(
+                Transform3d(
+                    Pose3d(),
+                    (
+                        constants.kSpeakerCenterBlue
+                        if DriverStation.getAlliance() == DriverStation.Alliance.kBlue
+                        else constants.kSpeakerCenterRed
+                    ),
+                ).translation()
+            )
+        )
+        SmartDashboard.putNumber(constants.kSpeakerDistanceKey, speakerDistance)
         SmartDashboard.putBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
         )

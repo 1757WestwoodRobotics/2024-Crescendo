@@ -139,13 +139,21 @@ class ShooterSubsystem(Subsystem):
         )
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
-        self.targetAngle = Rotation2d(
-            clamp(
-                angle.radians(),
-                constants.kShooterMinAngle.radians(),
-                constants.kShooterMaxAngle.radians(),
+        self.targetAngle = (
+            Rotation2d(
+                clamp(
+                    angle.radians(),
+                    constants.kShooterMinAngle.radians(),
+                    constants.kShooterMaxAngle.radians(),
+                )
             )
-        ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
+            + Rotation2d(
+                constants.kShooterAngleAdjustmentMappingFunction(
+                    SmartDashboard.getNumber(constants.kSpeakerDistanceKey, 0)
+                )
+            )
+            + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
+        )
 
         if (
             SmartDashboard.getBoolean(constants.kIntakeAtPositionKey, False)
