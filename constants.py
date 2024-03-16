@@ -793,6 +793,9 @@ kIntakeHoldSetKey = "intake/debug/holdSet"
 kIntakePutInPlaceKey = "intake/debug/putInPlace"
 kIntakeSubsystemKey = "intake/subsystem"
 
+kIntakeIntakingVoltage = "intake/intakingVoltage"
+kIntakeFineVoltage = "intake/fineVoltage"
+
 # relative to horizontal
 kHandoffAngle = Rotation2d.fromDegrees(-4.3)  # we should change this bc it's too far
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
@@ -805,7 +808,7 @@ kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
-kIntakePercentageVoltage = 0.1
+kIntakePercentageVoltage = 0.15
 kIntakeFineControlVoltage = 0.07
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = -0.75

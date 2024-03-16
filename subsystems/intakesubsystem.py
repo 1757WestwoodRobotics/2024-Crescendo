@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from commands2 import Subsystem
 from wpilib import SmartDashboard, DriverStation, RobotBase
+from wpilib._wpilib import Preferences
 from wpimath.geometry import Rotation2d
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
@@ -71,6 +72,13 @@ class IntakeSubsystem(Subsystem):
         self.shooterPosition = 0
         self.overrideIntake = False
 
+        Preferences.initDouble(
+            constants.kIntakeIntakingVoltage, constants.kIntakePercentageVoltage
+        )
+        Preferences.initDouble(
+            constants.kIntakeFineVoltage, constants.kIntakeFineControlVoltage
+        )
+
     def resetPivot(self) -> None:
         pivotMotorPosition = (
             self.pivotEncoder.getPosition().radians()
@@ -86,7 +94,7 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, constants.kIntakeFineControlVoltage
+                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeFineVoltage,constants.kIntakeFineControlVoltage)
             )
         elif not frontLimitState and backLimitState:
             self.heldPosition = (
@@ -97,7 +105,7 @@ class IntakeSubsystem(Subsystem):
             self.putInPlace = True
         else:
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
+                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeIntakingVoltage)
             )
 
     def holdingState(self, frontLimitState: bool, backLimitState: bool) -> None:
@@ -112,7 +120,7 @@ class IntakeSubsystem(Subsystem):
                 if backLimitState:
                     self.intakeMotor.set(
                         NEOBrushless.ControlMode.Percent,
-                        -constants.kIntakeFineControlVoltage,
+                        -Preferences.getDouble(constants.kIntakeFineVoltage,constants.kIntakeFineControlVoltage),
                     )
                     self.holdSet = False
                 else:
@@ -172,7 +180,7 @@ class IntakeSubsystem(Subsystem):
             #         NEOBrushless.LimitSwitch.Forwards, False
             #     )
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
+                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeIntakingVoltage)
             )
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
@@ -189,7 +197,7 @@ class IntakeSubsystem(Subsystem):
         elif self.state == self.IntakeState.Feeding:
             self.setPivotAngle(constants.kHandoffAngle)
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, constants.kIntakePercentageVoltage
+                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeIntakingVoltage)
             )
 
         elif self.state == self.IntakeState.Staging:
@@ -204,7 +212,7 @@ class IntakeSubsystem(Subsystem):
             ):
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Percent,
-                    -constants.kIntakePercentageVoltage,
+                    -Preferences.getDouble(constants.kIntakeIntakingVoltage),
                 )
             else:
                 self.intakeMotor.set(
@@ -221,14 +229,14 @@ class IntakeSubsystem(Subsystem):
             )
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent,
-                -constants.kIntakePercentageVoltage,
+                -Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
 
         elif self.state == self.IntakeState.Ejecting:
             self.setPivotAngle(constants.kFloorPositionAngle)
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent,
-                -constants.kIntakePercentageVoltage,
+                -Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
 
         if RobotBase.isSimulation():
