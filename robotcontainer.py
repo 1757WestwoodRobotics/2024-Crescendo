@@ -35,7 +35,7 @@ from commands.intakecommands import (
     ScoreTrap,
     DynamicScore,
 )
-
+from commands.elevatormanualmode import AscendElevator, DescendElevator
 # from commands.velocitysetpoint import VelocitySetpoint
 
 from subsystems.drivesubsystem import DriveSubsystem
@@ -222,6 +222,8 @@ class RobotContainer:
         ModifiableJoystickButton(self.operatorInterface.shooterPivotDown).onTrue(
             DecreaseShooterAngle(self.shooter)
         )
+        ModifiableJoystickButton(self.operatorInterface.elevatorJogUp).whileTrue(AscendElevator(self.elevator))
+        ModifiableJoystickButton(self.operatorInterface.elevatorJogDown).whileTrue(DescendElevator(self.elevator))
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
