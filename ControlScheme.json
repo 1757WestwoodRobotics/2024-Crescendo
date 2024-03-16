@@ -184,21 +184,28 @@
   "shooterRightSpeedIncrease": [
     1,
     {
-      "Button": 0
+      "Button": 1
     },
     "buttonbox"
   ],
   "shooterRightSpeedDecrease": [
     1,
     {
-      "Button": 5
+      "Button": 6
     },
     "buttonbox"
   ],
   "shooterLeftSpeedIncrease": [
     1,
     {
-      "Button": 1
+      "Button": 0
+    },
+    "buttonbox"
+  ],
+  "shooterLeftSpeedDecrease": [
+    1,
+    {
+      "Button": 5
     },
     "buttonbox"
   ],
