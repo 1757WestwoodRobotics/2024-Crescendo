@@ -18,9 +18,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Source to piece 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
           }
         },
         {
@@ -36,9 +48,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "source zone scorable to piece 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
           }
         },
         {

@@ -18,9 +18,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Center Leave wing 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
           }
         },
         {
