@@ -11,7 +11,7 @@ class AscendElevator(Command):
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.elevator = elevatorSubsystem
-        self.addRequirements([self.elevator])
+        self.addRequirements(self.elevator)
 
     def execute(self) -> None:
         self.elevator.setManualControl()
@@ -33,7 +33,7 @@ class DescendElevator(Command):
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.elevator = elevatorSubsystem
-        self.addRequirements([self.elevator])
+        self.addRequirements(self.elevator)
 
     def execute(self) -> None:
         self.elevator.setManualControl()
