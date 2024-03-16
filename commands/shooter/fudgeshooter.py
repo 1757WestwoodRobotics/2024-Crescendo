@@ -10,7 +10,6 @@ class FudgeShooter(Command):
         Command.__init__(self)
         self.setName(__class__.__name__)
         self.shooter = shooter
-        self.addRequirements(self.shooter)
 
     def initialize(self) -> None:
         print(f"Command: {self.getName()}")
