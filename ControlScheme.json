@@ -139,6 +139,13 @@
     },
     "Throttle middle rocker down"
   ],
+  "prepShotPass": [
+    2,
+    {
+      "Button": 9
+    },
+    "Throttle thumb thing down"
+  ],
   "elevatorClimbUp": [
     1,
     {

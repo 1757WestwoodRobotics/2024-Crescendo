@@ -20,8 +20,12 @@ from commands.defensestate import DefenseState
 from commands.shooter.shootermanualmode import ResetShooter, ShooterManualMode
 from commands.shooter.alignandaim import AlignAndAim
 from commands.drive.drivewaypoint import DriveWaypoint
-from commands.shooter.shooterfixedshots import PodiumShot, SafetyPosition, SubwooferShot
-from commands.elevatorsetting import ElevatorBottomPosition
+from commands.shooter.shooterfixedshots import (
+    PodiumShot,
+    SafetyPosition,
+    SubwooferShot,
+    PassShot,
+)
 from commands.shooter.fudgeshooter import DecreaseShooterAngle, IncreaseShooterAngle
 from commands.intakecommands import (
     GroundIntake,
@@ -91,9 +95,7 @@ class RobotContainer:
         NamedCommands.registerCommand(
             "aimAndFire", AimAndFire(self.shooter, self.drive, self.intake)
         )
-        NamedCommands.registerCommand(
-            "intake", IntakeAuto(self.intake, self.shooter)
-        )
+        NamedCommands.registerCommand("intake", IntakeAuto(self.intake, self.shooter))
         NamedCommands.registerCommand(
             "holding", DefaultIntake(self.elevator, self.intake)
         )
@@ -211,7 +213,9 @@ class RobotContainer:
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
         )
-
+        ModifiableJoystickButton(self.operatorInterface.prepShotPass).whileTrue(
+            PassShot(self.shooter)
+        )
         ModifiableJoystickButton(self.operatorInterface.shooterPivotUp).onTrue(
             IncreaseShooterAngle(self.shooter)
         )

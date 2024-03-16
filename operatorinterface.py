@@ -201,6 +201,7 @@ class OperatorInterface:
         self.prepShotDynamic = getButtonBindingOfName("prepShotDynamic")
         self.prepShotSubwoofer = getButtonBindingOfName("prepShotSubwoofer")
         self.prepShotPodium = getButtonBindingOfName("prepShotPodium")
+        self.prepShotPass = getButtonBindingOfName("prepShotPass")
 
         # elevator related
         self.elevatorClimb = getButtonBindingOfName("elevatorClimbUp")
