@@ -147,11 +147,6 @@ class ShooterSubsystem(Subsystem):
                     constants.kShooterMaxAngle.radians(),
                 )
             )
-            + Rotation2d(
-                constants.kShooterAngleAdjustmentMappingFunction(
-                    SmartDashboard.getNumber(constants.kSpeakerDistanceKey, 0)
-                )
-            )
             + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
         )
 

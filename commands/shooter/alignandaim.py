@@ -91,9 +91,10 @@ class AlignAndAim(Command):
         vx = distanceToTarget / airtime
 
         launchAngle = atan2(vy, vx)  # radians
+        angleAdjust = constants.kShooterAngleAdjustmentMappingFunction(distanceToTarget)
         launch_vel = sqrt(vx**2 + vy**2)  # m/s
 
-        return airtime, launch_vel, Rotation2d(launchAngle), angleToTarget
+        return airtime, launch_vel, Rotation2d(launchAngle + angleAdjust), angleToTarget
 
     def execute(self):
         botPose = self.drive.getPose()
