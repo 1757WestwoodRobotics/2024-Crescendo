@@ -1,6 +1,6 @@
 import math
 from commands2 import Subsystem
-from wpilib import SmartDashboard, Timer
+from wpilib import SmartDashboard, Timer, RobotBase
 from wpimath.controller import SimpleMotorFeedforwardMeters, ArmFeedforward
 from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d
 from phoenix6.configs import CurrentLimitsConfigs
@@ -326,7 +326,7 @@ class ShooterSubsystem(Subsystem):
         # logging
         if not SmartDashboard.getBoolean(constants.kShooterManualModeKey, False):
             SmartDashboard.putNumber(
-                constants.kShooterAngleKey, self.getShooterAngleAbsolute().radians()
+                constants.kShooterAngleKey, self.getShooterAngleAbsolute().radians() if RobotBase.isReal() else self.getShooterAngle()
             )
             SmartDashboard.putNumber(
                 constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()
