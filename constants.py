@@ -928,8 +928,10 @@ kElevator2Inverted = False
 
 kElevatorTolerance = 0.05  # meters
 
+
 kElevatorPositionKey = "elevator/position"
 kElevatorStateKey = "elevator/state"
+kElevatorAtPositionKey = "elevator/atPosition"
 
 kElevatorPoseArrayKey = "elevator/pose"
 
