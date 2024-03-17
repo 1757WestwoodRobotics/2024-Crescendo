@@ -1,5 +1,6 @@
 from math import tau, floor
 from wpimath.geometry import Rotation2d
+import constants
 
 
 def optimizeAngle(currentAngle: Rotation2d, targetAngle: Rotation2d) -> Rotation2d:
@@ -23,3 +24,10 @@ def optimizeAngle(currentAngle: Rotation2d, targetAngle: Rotation2d) -> Rotation
             deltaAngle = potentialAngle
 
     return Rotation2d(deltaAngle + currentAngle)
+
+def intakeAccountForSillyEncoder(startupPosition: float):
+    if startupPosition < constants.kIntakeRealZero:
+        realPosition = tau + startupPosition
+    else:
+        realPosition = startupPosition
+    return realPosition

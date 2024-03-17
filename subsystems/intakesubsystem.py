@@ -6,6 +6,7 @@ from wpimath.geometry import Rotation2d
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
+from util.angleoptimize import intakeAccountForSillyEncoder
 import constants
 
 
@@ -51,12 +52,7 @@ class IntakeSubsystem(Subsystem):
 
         # pivot motor spins 60 times per arm revolution
         # use absolute encoder to determine motor position
-        pivotMotorPosition = (
-            self.pivotEncoder.getPosition().radians()
-            / constants.kRadiansPerRevolution
-            * constants.kPivotGearRatio
-        )
-        self.pivotMotor.setEncoderPosition(pivotMotorPosition)
+        self.resetPivot()
 
         self.state = self.IntakeState.Holding
 
@@ -80,8 +76,9 @@ class IntakeSubsystem(Subsystem):
         )
 
     def resetPivot(self) -> None:
+        encoderInRadians = intakeAccountForSillyEncoder(self.pivotEncoder.getPosition().radians())
         pivotMotorPosition = (
-            self.pivotEncoder.getPosition().radians()
+            encoderInRadians
             / constants.kRadiansPerRevolution
             * constants.kPivotGearRatio
         )
@@ -243,7 +240,7 @@ class IntakeSubsystem(Subsystem):
             SmartDashboard.putNumber(constants.kPivotAngleKey, self.getPivotAngle())
         else:
             SmartDashboard.putNumber(
-                constants.kPivotAngleKey, self.pivotEncoder.getPosition().radians()
+                constants.kPivotAngleKey, intakeAccountForSillyEncoder(self.pivotEncoder.getPosition().radians())
             )
         SmartDashboard.putNumber(
             constants.kIntakeSpeedKey,

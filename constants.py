@@ -630,7 +630,7 @@ kDriveToTargetAngularVelocityTolerance = 5 * kRadiansPerDegree / 1
 """radians / second"""
 
 # Trajectory Following
-kTrajectoryPositionPGain = 8
+kTrajectoryPositionPGain = 4
 kTrajectoryPositionIGain = 0
 kTrajectoryPositionDGain = 0
 
@@ -1029,3 +1029,5 @@ kSpeakerDistanceKey = "SpeakerDistance"
 
 # NEEDS TEST DATA
 kShooterAngleAdjustmentMappingFunction = lambda x: 0
+
+kIntakeRealZero = -.14
