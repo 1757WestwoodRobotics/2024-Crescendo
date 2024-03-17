@@ -979,23 +979,28 @@ kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
 # Climber stuff
 kClimberCANID = 58
 kClimberPIDSlot = 0
-kClimberPGain = 0
+kClimberPGain = 0.3
 kClimberIGain = 0
 kClimberDGain = 0
 kClimberInverted = False
 kClimberName = "Climber Motor"
 
-kClimberRetractTime = 0
-"""seconds"""
-
-kClimberExtensionTIme = 0
-"""seconds"""
-
 kClimberMotorPercent = 0
 
-kClimberGearRatio = 0
+kClimberGearRatio = (5 / 1) * (3 / 1) * (44 / 28)
 
 kClimberStateKey = "climber/state"
+
+kClimbingTopHeight = 26.5 * kMetersPerInch
+kClimbingRetractedHeight = 4.75 * kMetersPerInch
+kClimberHeightOffset = 4.75 * kMetersPerInch
+
+kProfiledControllerPGain = 0.9
+kProfiledControllerIGain = 0.0
+kProfiledControllerDGain = 0.0
+
+kProfiledMaxVelocity = 0.5 * kMetersPerFoot  # m / s
+kProfiledMaxAccleration = 0.5 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr
 kClimberHeightKey = "climber/ClimberHeight"
@@ -1006,12 +1011,12 @@ kClimberCurrentLimit = (
     .with_stator_current_limit_enable(True)
     .with_supply_current_limit(35)
     .with_supply_current_limit_enable(True)
-) # copied from drive current limits cuz temp
+)  # copied from drive current limits cuz temp
 kRobotToClimberTransform = Transform3d(
-    0 * kMetersPerInch,
-    0 * kMetersPerInch,
-    0 * kMetersPerInch,
+    -12.375 * kMetersPerInch,
+    -0.138 * kMetersPerInch,
+    8.5 * kMetersPerInch,
     Rotation3d(0, 0, math.pi),
 )
 
-kClimberWinchRadius = 0.03 # get actual value ltr
+kClimberWinchRadius = 0.787402 / 2  # get actual value ltr

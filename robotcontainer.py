@@ -8,6 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
+from commands.climber import NeutralClimberState
 
 import constants
 
@@ -123,6 +124,7 @@ class RobotContainer:
         self.intake.setDefaultCommand(DefaultIntake(self.elevator, self.intake))
         self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
         self.elevator.setDefaultCommand(ElevatorBottomPosition(self.elevator))
+        self.climber.setDefaultCommand(NeutralClimberState(self.climber))
 
         wpilib.DataLogManager.start()
         wpilib.DataLogManager.logNetworkTables(True)
