@@ -1,4 +1,5 @@
 from commands2 import Command
+from wpilib._wpilib import DataLogManager
 from wpimath.trajectory import TrapezoidProfile
 from wpimath.controller import ProfiledPIDController
 from subsystems.climbersubsystem import ClimberSubsystem
@@ -14,7 +15,7 @@ class SetClimberState(Command):
         self.setName(__class__.__name__)
         self.climber = climberSubsystem
         self.elevator = elevator
-        self.addRequirements(self.climber)
+        self.addRequirements(self.climber, self.elevator)
 
     def execute(self) -> None:
         raise NotImplementedError("Must be implemented by subclass")
@@ -46,6 +47,7 @@ class ExtendClimberPosition(SetClimberState):
             self.targetPosition, constants.kClimbingTopHeight
         )
         self.climber.setClimberTargetPosition(self.targetPosition)
+        self.elevator.setTargetPosition(self.targetPosition)
 
 
 class RetractClimberPosition(SetClimberState):

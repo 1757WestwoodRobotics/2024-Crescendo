@@ -8,7 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
-from commands.climber import NeutralClimberState
+from commands.climber import ExtendClimberPosition, NeutralClimberState, RetractClimberPosition
 
 import constants
 
@@ -183,10 +183,6 @@ class RobotContainer:
             PrepareAmp(self.elevator, self.intake)
         )
 
-        ModifiableJoystickButton(self.operatorInterface.trapPrep).whileTrue(
-            PrepareTrap(self.elevator, self.intake)
-        )
-
         ModifiableJoystickButton(self.operatorInterface.trapScore).whileTrue(
             ScoreTrap(self.elevator, self.intake)
         )
@@ -209,6 +205,13 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.elevatorClimb).onTrue(
+            PrepareTrap(self.elevator, self.intake, self.climber)
+        )
+        ModifiableJoystickButton(self.operatorInterface.elevatorClimbSlowDown).onTrue(
+            RetractClimberPosition(self.climber,self.elevator)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(

@@ -40,12 +40,17 @@ class ClimberSubsystem(Subsystem):
             * constants.kClimberWinchRadius
         )
         SmartDashboard.putNumber(constants.kClimberHeightKey, climberHeight)
+        SmartDashboard.putNumber(constants.kClimberTargetKey, self.targetPosition)
 
         if self.state == self.ClimberState.ClimberMoving:
-            self.climberMotor.set(Talon.ControlMode.Position, self.targetPosition)
+            self.climberMotor.set(
+                Talon.ControlMode.Position,
+                self.targetPosition
+                * constants.kClimberGearRatio
+                / (2 * pi * constants.kClimberWinchRadius),
+            )
         elif self.state == self.ClimberState.ClimberNeutral:
             self.climberMotor.neutralOutput()
-
 
     def setClimberTargetPosition(self, target: float) -> None:
         self.state = self.ClimberState.ClimberMoving

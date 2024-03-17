@@ -979,7 +979,7 @@ kWaypointsRed = [kAmpWaypointRed, kSpeakerWaypointRed, kSourceWaypointRed]
 # Climber stuff
 kClimberCANID = 58
 kClimberPIDSlot = 0
-kClimberPGain = 0.3
+kClimberPGain = 0.1
 kClimberIGain = 0
 kClimberDGain = 0
 kClimberInverted = False
@@ -995,7 +995,7 @@ kClimbingTopHeight = 26.5 * kMetersPerInch
 kClimbingRetractedHeight = 4.75 * kMetersPerInch
 kClimberHeightOffset = 4.75 * kMetersPerInch
 
-kProfiledControllerPGain = 0.9
+kProfiledControllerPGain = 0.6
 kProfiledControllerIGain = 0.0
 kProfiledControllerDGain = 0.0
 
@@ -1004,6 +1004,7 @@ kProfiledMaxAccleration = 0.5 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr
 kClimberHeightKey = "climber/ClimberHeight"
+kClimberTargetKey = "climber/ClimberTarget"
 kClimberPositionKey = "climber/ClimberPosition"
 kClimberCurrentLimit = (
     CurrentLimitsConfigs()
@@ -1019,4 +1020,4 @@ kRobotToClimberTransform = Transform3d(
     Rotation3d(0, 0, math.pi),
 )
 
-kClimberWinchRadius = 0.787402 / 2  # get actual value ltr
+kClimberWinchRadius = 0.787402 / 2  * kMetersPerInch# get actual value ltr
