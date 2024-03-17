@@ -99,6 +99,8 @@ class RobotContainer:
         NamedCommands.registerCommand(
             "holding", DefaultIntake(self.elevator, self.intake)
         )
+        NamedCommands.registerCommand("resetDrive", ResetDrive(self.drive))
+
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
         for file in os.listdir(pathsPath):
