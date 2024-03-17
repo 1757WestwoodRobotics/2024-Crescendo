@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ae46ce9831c2eb577fe7b9936b53c8469d3b1bfa87fad360416f371ce958d9c5"
+            "sha256": "f542ebd053ca7f4bdcbd3151de616bd3cb84cf36ff002697c569dbfbf9313cfc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -275,11 +275,11 @@
         },
         "photonlibpy": {
             "hashes": [
-                "sha256:114cebffdcb66030166a1c3f28d01e7f1fb586cfc540114f11aa5e76f0b21c59",
-                "sha256:3e64ada178a544bfa3f286bc06aa11d1b65c49bfaa3932a1e8816238c4988b39"
+                "sha256:c4bbde703ab7f25197d3f5adbf2dbbdb26b04dc84fceb5ecc5f9c45265856572",
+                "sha256:dec311db93ca9946da0c14f25ace666c492ca0c6b20b18dbd79343499b2ea75c"
             ],
             "index": "pypi",
-            "version": "==2024.2.10"
+            "version": "==2024.2.9"
         },
         "pint": {
             "hashes": [
