@@ -6,10 +6,11 @@ name = "pypi"
 [packages]
 black = "*"
 pylint = "*"
-photonlibpy = "2024.2.4"
+photonlibpy = "2024.2.10"
 robotpy-cli = "*"
-robotpy = {extras = ["all"], version = "==2024.3.1.0"}
+robotpy = {extras = ["all"], version = "==2024.3.2.1"}
 dill = "*"
+wpilib = "==2024.3.2.0"
 
 [dev-packages]
 
