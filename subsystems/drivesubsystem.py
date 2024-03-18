@@ -357,7 +357,7 @@ class DriveSubsystem(Subsystem):
 
         AutoBuilder.configureHolonomic(
             self.getPose,
-            self.resetGyro,
+            self.resetDriveAtPosition,
             self.getRobotRelativeSpeeds,
             partial(
                 self.arcadeDriveWithSpeeds,
@@ -367,6 +367,10 @@ class DriveSubsystem(Subsystem):
             (lambda: DriverStation.getAlliance() == DriverStation.Alliance.kRed),
             self,
         )
+
+    def resetDriveAtPosition(self, pose: Pose2d):
+        self.resetSwerveModules()
+        self.resetGyro(pose)
 
     def getRobotRelativeSpeeds(self):
         return self.kinematics.toChassisSpeeds(self.getModuleStates())
@@ -395,8 +399,8 @@ class DriveSubsystem(Subsystem):
         self.rotationOffset = pose.rotation().degrees()
         self.resetOdometryAtPosition(pose)
 
-        if RobotBase.isSimulation():
-            self.resetSimPosition(pose)
+        # if RobotBase.isSimulation():
+        #     self.resetSimPosition(pose)
 
     def getPose(self) -> Pose2d:
         translation = self.estimator.getEstimatedPosition().translation()

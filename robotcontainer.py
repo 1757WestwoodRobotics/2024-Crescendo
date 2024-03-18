@@ -36,6 +36,7 @@ from commands.intakecommands import (
     DynamicScore,
 )
 from commands.elevatormanualmode import AscendElevator, DescendElevator
+
 # from commands.velocitysetpoint import VelocitySetpoint
 
 from subsystems.drivesubsystem import DriveSubsystem
@@ -99,8 +100,6 @@ class RobotContainer:
         NamedCommands.registerCommand(
             "holding", DefaultIntake(self.elevator, self.intake)
         )
-        NamedCommands.registerCommand("resetDrive", ResetDrive(self.drive))
-
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")
         for file in os.listdir(pathsPath):
@@ -224,8 +223,12 @@ class RobotContainer:
         ModifiableJoystickButton(self.operatorInterface.shooterPivotDown).onTrue(
             DecreaseShooterAngle(self.shooter)
         )
-        ModifiableJoystickButton(self.operatorInterface.elevatorJogUp).whileTrue(AscendElevator(self.elevator))
-        ModifiableJoystickButton(self.operatorInterface.elevatorJogDown).whileTrue(DescendElevator(self.elevator))
+        ModifiableJoystickButton(self.operatorInterface.elevatorJogUp).whileTrue(
+            AscendElevator(self.elevator)
+        )
+        ModifiableJoystickButton(self.operatorInterface.elevatorJogDown).whileTrue(
+            DescendElevator(self.elevator)
+        )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
         #     VelocitySetpoint(self.velocity, VelocityControl.ControlState.Off)
