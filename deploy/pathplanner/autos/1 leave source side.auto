@@ -14,13 +14,32 @@
         {
           "type": "named",
           "data": {
+            "name": "holding"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "aimAndFire"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Source to piece 5"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source to piece 5"
+                }
+              }
+            ]
           }
         }
       ]

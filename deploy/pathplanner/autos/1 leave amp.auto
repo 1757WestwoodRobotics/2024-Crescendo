@@ -14,24 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "amp side start to wing 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "holding"
           }
         },
@@ -39,6 +21,44 @@
           "type": "named",
           "data": {
             "name": "aimAndFire"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "amp side start to wing 1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "holding"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "aimAndFire"
+                }
+              }
+            ]
           }
         }
       ]

@@ -14,19 +14,32 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndFire"
+            "name": "holding"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "aimAndFire"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center Leave wing 2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Leave wing 2"
+                }
+              }
+            ]
           }
         },
         {
@@ -42,15 +55,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "wing2 to wing1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "wing2 to wing1"
+                }
+              }
+            ]
           }
         },
         {
