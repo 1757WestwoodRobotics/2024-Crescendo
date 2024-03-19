@@ -70,6 +70,7 @@ class ShooterSubsystem(Subsystem):
             moMagicAccel=constants.kAngleMotorAccel,
             moMagicVel=constants.kAngleMotorVel,
         )
+        self.angleMotor.setNeutralMode(Talon.NeutralMode.Brake)
         self.leftShootingMotor = NEOBrushless(
             constants.kLeftShootingMotorCANId,
             constants.kLeftShootingMotorName,

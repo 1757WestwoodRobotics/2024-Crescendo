@@ -38,6 +38,8 @@ class ElevatorSubsystem(Subsystem):
             constants.kElevator2DGain,
             constants.kElevator2Inverted,
         )
+        self.elevatorMotor1.setNeutralMode(Talon.NeutralMode.Brake)
+        self.elevatorMotor2.setNeutralMode(Talon.NeutralMode.Brake)
 
         self.elevatorMotor2.follow(self.elevatorMotor1, True)
         self.targetPosition = 0

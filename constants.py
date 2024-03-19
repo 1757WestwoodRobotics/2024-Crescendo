@@ -1028,6 +1028,8 @@ kAutoNotePickupDGain = 0
 kSpeakerDistanceKey = "SpeakerDistance"
 
 # NEEDS TEST DATA
-kShooterAngleAdjustmentMappingFunction = lambda x: 0
+kShooterAngleAdjustmentMappingFunction = (
+    lambda x: -0.43 + 0.435 * x + -0.152 * x * x + 0.0184 * x * x * x
+)
 
 kIntakeRealZero = -0.14
