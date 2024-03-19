@@ -94,13 +94,19 @@ class VisionSubsystemReal(Subsystem):
         if noteResult.hasTargets():
             notes = noteResult.getTargets()
             notePositions = [
-               (Pose3d(robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2]))
-                + constants.kRobotToNoteCameraTransform
-                + VisionSubsystemReal.getCameraToNote(self, note)).toPose2d()
+                (
+                    Pose3d(
+                        robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2])
+                    )
+                    + constants.kRobotToNoteCameraTransform
+                    + VisionSubsystemReal.getCameraToNote(self, note)
+                ).toPose2d()
                 for note in notes
             ]
             closestNote = Pose2d(*robotPose).nearest(notePositions)
-            intakePickupPosition = Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
+            intakePickupPosition = (
+                Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
+            )
 
             # angle robot needs to rotate by to pick up note by driving forward
             self.dRobotAngle = (

@@ -70,7 +70,9 @@ class StageIntake(SetIntakeState):
         self.intake.setStaging()
 
     def isFinished(self) -> bool:
-        return self.intake.intakeAtPosition() and self.t.get() > 0.1 # allow debounce time
+        return (
+            self.intake.intakeAtPosition() and self.t.get() > 0.1
+        )  # allow debounce time
 
 
 class EjectInAmp(SetIntakeState):

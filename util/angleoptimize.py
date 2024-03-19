@@ -25,6 +25,7 @@ def optimizeAngle(currentAngle: Rotation2d, targetAngle: Rotation2d) -> Rotation
 
     return Rotation2d(deltaAngle + currentAngle)
 
+
 def intakeAccountForSillyEncoder(startupPosition: float):
     if startupPosition < constants.kIntakeRealZero:
         realPosition = tau + startupPosition

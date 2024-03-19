@@ -1,5 +1,4 @@
 from commands2 import ParallelCommandGroup, Command, SequentialCommandGroup
-from commands2.waitcommand import WaitCommand
 from wpilib import SmartDashboard
 
 from commands.elevatorsetting import (

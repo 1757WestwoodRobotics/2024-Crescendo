@@ -870,7 +870,7 @@ kRightShootingMotorTargetKey = "shooter/rightTarget"
 kShooterPivotTargetKey = "shooter/pivotTarget"
 kShooterSubsystemKey = "shooter/subsystem"
 
-kShooterAngleTolerance = Rotation2d(.05)
+kShooterAngleTolerance = Rotation2d(0.05)
 # in RPM
 kShooterSpeedTolerance = 100
 
@@ -1030,4 +1030,4 @@ kSpeakerDistanceKey = "SpeakerDistance"
 # NEEDS TEST DATA
 kShooterAngleAdjustmentMappingFunction = lambda x: 0
 
-kIntakeRealZero = -.14
+kIntakeRealZero = -0.14

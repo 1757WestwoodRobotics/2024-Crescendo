@@ -94,7 +94,13 @@ class AlignAndAim(Command):
         angleAdjust = constants.kShooterAngleAdjustmentMappingFunction(distanceToTarget)
         launch_vel = sqrt(vx**2 + vy**2)  # m/s
 
-        return airtime, launch_vel, Rotation2d(launchAngle + angleAdjust), angleToTarget, distanceToTarget
+        return (
+            airtime,
+            launch_vel,
+            Rotation2d(launchAngle + angleAdjust),
+            angleToTarget,
+            distanceToTarget,
+        )
 
     def execute(self):
         botPose = self.drive.getPose()
@@ -109,7 +115,9 @@ class AlignAndAim(Command):
         for _ in range(
             constants.kShooterMovingIterations
         ):  # iterative solver for moving shot
-            time, velocity, psi, theta, distance = self.calculateTimeVelocityAngle(newTarget)
+            time, velocity, psi, theta, distance = self.calculateTimeVelocityAngle(
+                newTarget
+            )
 
             positionChange = Translation2d(
                 robotVelocity[0] * time, robotVelocity[1] * time
@@ -157,4 +165,8 @@ class AlignAndAim(Command):
             )
 
     def isFinished(self) -> bool:
-        return self.shooter.readyToShoot() and self.t.get() > 0.5 and self.thetaController.atGoal()
+        return (
+            self.shooter.readyToShoot()
+            and self.t.get() > 0.5
+            and self.thetaController.atGoal()
+        )

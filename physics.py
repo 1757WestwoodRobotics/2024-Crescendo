@@ -220,7 +220,10 @@ class NoteSim:
         # check whether intaking, update sensors according to position on field
 
         intaking = bot.container.intake.state == IntakeSubsystem.IntakeState.Intaking
-        holding = bot.container.intake.state == IntakeSubsystem.IntakeState.Holding or bot.container.intake.overrideIntake
+        holding = (
+            bot.container.intake.state == IntakeSubsystem.IntakeState.Holding
+            or bot.container.intake.overrideIntake
+        )
         atPose = bot.container.intake.intakeAtPosition()
 
         botPose = Pose2d(
@@ -358,7 +361,7 @@ class PhysicsEngine:
 
         self.driveSim = SwerveDriveSim(tuple(self.swerveModuleSims))
         self.noteSim = NoteSim()
-        
+
         driveSubsystem.resetSimPosition = self.driveSim.resetPose
 
         self.gyroSim = driveSubsystem.gyro.sim_state

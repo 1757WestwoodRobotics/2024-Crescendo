@@ -76,7 +76,9 @@ class IntakeSubsystem(Subsystem):
         )
 
     def resetPivot(self) -> None:
-        encoderInRadians = intakeAccountForSillyEncoder(self.pivotEncoder.getPosition().radians())
+        encoderInRadians = intakeAccountForSillyEncoder(
+            self.pivotEncoder.getPosition().radians()
+        )
         pivotMotorPosition = (
             encoderInRadians
             / constants.kRadiansPerRevolution
@@ -91,7 +93,10 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeFineVoltage,constants.kIntakeFineControlVoltage)
+                NEOBrushless.ControlMode.Percent,
+                Preferences.getDouble(
+                    constants.kIntakeFineVoltage, constants.kIntakeFineControlVoltage
+                ),
             )
         elif not frontLimitState and backLimitState:
             self.heldPosition = (
@@ -102,7 +107,8 @@ class IntakeSubsystem(Subsystem):
             self.putInPlace = True
         else:
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeIntakingVoltage)
+                NEOBrushless.ControlMode.Percent,
+                Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
 
     def holdingState(self, frontLimitState: bool, backLimitState: bool) -> None:
@@ -117,7 +123,10 @@ class IntakeSubsystem(Subsystem):
                 if backLimitState:
                     self.intakeMotor.set(
                         NEOBrushless.ControlMode.Percent,
-                        -Preferences.getDouble(constants.kIntakeFineVoltage,constants.kIntakeFineControlVoltage),
+                        -Preferences.getDouble(
+                            constants.kIntakeFineVoltage,
+                            constants.kIntakeFineControlVoltage,
+                        ),
                     )
                     self.holdSet = False
                 else:
@@ -177,7 +186,8 @@ class IntakeSubsystem(Subsystem):
             #         NEOBrushless.LimitSwitch.Forwards, False
             #     )
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeIntakingVoltage)
+                NEOBrushless.ControlMode.Percent,
+                Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
@@ -194,12 +204,15 @@ class IntakeSubsystem(Subsystem):
         elif self.state == self.IntakeState.Feeding:
             self.setPivotAngle(constants.kHandoffAngle)
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent, Preferences.getDouble(constants.kIntakeIntakingVoltage)
+                NEOBrushless.ControlMode.Percent,
+                Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
 
         elif self.state == self.IntakeState.Staging:
+            self.intakeMotor.set(
+                NEOBrushless.ControlMode.Position, self.shooterPosition
+            )
             self.setPivotAngle(constants.kStagingPositionAngle)
-            # self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
         elif self.state == self.IntakeState.Amp:
             self.setPivotAngle(constants.kStagingPositionAngle)
@@ -240,7 +253,8 @@ class IntakeSubsystem(Subsystem):
             SmartDashboard.putNumber(constants.kPivotAngleKey, self.getPivotAngle())
         else:
             SmartDashboard.putNumber(
-                constants.kPivotAngleKey, intakeAccountForSillyEncoder(self.pivotEncoder.getPosition().radians())
+                constants.kPivotAngleKey,
+                intakeAccountForSillyEncoder(self.pivotEncoder.getPosition().radians()),
             )
         SmartDashboard.putNumber(
             constants.kIntakeSpeedKey,

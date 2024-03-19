@@ -139,16 +139,13 @@ class ShooterSubsystem(Subsystem):
         )
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
-        self.targetAngle = (
-            Rotation2d(
-                clamp(
-                    angle.radians(),
-                    constants.kShooterMinAngle.radians(),
-                    constants.kShooterMaxAngle.radians(),
-                )
+        self.targetAngle = Rotation2d(
+            clamp(
+                angle.radians(),
+                constants.kShooterMinAngle.radians(),
+                constants.kShooterMaxAngle.radians(),
             )
-            + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
-        )
+        ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
 
         if (
             SmartDashboard.getBoolean(constants.kIntakeAtPositionKey, False)
@@ -219,7 +216,14 @@ class ShooterSubsystem(Subsystem):
 
     def angleOnTarget(self) -> bool:
         return (
-            abs(self.targetAngle.radians() - (self.getShooterAngleAbsolute().radians() if RobotBase.isReal() else self.getShooterAngle().radians()))
+            abs(
+                self.targetAngle.radians()
+                - (
+                    self.getShooterAngleAbsolute().radians()
+                    if RobotBase.isReal()
+                    else self.getShooterAngle().radians()
+                )
+            )
             < constants.kShooterAngleTolerance.radians()
         )
 
@@ -326,7 +330,12 @@ class ShooterSubsystem(Subsystem):
         # logging
         if not SmartDashboard.getBoolean(constants.kShooterManualModeKey, False):
             SmartDashboard.putNumber(
-                constants.kShooterAngleKey, (self.getShooterAngleAbsolute().radians() if RobotBase.isReal() else self.getShooterAngle().radians())
+                constants.kShooterAngleKey,
+                (
+                    self.getShooterAngleAbsolute().radians()
+                    if RobotBase.isReal()
+                    else self.getShooterAngle().radians()
+                ),
             )
             SmartDashboard.putNumber(
                 constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()
