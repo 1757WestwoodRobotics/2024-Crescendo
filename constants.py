@@ -987,7 +987,7 @@ kClimberName = "Climber Motor"
 
 kClimberMotorPercent = 0
 
-kClimberGearRatio = (5 / 1) * (3 / 1) * (44 / 28)
+kClimberGearRatio = (3 / 1) * (3 / 1) * (44 / 28)
 
 kClimberStateKey = "climber/state"
 
