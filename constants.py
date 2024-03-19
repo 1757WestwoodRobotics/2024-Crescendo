@@ -808,7 +808,7 @@ kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
 kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
-kIntakePercentageVoltage = 0.15
+kIntakePercentageVoltage = 0.5
 kIntakeFineControlVoltage = 0.07
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = -0.75
