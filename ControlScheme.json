@@ -114,7 +114,7 @@
   "trapPrep": [
     1,
     {
-      "Button": 10
+      "Button": 11
     },
     "Buttonbox"
   ],
@@ -149,21 +149,21 @@
   "elevatorClimbUp": [
     1,
     {
-      "Button": 12
+      "Button": 13
     },
     "Buttonbox"
   ],
   "elevatorClimbSlowDown": [
     1,
     {
-      "Button": 14
+      "Button": 15
     },
     "Buttonbox"
   ],
   "trapScore": [
     1,
     {
-      "Button": 16
+      "Button": 12
     },
     "Buttonbox"
   ],
@@ -191,70 +191,70 @@
   "shooterRightSpeedIncrease": [
     1,
     {
-      "Button": 1
+      "Button": 2
     },
     "buttonbox"
   ],
   "shooterRightSpeedDecrease": [
     1,
     {
-      "Button": 6
+      "Button": 7
     },
     "buttonbox"
   ],
   "shooterLeftSpeedIncrease": [
     1,
     {
-      "Button": 0
+      "Button": 1
     },
     "buttonbox"
   ],
   "shooterLeftSpeedDecrease": [
     1,
     {
-      "Button": 5
+      "Button": 6
     },
     "buttonbox"
   ],
   "elevatorJogUp": [
     1,
     {
-      "Button": 3
+      "Button": 4
     },
     "buttonbox"
   ],
   "elevatorJogDown": [
     1,
     {
-      "Button": 8
+      "Button": 9
     },
     "buttonbox"
   ],
   "intakePivotCWJog": [
     1,
     {
-      "Button": 4
+      "Button": 5
     },
     "buttonbox"
   ],
   "intakePivotCCWJog": [
     1,
     {
-      "Button": 9
+      "Button": 10
     },
     "buttonbox"
   ],
   "shooterPivotUpJog": [
     1,
     {
-      "Button": 2
+      "Button": 3
     },
     "buttonbox"
   ],
   "shooterPivotDownJog": [
     1,
     {
-      "Button": 7
+      "Button": 8
     },
     "buttonbox"
   ]
