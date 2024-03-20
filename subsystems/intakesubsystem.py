@@ -117,7 +117,9 @@ class IntakeSubsystem(Subsystem):
             if self.intakeAtPosition():
                 self.canMoveNote = True
             else:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
                 self.canMoveNote = False
 
             if self.hasPosition and self.canMoveNote:
@@ -210,9 +212,7 @@ class IntakeSubsystem(Subsystem):
             )
 
         elif self.state == self.IntakeState.Staging:
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Position, self.heldPosition
-            )
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             self.setPivotAngle(constants.kStagingPositionAngle)
 
         elif self.state == self.IntakeState.Amp:

@@ -390,8 +390,8 @@ class PhysicsEngine:
             constants.kSimulationRotationalInertia,
         )
         self.motorsim.addFalcon(
-            robot.container.climber.climberMotor, 
-            1, 
+            robot.container.climber.climberMotor,
+            1,
             constants.kSimulationRotationalInertia,
         )
 
