@@ -232,16 +232,12 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Trap:
             # move with timeout
-            self.pivotMotor.motor.set_position(
-                constants.kTrapPositionAngle.radians()
-                / constants.kRadiansPerRevolution
-                * constants.kPivotGearRatio,
-                1,
-            )
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent,
-                -Preferences.getDouble(constants.kIntakeIntakingVoltage),
-            )
+            self.setPivotAngle(constants.kTrapPositionAngle)
+            if self.intakeAtPosition():
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent,
+                    -Preferences.getDouble(constants.kIntakeIntakingVoltage),
+                )
 
         elif self.state == self.IntakeState.Ejecting:
             self.setPivotAngle(constants.kFloorPositionAngle)
