@@ -2,6 +2,8 @@ from commands2 import Command
 from wpilib import Timer
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 
+import constants
+
 
 class SetElevatorState(Command):
     def __init__(self, elevatorSubsystem: ElevatorSubsystem) -> None:
@@ -43,7 +45,7 @@ class ElevatorTopPosition(SetElevatorState):
         SetElevatorState.__init__(self, elevatorSubsystem)
 
     def execute(self) -> None:
-        self.elevator.setTopPosition()
+        self.elevator.setTargetPosition(constants.kTopPositionBeltPosition)
 
 
 class ElevatorPullDown(SetElevatorState):

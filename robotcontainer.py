@@ -1,4 +1,5 @@
 import os
+from commands2.sequentialcommandgroup import SequentialCommandGroup
 import wpilib
 from wpimath.geometry import Pose2d
 import commands2
@@ -7,6 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
+from commands.elevatorsetting import ElevatorTopPosition
 
 import constants
 
@@ -29,6 +31,7 @@ from commands.shooter.shooterfixedshots import (
 )
 from commands.shooter.fudgeshooter import DecreaseShooterAngle, IncreaseShooterAngle
 from commands.intakecommands import (
+    ClimbTrap,
     GroundIntake,
     DefaultIntake,
     PrepareAmp,
@@ -193,7 +196,10 @@ class RobotContainer:
         )
 
         ModifiableJoystickButton(self.operatorInterface.trapScore).whileTrue(
-            ScoreTrap(self.elevator, self.intake)
+            SequentialCommandGroup(
+                ElevatorTopPosition(self.elevator),
+                ScoreTrap(self.elevator, self.intake),
+            )
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
@@ -233,7 +239,7 @@ class RobotContainer:
             PrepareTrap(self.elevator, self.intake, self.climber)
         )
         ModifiableJoystickButton(self.operatorInterface.elevatorClimbSlowDown).onTrue(
-            RetractClimberPosition(self.climber, self.elevator)
+            ClimbTrap(self.elevator, self.intake, self.climber)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(

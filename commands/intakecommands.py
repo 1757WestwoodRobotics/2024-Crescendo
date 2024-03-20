@@ -76,7 +76,7 @@ class ClimbTrap(ParallelCommandGroup):
         self.setName(__class__.__name__)
 
 
-class ScoreTrap(ParallelCommandGroup):
+class ScoreTrap(SequentialCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
         commands = []
 

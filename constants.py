@@ -1037,7 +1037,7 @@ kIntakeRealZero = -0.14
 # Climber stuff
 kClimberCANID = 58
 kClimberPIDSlot = 0
-kClimberPGain = 0.1
+kClimberPGain = 0.05
 kClimberIGain = 0
 kClimberDGain = 0
 kClimberInverted = False
@@ -1050,7 +1050,7 @@ kClimberGearRatio = (3 / 1) * (3 / 1) * (44 / 28)
 kClimberStateKey = "climber/state"
 
 kClimbingTopHeight = 26.5 * kMetersPerInch
-kClimbingRetractedHeight = 4.75 * kMetersPerInch
+kClimbingRetractedHeight = 2 * kMetersPerInch
 kClimberHeightOffset = 4.75 * kMetersPerInch
 
 kProfiledControllerPGain = 0.6

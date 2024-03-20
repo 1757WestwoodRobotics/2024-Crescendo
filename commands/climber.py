@@ -73,6 +73,7 @@ class RetractClimberPosition(SetClimberState):
             self.targetPosition, constants.kClimbingRetractedHeight
         )
         self.climber.setClimberTargetPosition(self.targetPosition)
+        self.elevator.setTargetPosition(self.targetPosition)
 
 
 class NeutralClimberState(SetClimberState):
