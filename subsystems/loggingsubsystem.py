@@ -86,6 +86,16 @@ class LoggingSubsystem(Subsystem):
         shooterPoses = advantagescopeconvert.convertToSendablePoses([shooterPose])
         SmartDashboard.putNumberArray(constants.kShooterPosesKey, shooterPoses)
 
+        climberHeight = SmartDashboard.getNumber(constants.kClimberHeightKey, 0)
+        climberPosition = (
+            botPose
+            + constants.kRobotToClimberTransform
+            + Transform3d(0, 0, climberHeight, Rotation3d()),
+        )
+
+        climberPose = advantagescopeconvert.convertToSendablePoses(climberPosition)
+        SmartDashboard.putNumberArray(constants.kClimberPositionKey, climberPose)
+
     def periodic(self) -> None:
         SmartDashboard.putData(self.pdh)
 

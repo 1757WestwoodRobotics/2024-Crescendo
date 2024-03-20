@@ -10,6 +10,7 @@ from pathplannerlib.auto import (
 
 import constants
 
+from commands.climber import NeutralClimberState, RetractClimberPosition
 from commands.autospecific import AimAndFire, IntakeAuto
 from commands.resetdrive import ResetDrive
 from commands.intakesetting import ResetIntake
@@ -47,6 +48,7 @@ from subsystems.visionsubsystem import VisionSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.shootersubsystem import ShooterSubsystem
 from subsystems.elevatorsubsystem import ElevatorSubsystem
+from subsystems.climbersubsystem import ClimberSubsystem
 
 from operatorinterface import OperatorInterface
 from util.helpfultriggerwrappers import ModifiableJoystickButton, SmartDashboardButton
@@ -71,6 +73,7 @@ class RobotContainer:
         self.intake = IntakeSubsystem()
         self.elevator = ElevatorSubsystem()
         self.shooter = ShooterSubsystem()
+        self.climber = ClimberSubsystem()
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
@@ -128,7 +131,7 @@ class RobotContainer:
         )
         self.intake.setDefaultCommand(DefaultIntake(self.elevator, self.intake))
         self.shooter.setDefaultCommand(SafetyPosition(self.shooter))
-
+        self.climber.setDefaultCommand(NeutralClimberState(self.climber))
         wpilib.SmartDashboard.putData(constants.kIntakeSubsystemKey, self.intake)
         wpilib.SmartDashboard.putData(constants.kShooterSubsystemKey, self.shooter)
 
@@ -189,10 +192,6 @@ class RobotContainer:
             PrepareAmp(self.elevator, self.intake).repeatedly()
         )
 
-        ModifiableJoystickButton(self.operatorInterface.trapPrep).whileTrue(
-            PrepareTrap(self.elevator, self.intake)
-        )
-
         ModifiableJoystickButton(self.operatorInterface.trapScore).whileTrue(
             ScoreTrap(self.elevator, self.intake)
         )
@@ -228,6 +227,13 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.elevatorJogDown).whileTrue(
             DescendElevator(self.elevator)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.elevatorClimb).onTrue(
+            PrepareTrap(self.elevator, self.intake, self.climber)
+        )
+        ModifiableJoystickButton(self.operatorInterface.elevatorClimbSlowDown).onTrue(
+            RetractClimberPosition(self.climber, self.elevator)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(

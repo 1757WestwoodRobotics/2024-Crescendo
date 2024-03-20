@@ -1,5 +1,6 @@
 from commands2 import ParallelCommandGroup, Command, SequentialCommandGroup
 from wpilib import SmartDashboard
+from commands.climber import ExtendClimberPosition, RetractClimberPosition
 
 from commands.elevatorsetting import (
     ElevatorBottomPosition,
@@ -17,6 +18,7 @@ from commands.intakesetting import (
 
 
 import constants
+from subsystems.climbersubsystem import ClimberSubsystem
 from subsystems.elevatorsubsystem import ElevatorSubsystem
 from subsystems.intakesubsystem import IntakeSubsystem
 from subsystems.shootersubsystem import ShooterSubsystem
@@ -49,9 +51,27 @@ class PrepareAmp(SequentialCommandGroup):
 
 
 class PrepareTrap(SequentialCommandGroup):
-    def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
+    def __init__(
+        self,
+        elevator: ElevatorSubsystem,
+        intake: IntakeSubsystem,
+        climber: ClimberSubsystem,
+    ):
         SequentialCommandGroup.__init__(
-            self, StageIntake(intake), ElevatorTopPosition(elevator)
+            self, StageIntake(intake), ExtendClimberPosition(climber, elevator)
+        )
+        self.setName(__class__.__name__)
+
+
+class ClimbTrap(ParallelCommandGroup):
+    def __init__(
+        self,
+        elevator: ElevatorSubsystem,
+        intake: IntakeSubsystem,
+        climber: ClimberSubsystem,
+    ):
+        ParallelCommandGroup.__init__(
+            self, StageIntake(intake), RetractClimberPosition(climber, elevator)
         )
         self.setName(__class__.__name__)
 
@@ -62,7 +82,7 @@ class ScoreTrap(ParallelCommandGroup):
 
         if (
             intake.state == intake.IntakeState.Staging or intake.IntakeState.Trap
-        ) and elevator.state == elevator.ElevatorState.TopPosition:
+        ) and elevator.state == elevator.ElevatorState.Controlled:
             commands = [EjectInTrap(intake)]
 
         ParallelCommandGroup.__init__(self, *commands)

@@ -389,6 +389,11 @@ class PhysicsEngine:
             1,
             constants.kSimulationRotationalInertia,
         )
+        self.motorsim.addFalcon(
+            robot.container.climber.climberMotor, 
+            1, 
+            constants.kSimulationRotationalInertia,
+        )
 
         targets = []
         for target in constants.kApriltagPositionDict.values():
