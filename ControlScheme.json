@@ -257,5 +257,12 @@
       "Button": 8
     },
     "buttonbox"
+  ],
+  "autoNoteIntake": [
+    2,
+    {
+      "Button": 1
+    },
+    "Throttle bottom thumb button"
   ]
 }

@@ -9,7 +9,7 @@ from pathplannerlib.auto import (
     NamedCommands,
 )
 from commands.elevatorsetting import ElevatorTopPosition
-
+from commands.autonotepickup import AutoNotePickup
 import constants
 
 from commands.climber import NeutralClimberState, RetractClimberPosition
@@ -200,7 +200,7 @@ class RobotContainer:
             TrapElevatorOnly(self.elevator, self.intake)
         )
         ModifiableJoystickButton(self.operatorInterface.trapPrep).onTrue(
-            ScoreTrap(self.elevator,self.intake)
+            ScoreTrap(self.elevator, self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
@@ -241,6 +241,10 @@ class RobotContainer:
         )
         ModifiableJoystickButton(self.operatorInterface.elevatorClimbSlowDown).onTrue(
             ClimbTrap(self.elevator, self.intake, self.climber)
+        )
+
+        ModifiableJoystickButton(self.operatorInterface.autoNoteIntake).whileTrue(
+            AutoNotePickup(self.drive, self.vision, self.intake, self.elevator)
         )
 
         # ModifiableJoystickButton(self.operatorInterface.offVelocity).onTrue(
