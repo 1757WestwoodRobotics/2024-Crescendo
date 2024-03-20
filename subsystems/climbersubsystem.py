@@ -18,8 +18,8 @@ class ClimberSubsystem(Subsystem):
         self.climberMotor = Talon(
             constants.kClimberCANID,
             constants.kClimberName,
-            constants.kClimberIGain,
             constants.kClimberPGain,
+            constants.kClimberIGain,
             constants.kClimberDGain,
             constants.kClimberInverted,
         )
@@ -32,7 +32,7 @@ class ClimberSubsystem(Subsystem):
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kClimberStateKey, str(self.state))
         # check over this math ltr ivan did this in 5 minutes also format
-        climberHeight = (
+        climberHeight = constants.kClimberMapInverseFunction(
             self.climberMotor.get(Talon.ControlMode.Position)
             / constants.kClimberGearRatio
             * 2
@@ -45,7 +45,7 @@ class ClimberSubsystem(Subsystem):
         if self.state == self.ClimberState.ClimberMoving:
             self.climberMotor.set(
                 Talon.ControlMode.Position,
-                self.targetPosition
+                constants.kClimberMapFunction(self.targetPosition)
                 * constants.kClimberGearRatio
                 / (2 * pi * constants.kClimberWinchRadius),
             )

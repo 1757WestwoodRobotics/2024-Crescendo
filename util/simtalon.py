@@ -59,6 +59,8 @@ class Talon:
         self.name = name
         self.motor = TalonFX(canID, canbus)
 
+        self.isReversed = isReversed
+
         conf = TalonFXConfiguration()
         conf.slot0.k_p = pGain
         conf.slot0.k_i = iGain
@@ -167,10 +169,18 @@ class Talon:
         self.motor.set_control(NeutralOut())
 
     def setNeutralMode(self, mode: NeutralMode):
-        conf = MotorOutputConfigs().with_neutral_mode(
-            NeutralModeValue.COAST
-            if mode == Talon.NeutralMode.Coast
-            else NeutralModeValue.BRAKE
+        conf = (
+            MotorOutputConfigs()
+            .with_neutral_mode(
+                NeutralModeValue.COAST
+                if mode == Talon.NeutralMode.Coast
+                else NeutralModeValue.BRAKE
+            )
+            .with_inverted(
+                InvertedValue.COUNTER_CLOCKWISE_POSITIVE
+                if self.isReversed
+                else InvertedValue.CLOCKWISE_POSITIVE
+            )
         )
         self.motor.configurator.apply(conf)
 

@@ -109,3 +109,4 @@ class ElevatorSubsystem(Subsystem):
     def setTargetPosition(self, target: float) -> None:
         self.state = self.ElevatorState.Controlled
         self.controlledPosition = target
+        self.targetPosition = target

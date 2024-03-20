@@ -42,6 +42,7 @@ from pathplannerlib.config import (
 )
 
 from pathplannerlib.auto import PathConstraints
+from util.convenientmath import map_range
 
 from util.keyorganization import OptionalValueKeys
 
@@ -1037,7 +1038,7 @@ kIntakeRealZero = -0.14
 # Climber stuff
 kClimberCANID = 58
 kClimberPIDSlot = 0
-kClimberPGain = 0.05
+kClimberPGain = 0.3
 kClimberIGain = 0
 kClimberDGain = 0
 kClimberInverted = False
@@ -1047,18 +1048,21 @@ kClimberMotorPercent = 0
 
 kClimberGearRatio = (3 / 1) * (3 / 1) * (44 / 28)
 
+kClimberMapFunction = lambda x: x * 0.7 / 0.55
+kClimberMapInverseFunction = lambda x: x * 0.55 / 0.7
+
 kClimberStateKey = "climber/state"
 
 kClimbingTopHeight = 26.5 * kMetersPerInch
-kClimbingRetractedHeight = 2 * kMetersPerInch
-kClimberHeightOffset = 4.75 * kMetersPerInch
+kClimbingRetractedHeight = 0 * kMetersPerInch
+kClimberHeightOffset = 1 * kMetersPerInch
 
 kProfiledControllerPGain = 0.6
 kProfiledControllerIGain = 0.0
 kProfiledControllerDGain = 0.0
 
-kProfiledMaxVelocity = 0.5 * kMetersPerFoot  # m / s
-kProfiledMaxAccleration = 0.5 * kMetersPerFoot  # m / s / s
+kProfiledMaxVelocity = 1.5 * kMetersPerFoot  # m / s
+kProfiledMaxAccleration = 3 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr
 kClimberHeightKey = "climber/ClimberHeight"

@@ -63,6 +63,21 @@ class PrepareTrap(SequentialCommandGroup):
         self.setName(__class__.__name__)
 
 
+class TrapElevatorOnly(SequentialCommandGroup):
+    def __init__(
+        self,
+        elevator: ElevatorSubsystem,
+        intake: IntakeSubsystem,
+    ):
+        SequentialCommandGroup.__init__(
+            self, StageIntake(intake), ElevatorTopPosition(elevator)
+        )
+        self.setName(__class__.__name__)
+
+    def isFinished(self) -> bool:
+        return False
+
+
 class ClimbTrap(ParallelCommandGroup):
     def __init__(
         self,
@@ -76,17 +91,20 @@ class ClimbTrap(ParallelCommandGroup):
         self.setName(__class__.__name__)
 
 
-class ScoreTrap(SequentialCommandGroup):
+class ScoreTrap(ParallelCommandGroup):
     def __init__(self, elevator: ElevatorSubsystem, intake: IntakeSubsystem):
-        commands = []
+        commands = [ElevatorTopPosition(elevator), EjectInTrap(intake)]
 
-        if (
-            intake.state == intake.IntakeState.Staging or intake.IntakeState.Trap
-        ) and elevator.state == elevator.ElevatorState.Controlled:
-            commands = [EjectInTrap(intake)]
+        # if (
+        #     intake.state == intake.IntakeState.Staging or intake.IntakeState.Trap
+        # ) and elevator.state == elevator.ElevatorState.Controlled:
+        #     commands = [EjectInTrap(intake)]
 
         ParallelCommandGroup.__init__(self, *commands)
         self.setName(__class__.__name__)
+
+    def isFinished(self) -> bool:
+        return False
 
 
 # scores amp or feeds to shooter depending on state

@@ -90,6 +90,9 @@ class EjectInTrap(SetIntakeState):
     def execute(self) -> None:
         self.intake.setTrap()
 
+    def isFinished(self) -> bool:
+        return False
+
 
 class ResetIntake(Command):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:

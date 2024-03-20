@@ -38,6 +38,7 @@ from commands.intakecommands import (
     PrepareTrap,
     ScoreTrap,
     DynamicScore,
+    TrapElevatorOnly,
 )
 from commands.elevatormanualmode import AscendElevator, DescendElevator
 
@@ -195,11 +196,11 @@ class RobotContainer:
             PrepareAmp(self.elevator, self.intake).repeatedly()
         )
 
-        ModifiableJoystickButton(self.operatorInterface.trapScore).whileTrue(
-            SequentialCommandGroup(
-                ElevatorTopPosition(self.elevator),
-                ScoreTrap(self.elevator, self.intake),
-            )
+        ModifiableJoystickButton(self.operatorInterface.trapScore).onTrue(
+            TrapElevatorOnly(self.elevator, self.intake)
+        )
+        ModifiableJoystickButton(self.operatorInterface.trapPrep).onTrue(
+            ScoreTrap(self.elevator,self.intake)
         )
 
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(

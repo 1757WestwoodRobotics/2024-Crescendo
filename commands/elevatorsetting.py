@@ -47,6 +47,9 @@ class ElevatorTopPosition(SetElevatorState):
     def execute(self) -> None:
         self.elevator.setTargetPosition(constants.kTopPositionBeltPosition)
 
+    def isFinished(self) -> bool:
+        return False
+
 
 class ElevatorPullDown(SetElevatorState):
     def __init__(self, elevatorSubsystem: ElevatorSubsystem) -> None:
