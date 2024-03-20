@@ -801,10 +801,10 @@ kIntakeFineVoltage = "intake/fineVoltage"
 kHandoffAngle = Rotation2d.fromDegrees(-4.3)  # we should change this bc it's too far
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionAngle = Rotation2d.fromDegrees(
-    90
+    75
 )  # Safe place roughly vertical before going to amp or trap
-kAmpScoringPositionAngle = Rotation2d.fromDegrees(69.939031)
-kTrapPositionAngle = kAmpScoringPositionAngle + Rotation2d.fromDegrees(5)
+kAmpScoringPositionAngle = Rotation2d.fromDegrees(90)
+kTrapPositionAngle = Rotation2d.fromDegrees(100)
 
 kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
@@ -953,7 +953,7 @@ kPulleyGearPitchDiameter = 1.504 * kMetersPerInch
 
 kBottomPositionBeltPosition = 0
 kAmpPositionBeltPosition = 19.125 * kMetersPerInch
-kTopPositionBeltPosition = 26.5 * kMetersPerInch
+kTopPositionBeltPosition = 28 * kMetersPerInch
 """meters"""
 
 kBeltPullDownSpeed = 3
@@ -1055,14 +1055,14 @@ kClimberStateKey = "climber/state"
 
 kClimbingTopHeight = 26.5 * kMetersPerInch
 kClimbingRetractedHeight = 0 * kMetersPerInch
-kClimberHeightOffset = 1 * kMetersPerInch
+kClimberHeightOffset = 0.5 * kMetersPerInch
 
 kProfiledControllerPGain = 0.6
 kProfiledControllerIGain = 0.0
 kProfiledControllerDGain = 0.0
 
 kProfiledMaxVelocity = 1.5 * kMetersPerFoot  # m / s
-kProfiledMaxAccleration = 3 * kMetersPerFoot  # m / s / s
+kProfiledMaxAccleration = 5 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr
 kClimberHeightKey = "climber/ClimberHeight"

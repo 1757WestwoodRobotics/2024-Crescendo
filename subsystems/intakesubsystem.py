@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from commands2 import Subsystem
-from wpilib import SmartDashboard, DriverStation, RobotBase
-from wpilib._wpilib import Preferences
+from wpilib import SmartDashboard, DriverStation, RobotBase, Preferences
+from wpimath.filter import Debouncer
 from wpimath.geometry import Rotation2d
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
@@ -49,6 +49,8 @@ class IntakeSubsystem(Subsystem):
             moMagicAccel=constants.kPivotAccel,
             moMagicVel=constants.kPivotVel,
         )
+        self.pivotMotor.setNeutralMode(Talon.NeutralMode.Brake)
+        self.positionDebouncer = Debouncer(0.1, Debouncer.DebounceType.kRising)
 
         # pivot motor spins 60 times per arm revolution
         # use absolute encoder to determine motor position
@@ -216,18 +218,15 @@ class IntakeSubsystem(Subsystem):
             self.setPivotAngle(constants.kStagingPositionAngle)
 
         elif self.state == self.IntakeState.Amp:
-            self.setPivotAngle(constants.kStagingPositionAngle)
-            if (
-                abs(self.getPivotAngle() - constants.kStagingPositionAngle.radians())
-                < constants.kIntakePivotTolerance
-            ):
+            self.setPivotAngle(constants.kAmpScoringPositionAngle)
+            if self.positionDebouncer.calculate(self.intakeAtPosition()):
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Percent,
                     -Preferences.getDouble(constants.kIntakeIntakingVoltage),
                 )
             else:
                 self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position, self.shooterPosition
+                    NEOBrushless.ControlMode.Position, self.heldPosition
                 )  # maybe
 
         elif self.state == self.IntakeState.Trap:
