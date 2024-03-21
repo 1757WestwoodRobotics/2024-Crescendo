@@ -2,7 +2,7 @@ import functools
 import operator
 from typing import List
 
-from wpimath.geometry import Pose3d
+from wpimath.geometry import Pose3d, Pose2d
 
 
 def convertToSendablePoses(poses: List[Pose3d]) -> List[float]:
@@ -18,5 +18,16 @@ def convertToSendablePoses(poses: List[Pose3d]) -> List[float]:
         z_rot = rotationQuaternion.Z()
 
         sendablePoses.append([x, y, z, w_rot, x_rot, y_rot, z_rot])
+
+    return functools.reduce(operator.add, sendablePoses, [])
+
+def convertToPose2dSendable(poses: List[Pose2d]) -> List[float]:
+    sendablePoses = []
+    for pose in poses:
+        x = pose.X()
+        y = pose.Y()
+        theta = pose.rotation().radians()
+
+        sendablePoses.append([x,y,theta])
 
     return functools.reduce(operator.add, sendablePoses, [])

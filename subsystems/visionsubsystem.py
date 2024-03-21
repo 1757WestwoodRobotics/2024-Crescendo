@@ -103,6 +103,10 @@ class VisionSubsystemReal(Subsystem):
                 ).toPose2d()
                 for note in notes
             ]
+            SmartDashboard.putNumberArray(
+                constants.kNoteInViewKey.valueKey,
+                advantagescopeconvert.convertToPose2dSendable(notePositions),
+            )
             closestNote = Pose2d(*robotPose).nearest(notePositions)
             intakePickupPosition = (
                 Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
