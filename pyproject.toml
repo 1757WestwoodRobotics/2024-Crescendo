@@ -17,7 +17,7 @@ robotpy_extras = [
     # "cscore"
     "navx",
     "pathplannerlib",
-    # "phoenix5"
+    "phoenix5",
     "phoenix6",
     # "playingwithfusion"
     "rev",

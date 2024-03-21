@@ -45,6 +45,7 @@ from commands.elevatormanualmode import AscendElevator, DescendElevator
 # from commands.velocitysetpoint import VelocitySetpoint
 
 from subsystems.drivesubsystem import DriveSubsystem
+from subsystems.lightsubsystem import LightSubsystem
 
 # from subsystems.dynamicvelocitycontrol import VelocityControl
 from subsystems.loggingsubsystem import LoggingSubsystem
@@ -78,6 +79,7 @@ class RobotContainer:
         self.elevator = ElevatorSubsystem()
         self.shooter = ShooterSubsystem()
         self.climber = ClimberSubsystem()
+        self.lights = LightSubsystem(self.intake,self.shooter)
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
