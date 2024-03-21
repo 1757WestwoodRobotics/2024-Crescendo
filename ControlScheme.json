@@ -144,7 +144,7 @@
     {
       "Button": 9
     },
-    "Throttle thumb thing down"
+    "Throttle thumb pov down"
   ],
   "elevatorClimbUp": [
     1,
@@ -261,8 +261,8 @@
   "autoNoteIntake": [
     2,
     {
-      "Button": 1
+      "Button": 7
     },
-    "Throttle bottom thumb button"
+    "Throttle thumb pov up"
   ]
 }
