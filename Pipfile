@@ -10,7 +10,6 @@ photonlibpy = "2024.2.9"
 robotpy-cli = "*"
 robotpy = {extras = ["all"], version = "==2024.3.2.1"}
 dill = "*"
-wpilib = "==2024.3.2.0"
 
 [dev-packages]
 
