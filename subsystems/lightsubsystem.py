@@ -4,6 +4,11 @@ from phoenix5.led import CANdle, RainbowAnimation, StrobeAnimation, SingleFadeAn
 from wpilib import RobotState
 
 import constants
+from subsystems.intakesubsystem import IntakeSubsystem
+from subsystems.shootersubsystem import ShooterSubsystem
+
+# lights are 8, bottom to top on the back
+# then 5, bottom to top on the front
 
 
 class LightSubsystem(Subsystem):
@@ -24,12 +29,16 @@ class LightSubsystem(Subsystem):
         climbing = auto()
         trapping = auto()
 
-    def __init__(self) -> None:
+    def __init__(self, intake: IntakeSubsystem, shooter: ShooterSubsystem) -> None:
         Subsystem.__init__(self)
         self.setName(__class__.__name__)
         self.light = CANdle(constants.kCANdleID)
 
-        self.disabledAnimation1 = RainbowAnimation(1, 0.5, 17, ledOffset=8)
+        self.intake = intake
+        self.shooter = shooter
+
+        self.disabledAnimation1 = RainbowAnimation(1, 0.5, 8, ledOffset=8)
+        self.disabledAnimation2 = RainbowAnimation(1, 0.5, 5, ledOffset=8 + 8)
         self.chillingAnimation1i = SingleFadeAnimation(
             3, 219, 252, 255, 0.7, 4, ledOffset=8
         )  # light blue
@@ -54,40 +63,66 @@ class LightSubsystem(Subsystem):
         self.intakeHolding1 = SingleFadeAnimation(252, 140, 3, 255, 0.7, 4, ledOffset=8)
         self.intakeHolding2 = SingleFadeAnimation(252, 140, 3, 255, 0.7, 3, ledOffset=16)
 
-        self.estopAnim1 = StrobeAnimation(255, 0, 0, 255, 0.3, 17, 8)
+        self.estopAnim1 = StrobeAnimation(255, 0, 0, 255, 0.3, 8 + 5, 8)
 
         self.stateshooter = LightSubsystem.StateShoot.hangingOut
         self.stateintake = LightSubsystem.StateIntake.hangingOut
 
+        # animation maps: 
+        # 0: bottom back
+        # 1: top back
+        # 2: bottom front
+        # 3: top front
+
     def periodic(self) -> None:
+        self.updateState()
+
         if RobotState.isEStopped():
             self.light.animate(self.estopAnim1)
         elif RobotState.isDisabled():
             self.light.animate(self.disabledAnimation1)
+            self.light.animate(self.disabledAnimation2, 1)
         else:
             if self.stateshooter == LightSubsystem.StateShoot.hangingOut:
-                self.light.animate(self.disabledAnimation1)
-            elif self.state == LightSubsystem.State.Cone:
-                self.light.animate(self.coneAnimation1)
-                self.light.animate(self.coneAnimation2, 1)
-            elif self.state == LightSubsystem.State.Cube:
-                self.light.animate(self.cubeAnimation1)
-                self.light.animate(self.cubeAnimation2, 1)
-            elif self.state == LightSubsystem.State.ConeFlange:
-                self.light.animate(self.coneFlangeAnimation1)
-                self.light.animate(self.coneFlangeAnimation2, 1)
+                self.light.animate(self.chillingAnimation1s, 1)
+                self.light.animate(self.chillingAnimation2s, 3)
+            elif self.stateshooter == LightSubsystem.StateShoot.readyToShoot:
+                self.light.animate(self.shooterReady1, 1)
+                self.light.animate(self.shooterReady2, 3)
+            elif self.stateshooter == LightSubsystem.StateShoot.spinningUp:
+                self.light.animate(self.shooterSpinningUp1, 1)
+                self.light.animate(self.shooterSpinningUp2, 3)
 
             if self.stateintake == LightSubsystem.StateIntake.hangingOut:
-                pass
+                self.light.animate(self.chillingAnimation1i, 0)
+                self.light.animate(self.chillingAnimation2i, 2)
+            elif self.stateintake == LightSubsystem.StateIntake.intaking:
+                self.light.animate(self.intakeRunning1, 0)
+                self.light.animate(self.intakeRunning2, 2)
+            elif self.stateintake == LightSubsystem.StateIntake.centeringNote:
+                self.light.animate(self.intakeCentering1, 0)
+                self.light.animate(self.intakeCentering2, 2)
+            elif self.stateintake == LightSubsystem.StateIntake.holdingNote:
+                self.light.animate(self.intakeHolding1, 0)
+                self.light.animate(self.intakeHolding2, 2)
 
-    def offLights(self) -> None:
-        self.state = LightSubsystem.State.No
+    def updateState(self) -> None:
+        self.stateintake = intakeStateMapping[self.intake.state]
+        if self.shooter.readyToShoot():
+            self.stateshooter = LightSubsystem.StateShoot.readyToShoot
+        elif self.shooter.targetAngle == self.shooter.shooterInitPosition:
+            self.stateshooter = LightSubsystem.StateShoot.hangingOut
+        else:
+            self.stateshooter = LightSubsystem.StateShoot.spinningUp
 
-    def coneLights(self) -> None:
-        self.state = LightSubsystem.State.Cone
 
-    def coneFlangeLights(self) -> None:
-        self.state = LightSubsystem.State.ConeFlange
+intakeStateMapping = {
+    IntakeSubsystem.IntakeState.Intaking: LightSubsystem.StateIntake.intaking,
+    IntakeSubsystem.IntakeState.Holding: LightSubsystem.StateIntake.holdingNote,
+    IntakeSubsystem.IntakeState.Staging: LightSubsystem.StateIntake.centeringNote,
+    IntakeSubsystem.IntakeState.Amp: LightSubsystem.StateIntake.holdingNote,
+    IntakeSubsystem.IntakeState.Feeding: LightSubsystem.StateIntake.holdingNote,
+    IntakeSubsystem.IntakeState.Trap: LightSubsystem.StateIntake.trapping,
+    IntakeSubsystem.IntakeState.Ejecting: LightSubsystem.StateIntake.holdingNote,
+}
 
-    def cubeLights(self) -> None:
-        self.state = LightSubsystem.State.Cube
