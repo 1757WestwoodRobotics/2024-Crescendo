@@ -108,6 +108,8 @@ class LightSubsystem(Subsystem):
 
     def updateState(self) -> None:
         self.stateintake = intakeStateMapping[self.intake.state]
+        if self.intake.hasPosition:
+            self.stateintake = LightSubsystem.StateIntake.holdingNote
         if self.shooter.readyToShoot():
             self.stateshooter = LightSubsystem.StateShoot.readyToShoot
         elif self.shooter.targetAngle == self.shooter.shooterInitPosition:
@@ -118,7 +120,7 @@ class LightSubsystem(Subsystem):
 
 intakeStateMapping = {
     IntakeSubsystem.IntakeState.Intaking: LightSubsystem.StateIntake.intaking,
-    IntakeSubsystem.IntakeState.Holding: LightSubsystem.StateIntake.holdingNote,
+    IntakeSubsystem.IntakeState.Holding: LightSubsystem.StateIntake.hangingOut,
     IntakeSubsystem.IntakeState.Staging: LightSubsystem.StateIntake.centeringNote,
     IntakeSubsystem.IntakeState.Amp: LightSubsystem.StateIntake.holdingNote,
     IntakeSubsystem.IntakeState.Feeding: LightSubsystem.StateIntake.holdingNote,
