@@ -1,6 +1,6 @@
 from enum import Enum, auto
 from commands2 import Subsystem
-from phoenix5.led import CANdle, RainbowAnimation, StrobeAnimation, SingleFadeAnimation
+from phoenix5.led import CANdle, RainbowAnimation, StrobeAnimation, SingleFadeAnimation, Animation
 from wpilib import RobotState
 
 import constants
@@ -68,6 +68,8 @@ class LightSubsystem(Subsystem):
         self.stateshooter = LightSubsystem.StateShoot.hangingOut
         self.stateintake = LightSubsystem.StateIntake.hangingOut
 
+        self.noanimation = StrobeAnimation(0,0,0,0,0,0)
+
         # animation maps: 
         # 0: bottom back
         # 1: top back
@@ -79,9 +81,14 @@ class LightSubsystem(Subsystem):
 
         if RobotState.isEStopped():
             self.light.animate(self.estopAnim1)
+            self.light.animate(self.noanimation, 1)
+            self.light.animate(self.noanimation, 2)
+            self.light.animate(self.noanimation, 3)
         elif RobotState.isDisabled():
             self.light.animate(self.disabledAnimation1)
             self.light.animate(self.disabledAnimation2, 1)
+            self.light.animate(self.noanimation, 2)
+            self.light.animate(self.noanimation, 3)
         else:
             if self.stateshooter == LightSubsystem.StateShoot.hangingOut:
                 self.light.animate(self.chillingAnimation1s, 1)
