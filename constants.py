@@ -631,7 +631,7 @@ kDriveToTargetAngularVelocityTolerance = 5 * kRadiansPerDegree / 1
 """radians / second"""
 
 # Trajectory Following
-kTrajectoryPositionPGain = 4
+kTrajectoryPositionPGain = 2
 kTrajectoryPositionIGain = 0
 kTrajectoryPositionDGain = 0
 
@@ -762,9 +762,11 @@ kVelocityControlkV = 0.01
 kIntakeCANID = 25
 kIntakeName = "IntakeMotor"
 kIntakePIDSlot = 0
-kIntakePGain = 0.1
+kIntakePGain = 0.0003
 kIntakeIGain = 0
 kIntakeDGain = 0
+kIntakeKv = 0.00200  # stolen from shooter :)
+kIntakeKs = 0.33329
 
 kPivotCANID = 19
 kPivotName = "PivotMotor"
@@ -809,8 +811,9 @@ kTrapPositionAngle = Rotation2d.fromDegrees(100)
 kIntakeArmLength = 0.251
 kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
-kIntakePercentageVoltage = 0.5
+kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
+kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = -0.75
 

@@ -3,6 +3,7 @@ from commands2 import Subsystem
 from wpilib import SmartDashboard, DriverStation, RobotBase, Preferences
 from wpimath.filter import Debouncer
 from wpimath.geometry import Rotation2d
+from wpimath.controller import SimpleMotorFeedforwardMeters
 from util.simtalon import Talon
 from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
@@ -52,6 +53,10 @@ class IntakeSubsystem(Subsystem):
         self.pivotMotor.setNeutralMode(Talon.NeutralMode.Brake)
         self.positionDebouncer = Debouncer(0.1, Debouncer.DebounceType.kRising)
 
+        self.ff = SimpleMotorFeedforwardMeters(
+            constants.kLeftShootingMotorKs, constants.kLeftShootingMotorKv
+        )
+
         # pivot motor spins 60 times per arm revolution
         # use absolute encoder to determine motor position
         self.resetPivot()
@@ -74,7 +79,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeIntakingVoltage, constants.kIntakePercentageVoltage
         )
         Preferences.initDouble(
-            constants.kIntakeFineVoltage, constants.kIntakeFineControlVoltage
+            constants.kIntakeFineVoltage, constants.kIntakeFineVelocityRPM
         )
 
     def resetPivot(self) -> None:
@@ -95,9 +100,9 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
             self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent,
+                NEOBrushless.ControlMode.Velocity,
                 Preferences.getDouble(
-                    constants.kIntakeFineVoltage, constants.kIntakeFineControlVoltage
+                    constants.kIntakeFineVoltage, constants.kIntakeFineVelocityRPM
                 ),
             )
         elif not frontLimitState and backLimitState:
@@ -127,10 +132,10 @@ class IntakeSubsystem(Subsystem):
             if self.hasPosition and self.canMoveNote:
                 if backLimitState:
                     self.intakeMotor.set(
-                        NEOBrushless.ControlMode.Percent,
+                        NEOBrushless.ControlMode.Velocity,
                         -Preferences.getDouble(
                             constants.kIntakeFineVoltage,
-                            constants.kIntakeFineControlVoltage,
+                            constants.kIntakeFineVelocityRPM,
                         ),
                     )
                     self.holdSet = False
@@ -194,6 +199,8 @@ class IntakeSubsystem(Subsystem):
                 NEOBrushless.ControlMode.Percent,
                 Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
+            if self.hasPosition:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
             self.holdingState(frontLimitState, backLimitState)
