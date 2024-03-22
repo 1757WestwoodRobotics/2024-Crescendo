@@ -171,7 +171,7 @@ class IntakeSubsystem(Subsystem):
             self.putInPlace = False
             self.overrideIntake = False
         else:
-            if self.state == self.IntakeState.Intaking:
+            if self.state == self.IntakeState.Intaking and backLimitState:
                 self.overrideIntake = True
             else:
                 self.overrideIntake = False
