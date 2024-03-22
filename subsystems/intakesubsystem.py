@@ -99,19 +99,25 @@ class IntakeSubsystem(Subsystem):
         if self.putInPlace:
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         elif frontLimitState and backLimitState:
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Velocity,
-                Preferences.getDouble(
-                    constants.kIntakeFineVoltage, constants.kIntakeFineVelocityRPM
-                ),
-            )
-        elif not frontLimitState and backLimitState:
             self.heldPosition = (
                 self.intakeMotor.get(NEOBrushless.ControlMode.Position)
                 + constants.kIntakeSafetyPositionOffset
             )
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             self.putInPlace = True
+            # self.intakeMotor.set(
+            #     NEOBrushless.ControlMode.Velocity,
+            #     Preferences.getDouble(
+            #         constants.kIntakeFineVoltage, constants.kIntakeFineVelocityRPM
+            #     ),
+            # )
+        # elif not frontLimitState and backLimitState:
+        #     self.heldPosition = (
+        #         self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+        #         + constants.kIntakeSafetyPositionOffset
+        #     )
+        #     self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+        #     self.putInPlace = True
         else:
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent,
@@ -171,8 +177,13 @@ class IntakeSubsystem(Subsystem):
             self.putInPlace = False
             self.overrideIntake = False
         else:
-            if self.state == self.IntakeState.Intaking and backLimitState:
-                self.overrideIntake = True
+            if self.state == self.IntakeState.Intaking:
+                if (
+                    backLimitState
+                    and self.intakeMotor.get(NEOBrushless.ControlMode.Velocity)
+                    < constants.kIntakeStoppedThreshold
+                ):
+                    self.overrideIntake = True
             else:
                 self.overrideIntake = False
 
@@ -199,8 +210,6 @@ class IntakeSubsystem(Subsystem):
                 NEOBrushless.ControlMode.Percent,
                 Preferences.getDouble(constants.kIntakeIntakingVoltage),
             )
-            if self.hasPosition:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
             self.holdingState(frontLimitState, backLimitState)
