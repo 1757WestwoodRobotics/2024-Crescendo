@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.813964211576251,
-      "y": 6.677089476859078
+      "x": 0.7717054574300003,
+      "y": 6.574793964229721
     },
     "rotation": 57.52995103324914
   },
@@ -24,38 +24,19 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 8.0
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "amp side start to wing 1"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "holding"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "aimAndFire"
                 }
               }
             ]
