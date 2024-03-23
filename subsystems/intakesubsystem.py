@@ -75,6 +75,8 @@ class IntakeSubsystem(Subsystem):
         self.shooterPosition = 0
         self.overrideIntake = False
 
+        self.positionFigured = False
+
         Preferences.initDouble(
             constants.kIntakeIntakingVoltage, constants.kIntakePercentageVoltage
         )
@@ -98,13 +100,24 @@ class IntakeSubsystem(Subsystem):
     def centerNote(self, frontLimitState, backLimitState) -> None:
         if self.putInPlace:
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
-        elif frontLimitState and backLimitState:
-            self.heldPosition = (
+        elif (
+            abs(
                 self.intakeMotor.get(NEOBrushless.ControlMode.Position)
-                + constants.kIntakeSafetyPositionOffset
+                - self.heldPosition
             )
+            < constants.kIntakePositionThreshold
+        ):
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
             self.putInPlace = True
+        elif frontLimitState and backLimitState:
+            if not self.positionFigured:
+                self.heldPosition = (
+                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+                    + constants.kIntakeSafetyPositionOffset
+                )
+                self.positionFigured = True
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+
             # self.intakeMotor.set(
             #     NEOBrushless.ControlMode.Velocity,
             #     Preferences.getDouble(
@@ -119,6 +132,7 @@ class IntakeSubsystem(Subsystem):
         #     self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         #     self.putInPlace = True
         else:
+            self.positionFigured = False
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent,
                 Preferences.getDouble(constants.kIntakeIntakingVoltage),
@@ -136,13 +150,20 @@ class IntakeSubsystem(Subsystem):
                 self.canMoveNote = False
 
             if self.hasPosition and self.canMoveNote:
-                if backLimitState:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position,
+                    self.heldPosition - constants.kIntakeSafetyPositionOffset,
+                )
+                """if backLimitState:
                     self.intakeMotor.set(
-                        NEOBrushless.ControlMode.Velocity,
+                        NEOBrushless.ControlMode.Percent,
                         -Preferences.getDouble(
                             constants.kIntakeFineVoltage,
-                            constants.kIntakeFineVelocityRPM,
+                            constants.kIntakeFineControlVoltage,
                         ),
+                    )
+                    self.intakeMotor.set(
+                        NEOBrushless.ControlMode.Position, self.heldPosition
                     )
                     self.holdSet = False
                 else:
@@ -154,7 +175,7 @@ class IntakeSubsystem(Subsystem):
                         self.holdSet = True
                         self.shooterPosition = self.intakeMotor.get(
                             NEOBrushless.ControlMode.Position
-                        )
+                        )"""
             else:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
         else:
@@ -162,6 +183,7 @@ class IntakeSubsystem(Subsystem):
                 self.centerNote(frontLimitState, backLimitState)
                 self.setPivotAngle(constants.kStagingPositionAngle)
             else:
+                self.positionFigured = False
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
 

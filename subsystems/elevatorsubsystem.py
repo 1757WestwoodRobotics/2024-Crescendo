@@ -4,6 +4,7 @@ from commands2 import Subsystem
 from wpilib import SmartDashboard
 
 from util.simtalon import Talon
+from util.convenientmath import clamp
 import constants
 
 
@@ -76,7 +77,7 @@ class ElevatorSubsystem(Subsystem):
         self.targetPosition = beltPosition
         self.elevatorMotor1.set(
             Talon.ControlMode.MotionMagic,
-            (beltPosition)
+            clamp(beltPosition, 0, constants.kTopPositionBeltPosition)
             / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,
         )

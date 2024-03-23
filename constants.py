@@ -762,7 +762,7 @@ kVelocityControlkV = 0.01
 kIntakeCANID = 25
 kIntakeName = "IntakeMotor"
 kIntakePIDSlot = 0
-kIntakePGain = 0.1
+kIntakePGain = 0.6
 kIntakeIGain = 0
 kIntakeDGain = 0
 kIntakeKv = 0.00200  # stolen from shooter :)
@@ -815,7 +815,8 @@ kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
 kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = 0.75
+kIntakeSafetyPositionOffset = 1
+kIntakePositionThreshold = 0.5
 kIntakeStoppedThreshold = 1  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"
@@ -919,7 +920,7 @@ kShootingAngleFudgeAmount = 0.005
 
 kElevator1CANID = 55
 kElevator1Name = "Elevator1Motor"
-kElevator1PGain = 0.6
+kElevator1PGain = 0.9
 kElevator1IGain = 0
 kElevator1DGain = 0
 kElevator1Inverted = True
@@ -955,7 +956,7 @@ kMotorPulleyGearRatio = 60 / 18 * 4 / 1
 kPulleyGearPitchDiameter = 1.504 * kMetersPerInch
 """meters"""
 
-kBottomPositionBeltPosition = 0
+kBottomPositionBeltPosition = -0.75 * kMetersPerInch
 kAmpPositionBeltPosition = 19.125 * kMetersPerInch
 kTopPositionBeltPosition = 28 * kMetersPerInch
 """meters"""
@@ -1036,13 +1037,14 @@ kSpeakerDistanceKey = "SpeakerDistance"
 kShooterAngleAdjustmentMappingFunction = (
     lambda x: -0.43 + 0.435 * x + -0.152 * x * x + 0.0184 * x * x * x
 )
+# kShooterAngleAdjustmentMappingFunction = lambda x: 0
 
 kIntakeRealZero = -0.14
 
 # Climber stuff
 kClimberCANID = 58
 kClimberPIDSlot = 0
-kClimberPGain = 0.3
+kClimberPGain = 0.9
 kClimberIGain = 0
 kClimberDGain = 0
 kClimberInverted = False
@@ -1065,7 +1067,8 @@ kProfiledControllerPGain = 0.6
 kProfiledControllerIGain = 0.0
 kProfiledControllerDGain = 0.0
 
-kProfiledMaxVelocity = 1.5 * kMetersPerFoot  # m / s
+kProfiledMaxVelocityRetract = 1.5 * kMetersPerFoot  # m / s
+kProfiledMaxVelocityExtend = 5 * kMetersPerFoot  # m / s
 kProfiledMaxAccleration = 5 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr

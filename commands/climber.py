@@ -34,7 +34,7 @@ class ExtendClimberPosition(SetClimberState):
             constants.kProfiledControllerIGain,
             constants.kProfiledControllerDGain,
             TrapezoidProfile.Constraints(
-                constants.kProfiledMaxVelocity, constants.kProfiledMaxAccleration
+                constants.kProfiledMaxVelocityExtend, constants.kProfiledMaxAccleration
             ),
         )
 
@@ -62,7 +62,7 @@ class RetractClimberPosition(SetClimberState):
             constants.kProfiledControllerIGain,
             constants.kProfiledControllerDGain,
             TrapezoidProfile.Constraints(
-                constants.kProfiledMaxVelocity, constants.kProfiledMaxAccleration
+                constants.kProfiledMaxVelocityRetract, constants.kProfiledMaxAccleration
             ),
         )
 
