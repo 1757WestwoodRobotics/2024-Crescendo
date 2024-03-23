@@ -1068,8 +1068,8 @@ kProfiledControllerIGain = 0.0
 kProfiledControllerDGain = 0.0
 
 kProfiledMaxVelocityRetract = 1.5 * kMetersPerFoot  # m / s
-kProfiledMaxVelocityExtend = 5 * kMetersPerFoot  # m / s
-kProfiledMaxAccleration = 5 * kMetersPerFoot  # m / s / s
+kProfiledMaxVelocityExtend = 20 * kMetersPerFoot  # m / s
+kProfiledMaxAccleration = 50 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr
 kClimberHeightKey = "climber/ClimberHeight"
