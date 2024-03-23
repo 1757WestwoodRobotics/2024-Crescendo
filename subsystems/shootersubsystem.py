@@ -339,6 +339,9 @@ class ShooterSubsystem(Subsystem):
                 ),
             )
             SmartDashboard.putNumber(
+                constants.kShooterAngleMotorKey, self.getShooterAngle().radians()
+            )
+            SmartDashboard.putNumber(
                 constants.kLeftShootingMotorSpeedKey, self.getLeftShooterSpeed()
             )
             SmartDashboard.putNumber(

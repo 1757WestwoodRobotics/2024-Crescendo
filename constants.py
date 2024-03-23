@@ -817,7 +817,7 @@ kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = 1
 kIntakePositionThreshold = 0.5
-kIntakeStoppedThreshold = 1  # rpm
+kIntakeStoppedThreshold = 10  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"
@@ -868,6 +868,7 @@ kShooterAngleEncoderOffset = 0.154785 - 0.25  # revolutions
 
 # radians
 kShooterAngleKey = "shooter/angle"
+kShooterAngleMotorKey = "shooter/angleMotor"
 kShooterPosesKey = "shooter/poses"
 kLeftShootingMotorSpeedKey = "shooter/leftMotorSpeed"
 kRightShootingMotorSpeedKey = "shooter/rightMotorSpeed"
@@ -1039,7 +1040,7 @@ kShooterAngleAdjustmentMappingFunction = (
 )
 # kShooterAngleAdjustmentMappingFunction = lambda x: 0
 
-kIntakeRealZero = -0.14
+kIntakeRealZero = -0.25
 
 # Climber stuff
 kClimberCANID = 58
@@ -1054,7 +1055,7 @@ kClimberMotorPercent = 0
 
 kClimberGearRatio = (3 / 1) * (3 / 1) * (44 / 28)
 
-kClimberMapFunction = lambda x: x * 0.7 / 0.55
+kClimberMapFunction = lambda x: x * (0.7 + 0.5 * kMetersPerInch) / 0.55
 kClimberMapInverseFunction = lambda x: x * 0.55 / 0.7
 
 kClimberStateKey = "climber/state"

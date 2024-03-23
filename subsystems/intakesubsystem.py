@@ -213,6 +213,10 @@ class IntakeSubsystem(Subsystem):
             # allow preload
             if self.hasPosition:
                 self.putInPlace = True
+                self.heldPosition = (
+                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+                    + constants.kIntakeSafetyPositionOffset
+                )
 
         if not self.overrideIntake and self.state == self.IntakeState.Intaking:
             if SmartDashboard.getBoolean(constants.kShooterAngleOnTargetKey, False):
