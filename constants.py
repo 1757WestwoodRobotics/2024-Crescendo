@@ -707,7 +707,7 @@ kCANdleID = 2
 # Field
 
 kSpeakerCenterBlue = Pose3d(0, 5.549, 2.12, Rotation3d())
-kSpeakerCenterRed = Pose3d(16.5, 5.549, 2.12, Rotation3d())
+kSpeakerCenterRed = Pose3d(kFieldLength, 5.549, 2.12, Rotation3d())
 
 kNotesStartingMidline = [
     Pose3d(8.258, 7.462, 0.03018, Rotation3d()),
@@ -1061,14 +1061,14 @@ kClimberStateKey = "climber/state"
 
 kClimbingTopHeight = 26.5 * kMetersPerInch
 kClimbingRetractedHeight = 0 * kMetersPerInch
-kClimberHeightOffset = 0.5 * kMetersPerInch
+kClimberHeightOffset = 0 * kMetersPerInch
 
 kProfiledControllerPGain = 0.6
 kProfiledControllerIGain = 0.0
 kProfiledControllerDGain = 0.0
 
-kProfiledMaxVelocityRetract = 1.5 * kMetersPerFoot  # m / s
-kProfiledMaxVelocityExtend = 20 * kMetersPerFoot  # m / s
+kProfiledMaxVelocityRetract = 3 * kMetersPerFoot  # m / s
+kProfiledMaxVelocityExtend = 30 * kMetersPerFoot  # m / s
 kProfiledMaxAccleration = 50 * kMetersPerFoot  # m / s / s
 
 # shout out Ivan for this fr
