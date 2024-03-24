@@ -205,6 +205,9 @@ class RobotContainer:
             ScoreTrap(self.elevator, self.intake)
         )
 
+        ModifiableJoystickButton(self.operatorInterface.shooterSpinup).whileTrue(
+            PassShot(self.shooter)
+        )
         ModifiableJoystickButton(self.operatorInterface.prepShotDynamic).whileTrue(
             AlignAndAim(
                 self.shooter,

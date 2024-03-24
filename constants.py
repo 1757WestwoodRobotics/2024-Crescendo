@@ -42,7 +42,6 @@ from pathplannerlib.config import (
 )
 
 from pathplannerlib.auto import PathConstraints
-from util.convenientmath import map_range
 
 from util.keyorganization import OptionalValueKeys
 
@@ -809,7 +808,7 @@ kAmpScoringPositionAngle = Rotation2d.fromDegrees(90)
 kTrapPositionAngle = Rotation2d.fromDegrees(100)
 
 kIntakeArmLength = 0.251
-kIntakePivotTolerance = 0.1  # radians
+kIntakePivotTolerance = 0.3  # radians
 # Percent Voltage
 kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
@@ -987,9 +986,9 @@ kNoteTrajectoryTimeInterval = 0.15
 kShooterWheelRadius = kShooterWheelDiameter / 2
 kShooterMovingIterations = 5
 
-kAlignAnglePGain = 0.8
+kAlignAnglePGain = 0.4
 kAlignAngleIGain = 0
-kAlignAngleDGain = 0.0
+kAlignAngleDGain = 0
 
 kPathfindingConstraints = PathConstraints(
     kMaxWheelLinearVelocity / 2,

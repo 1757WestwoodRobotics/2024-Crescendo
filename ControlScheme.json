@@ -264,5 +264,12 @@
       "Button": 7
     },
     "Throttle thumb pov up"
-  ]
+  ],
+    "spinUpShooter": [
+        1,
+        {
+            "Button": 17
+        },
+            "buttonbox"
+    ]
 }
