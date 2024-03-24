@@ -895,7 +895,7 @@ kShootingMotorCurrentLimit = 80
 kAngleMotorCurrentLimit = 80
 
 kShooterSubwooferAngle = Rotation2d(0.9)
-kShooterSubwooferSpeed = 3000  # NEEDS UPDATE
+kShooterSubwooferSpeed = 5000  # NEEDS UPDATE
 
 kPodiumShooterAngle = Rotation2d(0.639)  # NEEDS UPDATE
 kPodiumShooterSpeed = 4000  # NEEDS UPDATE
