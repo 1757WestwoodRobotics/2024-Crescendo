@@ -782,7 +782,7 @@ kIntakeInverted = True
 kPivotInverted = False
 
 kPivotEncoderID = 46
-kPivotEncoderOffset = 0.650879 - 0.25  # revolutions, get from phoenix tuner
+kPivotEncoderOffset = 0.357178 - 0.25  # revolutions, get from phoenix tuner
 
 kIntakeStateKey = "intake/state"
 kIntakeHasNoteKey = "intake/hasNote"
@@ -808,7 +808,7 @@ kAmpScoringPositionAngle = Rotation2d.fromDegrees(90)
 kTrapPositionAngle = Rotation2d.fromDegrees(100)
 
 kIntakeArmLength = 0.251
-kIntakePivotTolerance = 0.3  # radians
+kIntakePivotTolerance = 0.1  # radians
 # Percent Voltage
 kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
