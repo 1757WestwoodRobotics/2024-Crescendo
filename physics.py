@@ -10,7 +10,6 @@
 #
 
 import functools
-from math import pi
 import operator
 import typing
 from phoenix6.sim.cancoder_sim_state import CANcoderSimState

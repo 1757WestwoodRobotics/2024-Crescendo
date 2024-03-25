@@ -118,19 +118,14 @@ class IntakeSubsystem(Subsystem):
                 self.positionFigured = True
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
-            # self.intakeMotor.set(
-            #     NEOBrushless.ControlMode.Velocity,
-            #     Preferences.getDouble(
-            #         constants.kIntakeFineVoltage, constants.kIntakeFineVelocityRPM
-            #     ),
-            # )
-        # elif not frontLimitState and backLimitState:
-        #     self.heldPosition = (
-        #         self.intakeMotor.get(NEOBrushless.ControlMode.Position)
-        #         + constants.kIntakeSafetyPositionOffset
-        #     )
-        #     self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
-        #     self.putInPlace = True
+        elif frontLimitState:
+            if not self.positionFigured:
+                self.heldPosition = (
+                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+                    + constants.kIntakeSafetyPositionOffset + constants.kIntakeStoppedThreshold
+                )
+                self.positionFigured = True
+            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         else:
             self.positionFigured = False
             self.intakeMotor.set(
@@ -154,28 +149,6 @@ class IntakeSubsystem(Subsystem):
                     NEOBrushless.ControlMode.Position,
                     self.heldPosition - constants.kIntakeSafetyPositionOffset,
                 )
-                """if backLimitState:
-                    self.intakeMotor.set(
-                        NEOBrushless.ControlMode.Percent,
-                        -Preferences.getDouble(
-                            constants.kIntakeFineVoltage,
-                            constants.kIntakeFineControlVoltage,
-                        ),
-                    )
-                    self.intakeMotor.set(
-                        NEOBrushless.ControlMode.Position, self.heldPosition
-                    )
-                    self.holdSet = False
-                else:
-                    if self.holdSet:
-                        self.intakeMotor.set(
-                            NEOBrushless.ControlMode.Position, self.shooterPosition
-                        )
-                    else:
-                        self.holdSet = True
-                        self.shooterPosition = self.intakeMotor.get(
-                            NEOBrushless.ControlMode.Position
-                        )"""
             else:
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
         else:
@@ -201,7 +174,7 @@ class IntakeSubsystem(Subsystem):
         else:
             if self.state == self.IntakeState.Intaking:
                 if (
-                    backLimitState
+                    self.hasPosition
                     and self.intakeMotor.get(NEOBrushless.ControlMode.Velocity)
                     < constants.kIntakeStoppedThreshold
                 ):

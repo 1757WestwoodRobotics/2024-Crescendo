@@ -68,6 +68,6 @@ class AutoNotePickup(Command):
     def isFinished(self) -> bool:
         return SmartDashboard.getBoolean(
             constants.kIntakeHasNoteKey, False
-        ) or self.debouncer.calculate(
+        ) or not self.debouncer.calculate(
             SmartDashboard.getBoolean(constants.kNoteInViewKey, False)
         )
