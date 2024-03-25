@@ -199,9 +199,9 @@ class OperatorInterface:
 
         # shooter prep
         self.prepShotDynamic = getButtonBindingOfName("prepShotDynamic")
-        self.prepShotSubwoofer = getButtonBindingOfName("prepShotSubwoofer")
-        self.prepShotPodium = getButtonBindingOfName("prepShotPodium")
-        self.prepShotPass = getButtonBindingOfName("prepShotPass")
+        self.prepShotSubwoofer = getPOVBindingOfName("prepShotSubwoofer")
+        self.prepShotPodium = getPOVBindingOfName("prepShotPodium")
+        self.prepShotPass = getPOVBindingOfName("prepShotPass")
         self.shooterSpinup = getButtonBindingOfName("spinUpShooter")
 
         # elevator related

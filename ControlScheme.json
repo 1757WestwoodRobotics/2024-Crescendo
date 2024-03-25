@@ -23,12 +23,12 @@
   "chassisXRotation": [
     2,
     {
-      "Axis": 5
+      "Axis": 0
     },
     "Joystick Horizontal (ThrustmasterTWCSThrottle)"
   ],
   "chassisYRotation": [
-    1,
+    2,
     {
       "Axis": 1
     },
@@ -121,28 +121,28 @@
   "prepShotDynamic": [
     2,
     {
-      "Button": 2
+      "Button": 1
     },
     "Throttle Pinky button"
   ],
   "prepShotSubwoofer": [
     2,
     {
-      "Button": 4
+      "POV": [0, 90]
     },
     "Throttle middle rocker up"
   ],
   "prepShotPodium": [
     2,
     {
-      "Button": 5
+      "POV": [0, 270]
     },
     "Throttle middle rocker down"
   ],
   "prepShotPass": [
     2,
     {
-      "Button": 9
+      "POV": [0, 180]
     },
     "Throttle thumb pov down"
   ],
@@ -261,7 +261,7 @@
   "autoNoteIntake": [
     2,
     {
-      "Button": 7
+      "Button": 3
     },
     "Throttle thumb pov up"
   ],

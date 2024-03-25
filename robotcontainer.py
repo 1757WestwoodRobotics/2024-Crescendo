@@ -8,6 +8,7 @@ from pathplannerlib.auto import (
     PathPlannerAuto,
     NamedCommands,
 )
+from commands.drive.absoluterelativedrive import AbsoluteRelativeDrive
 from commands.elevatorsetting import ElevatorTopPosition
 from commands.autonotepickup import AutoNotePickup
 import constants
@@ -126,13 +127,14 @@ class RobotContainer:
         self.configureButtonBindings()
 
         self.drive.setDefaultCommand(
-            FieldRelativeDrive(
+            AbsoluteRelativeDrive(
                 self.drive,
                 lambda: self.operatorInterface.chassisControls.forwardsBackwards()
                 * constants.kTurboSpeedMultiplier,
                 lambda: self.operatorInterface.chassisControls.sideToSide()
                 * constants.kTurboSpeedMultiplier,
                 self.operatorInterface.chassisControls.rotationX,
+                self.operatorInterface.chassisControls.rotationY,
             )
         )
         self.intake.setDefaultCommand(DefaultIntake(self.elevator, self.intake))
@@ -219,13 +221,13 @@ class RobotContainer:
             ).repeatedly()
         )
 
-        ModifiableJoystickButton(self.operatorInterface.prepShotSubwoofer).whileTrue(
+        commands2.button.POVButton(*self.operatorInterface.prepShotSubwoofer).whileTrue(
             SubwooferShot(self.shooter)
         )
-        ModifiableJoystickButton(self.operatorInterface.prepShotPodium).whileTrue(
+        commands2.button.POVButton(*self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)
         )
-        ModifiableJoystickButton(self.operatorInterface.prepShotPass).whileTrue(
+        commands2.button.POVButton(*self.operatorInterface.prepShotPass).whileTrue(
             PassShot(self.shooter)
         )
         ModifiableJoystickButton(self.operatorInterface.shooterPivotUp).onTrue(
