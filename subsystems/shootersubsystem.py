@@ -1,6 +1,6 @@
 import math
 from commands2 import Subsystem
-from wpilib import SmartDashboard, Timer, RobotBase
+from wpilib import SmartDashboard, Timer, RobotBase, Preferences
 from wpimath.controller import SimpleMotorFeedforwardMeters, ArmFeedforward
 from wpimath.geometry import Rotation2d, Pose3d, Pose2d, Rotation3d
 from phoenix6.configs import CurrentLimitsConfigs
@@ -184,8 +184,15 @@ class ShooterSubsystem(Subsystem):
         )
 
     def neutralShooter(self) -> None:
-        self.rightShootingMotor.neutralOutput()
-        self.leftShootingMotor.neutralOutput()
+        # self.rightShootingMotor.neutralOutput()
+        # self.leftShootingMotor.neutralOutput()
+        spinAmount = Preferences.getDouble("Spin Amount", 100)
+        self.setLeftShootingMotorSpeed(
+            constants.kShooterIdleSpeed - spinAmount
+        )
+        self.setRightShootingMotorSpeed(
+            constants.kShooterIdleSpeed + spinAmount
+        )
         self.safePivot()
 
     def safePivot(self) -> None:
