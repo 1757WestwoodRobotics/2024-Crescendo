@@ -154,16 +154,16 @@ class RobotContainer:
         and then passing it to a JoystickButton.
         """
 
-        ModifiableJoystickButton(
-            self.operatorInterface.fieldRelativeCoordinateModeControl
-        ).toggleOnTrue(
-            RobotRelativeDrive(
-                self.drive,
-                self.operatorInterface.chassisControls.forwardsBackwards,
-                self.operatorInterface.chassisControls.sideToSide,
-                self.operatorInterface.chassisControls.rotationX,
-            )
-        )
+        # ModifiableJoystickButton(
+        #     self.operatorInterface.fieldRelativeCoordinateModeControl
+        # ).toggleOnTrue(
+        #     RobotRelativeDrive(
+        #         self.drive,
+        #         self.operatorInterface.chassisControls.forwardsBackwards,
+        #         self.operatorInterface.chassisControls.sideToSide,
+        #         self.operatorInterface.chassisControls.rotationX,
+        #     )
+        # )
 
         ModifiableJoystickButton(self.operatorInterface.alignClosestWaypoint).whileTrue(
             DriveWaypoint(self.drive)

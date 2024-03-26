@@ -816,7 +816,7 @@ kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = 1
 kIntakeFirstSensorPositionOffset = 2
-kIntakePositionThreshold = 0.5
+kIntakePositionThreshold = 1
 kIntakeStoppedThreshold = 10  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"
@@ -994,10 +994,10 @@ kAlignAngleIGain = 0
 kAlignAngleDGain = 0
 
 kPathfindingConstraints = PathConstraints(
-    kMaxWheelLinearVelocity / 2,
-    kMaxWheelLinearAcceleration / 2,
-    kMaxRotationAngularVelocity / 2,
-    kMaxRotationAngularAcceleration / 2,
+    kMaxWheelLinearVelocity,
+    kMaxWheelLinearAcceleration,
+    kMaxRotationAngularVelocity,
+    kMaxRotationAngularAcceleration,
 )
 
 kAmpWaypointBlue = Pose2d(1.828, 8.208 - kRobotLength / 2, math.pi / 2)
