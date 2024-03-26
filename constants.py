@@ -260,11 +260,11 @@ kSimulationVariation = 0.001  # meters, as a standard deviation
 kRobotToFrontLeftCameraTransform = Transform3d(
     Pose3d(),
     Pose3d(
-        11.306 * kMetersPerInch,
-        10.256 * kMetersPerInch,
-        9.238 * kMetersPerInch,
+        11.486 * kMetersPerInch,
+        10.991 * kMetersPerInch,
+        8.475 * kMetersPerInch,
         Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-            Rotation3d(0.0, 0.0, 30.0 * kRadiansPerDegree)
+            Rotation3d(0.0, 0.0, 15.0 * kRadiansPerDegree)
         ),
     ),
 )
@@ -280,22 +280,22 @@ kRobotToFrontRightCameraTransform = Transform3d(
 kRobotToBackLeftCameraTransform = Transform3d(
     Pose3d(),
     Pose3d(
-        -11.306 * kMetersPerInch,
-        10.256 * kMetersPerInch,
-        9.238 * kMetersPerInch,
+        -11.486 * kMetersPerInch,
+        10.990 * kMetersPerInch,
+        8.475 * kMetersPerInch,
         Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-            Rotation3d(0.0, 0.0, (180 - 30.0) * kRadiansPerDegree)
+            Rotation3d(0.0, 0.0, (180 - 15.0) * kRadiansPerDegree)
         ),
     ),
 )
 kRobotToBackRightCameraTransform = Transform3d(
     Pose3d(),
     Pose3d(
-        -11.306 * kMetersPerInch,
-        -10.256 * kMetersPerInch,
-        9.238 * kMetersPerInch,
+        -11.486 * kMetersPerInch,
+        -10.991 * kMetersPerInch,
+        8.475 * kMetersPerInch,
         Rotation3d(0.0, -28.125 * kRadiansPerDegree, 0.0).rotateBy(
-            Rotation3d(0.0, 0.0, (180 + 30.0) * kRadiansPerDegree)
+            Rotation3d(0.0, 0.0, (180 + 15.0) * kRadiansPerDegree)
         ),
     ),
 )
