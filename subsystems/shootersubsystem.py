@@ -186,12 +186,11 @@ class ShooterSubsystem(Subsystem):
     def neutralShooter(self) -> None:
         # self.rightShootingMotor.neutralOutput()
         # self.leftShootingMotor.neutralOutput()
-        spinAmount = Preferences.getDouble("Spin Amount", 100)
         self.setLeftShootingMotorSpeed(
-            constants.kShooterIdleSpeed - spinAmount
+            constants.kShooterIdleSpeed
         )
         self.setRightShootingMotorSpeed(
-            constants.kShooterIdleSpeed + spinAmount
+            constants.kShooterIdleSpeed
         )
         self.safePivot()
 

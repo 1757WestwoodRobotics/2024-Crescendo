@@ -1,3 +1,4 @@
+from types import TracebackType
 from wpilib import SmartDashboard
 from commands2 import Subsystem
 from enum import Enum, auto
@@ -29,6 +30,8 @@ class ClimberSubsystem(Subsystem):
 
         self.targetPosition = 0
 
+        self.hasBeenSet = False
+
     def periodic(self) -> None:
         SmartDashboard.putString(constants.kClimberStateKey, str(self.state))
         # check over this math ltr ivan did this in 5 minutes also format
@@ -50,11 +53,20 @@ class ClimberSubsystem(Subsystem):
                 / (2 * pi * constants.kClimberWinchRadius),
             )
         elif self.state == self.ClimberState.ClimberNeutral:
-            self.climberMotor.neutralOutput()
+            if self.hasBeenSet:
+                self.climberMotor.set(
+                    Talon.ControlMode.Position,
+                    constants.kClimberMapFunction(self.targetPosition)
+                    * constants.kClimberGearRatio
+                    / (2 * pi * constants.kClimberWinchRadius),
+                )
+            else:
+                self.climberMotor.neutralOutput()
 
     def setClimberTargetPosition(self, target: float) -> None:
         self.state = self.ClimberState.ClimberMoving
         self.targetPosition = target
+        self.hasBeenSet = True
 
     def setClimberHold(self) -> None:
         self.state = self.ClimberState.ClimberNeutral

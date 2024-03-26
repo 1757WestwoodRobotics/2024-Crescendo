@@ -42,7 +42,7 @@ class AutoNotePickup(Command):
         self.intake.setIntaking()
         self.elevator.setBottomPosition()
 
-        angleOutput = self.rotationPID.calculate(self.vision.dRobotAngle)
+        angleOutput = self.rotationPID.calculate(self.vision.dRobotAngle.radians())
         driveOutput = self.drivePID.calculate(
             (
                 self.drive.getRobotRelativeSpeeds().vx ** 2
@@ -69,5 +69,5 @@ class AutoNotePickup(Command):
         return SmartDashboard.getBoolean(
             constants.kIntakeHasNoteKey, False
         ) or not self.debouncer.calculate(
-            SmartDashboard.getBoolean(constants.kNoteInViewKey, False)
+            SmartDashboard.getBoolean(constants.kNoteInViewKey.validKey, False)
         )

@@ -70,7 +70,7 @@ class TrapElevatorOnly(SequentialCommandGroup):
         intake: IntakeSubsystem,
     ):
         SequentialCommandGroup.__init__(
-            self, StageIntake(intake), ElevatorTopPosition(elevator)
+            self, StageIntake(intake),  ElevatorTopPosition(elevator)
         )
         self.setName(__class__.__name__)
 

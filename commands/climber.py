@@ -49,7 +49,7 @@ class ExtendClimberPosition(SetClimberState):
         self.climber.setClimberTargetPosition(
             self.targetPosition + constants.kClimberHeightOffset
         )
-        self.elevator.setTargetPosition(self.targetPosition)
+        self.elevator.setTargetPosition(self.targetPosition + constants.kClimberHeightExtendOffsetElevator)
 
 
 class RetractClimberPosition(SetClimberState):
@@ -77,7 +77,7 @@ class RetractClimberPosition(SetClimberState):
         self.climber.setClimberTargetPosition(
             self.targetPosition + constants.kClimberHeightOffset
         )
-        self.elevator.setTargetPosition(self.targetPosition)
+        self.elevator.setTargetPosition(self.targetPosition - constants.kClimberFloorTargetElevatorExtra)
 
 
 class NeutralClimberState(SetClimberState):

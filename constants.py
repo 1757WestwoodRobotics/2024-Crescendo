@@ -903,7 +903,7 @@ kPodiumShooterSpeed = 4000  # NEEDS UPDATE
 kShooterPassAngle = kShooterMinAngle
 kShooterPassSpeed = 4000
 
-kShooterIdleSpeed = 2000
+kShooterIdleSpeed = 500
 
 kShooterManualModeKey = "shooter/manualMode"
 kShooterAngleFudgeKey = "shooter/fudge/angle"
@@ -1026,7 +1026,7 @@ kRobotToIntakePickupTransform = Transform2d(
         Rotation2d.fromDegrees(math.tan((0.222375 - 0.342900 / 2) / 0.446088)),
     ),
 )
-kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(5)
+kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(10)
 kNoteCameraDebounceTime = 1  # seconds
 kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
 
@@ -1065,6 +1065,9 @@ kClimberStateKey = "climber/state"
 kClimbingTopHeight = 26.5 * kMetersPerInch
 kClimbingRetractedHeight = 0 * kMetersPerInch
 kClimberHeightOffset = 0 * kMetersPerInch
+kClimberHeightExtendOffsetElevator = 1.625 * kMetersPerInch
+
+kClimberFloorTargetElevatorExtra = 0.875 * kMetersPerInch
 
 kProfiledControllerPGain = 0.6
 kProfiledControllerIGain = 0.0

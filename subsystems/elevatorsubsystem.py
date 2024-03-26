@@ -77,7 +77,11 @@ class ElevatorSubsystem(Subsystem):
         self.targetPosition = beltPosition
         self.elevatorMotor1.set(
             Talon.ControlMode.MotionMagic,
-            clamp(beltPosition, 0, constants.kTopPositionBeltPosition)
+            clamp(
+                beltPosition,
+                0 if self.state != self.ElevatorState.ManualControl else -1,
+                constants.kTopPositionBeltPosition,
+            )
             / (constants.kPulleyGearPitchDiameter * pi)
             * constants.kMotorPulleyGearRatio,
         )

@@ -115,7 +115,7 @@ class VisionSubsystemReal(Subsystem):
             # angle robot needs to rotate by to pick up note by driving forward
             self.dRobotAngle = (
                 Rotation2d(robotPose[2])
-                - Transform2d(intakePickupPosition, closestNote).rotation()
+                + Transform2d(intakePickupPosition, closestNote).rotation()
             )
 
             SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
