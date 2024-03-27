@@ -239,7 +239,8 @@ kPhotonvisionKeyArray = [
     kPhotonvisionBackRightCameraKey,
 ]
 
-kPhotonvisionNoteCameraKey = "noteCamera"
+kPhotonvisionNoteCameraName = "noteCamera"
+kPhotonvisionNoteCameraKey = "cameras/noteCamera"
 kNoteInViewKey = OptionalValueKeys("noteInView")
 
 kNoteCameraPitch = 30 * kRadiansPerDegree  # below horizontal
@@ -250,6 +251,9 @@ kRobotToNoteCameraTransform = Transform3d(
         0.330296, -0.333443, 0.570646, Rotation3d(0, kNoteCameraPitch, kNoteCameraYaw)
     ),
 )
+
+kNoteCameraFOVHorizontal = 105  # degrees
+kNoteCameraFOVVertical = 78.84  # degrees
 
 kCameraFOVHorizontal = 75.9  # degrees
 kCameraFOVVertical = 47.4  # degrees
@@ -727,6 +731,10 @@ kNotesStartingRedWing = [
     Pose3d(13.63, 5.557, 0.03018, Rotation3d()),
     Pose3d(13.63, 7.004, 0.03018, Rotation3d()),
 ]
+
+kNotesStartingField = (
+    kNotesStartingMidline + kNotesStartingBlueWing + kNotesStartingRedWing
+)
 
 kNoteLoadingStationPositionBlue = Pose3d(15, 1, 0, Rotation3d())
 kNoteLoadingStationPositionRed = Pose3d(54 * kMetersPerFoot - 15, 1, 0, Rotation3d())

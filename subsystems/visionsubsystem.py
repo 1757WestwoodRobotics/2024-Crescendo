@@ -67,7 +67,7 @@ class VisionSubsystemReal(Subsystem):
         ]
         self.robotToTags = []
 
-        self.noteCamera = PhotonCamera(constants.kPhotonvisionNoteCameraKey)
+        self.noteCamera = PhotonCamera(constants.kPhotonvisionNoteCameraName)
 
         self.poseList = deque([])
 
@@ -115,7 +115,7 @@ class VisionSubsystemReal(Subsystem):
             # angle robot needs to rotate by to pick up note by driving forward
             self.dRobotAngle = (
                 Rotation2d(robotPose[2])
-                + Transform2d(intakePickupPosition, closestNote).rotation()
+                - Transform2d(intakePickupPosition, closestNote).rotation()
             )
 
             SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
@@ -272,6 +272,14 @@ class VisionSubsystemSim(Subsystem):
 
         self.rng = RNG(constants.kSimulationVariation)
 
+        self.noteCamera = SimCamera(
+            constants.kPhotonvisionNoteCameraName,
+            constants.kRobotToNoteCameraTransform,
+            constants.kNoteCameraFOVHorizontal,
+            constants.kNoteCameraFOVVertical,
+            constants.kPhotonvisionNoteCameraKey,
+        )
+
     def periodic(self) -> None:
         simPose = Pose2d(
             *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
@@ -331,6 +339,37 @@ class VisionSubsystemSim(Subsystem):
             SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
             SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
             SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
+
+        noteCameraPose = simPose3d + constants.kRobotToNoteCameraTransform
+        SmartDashboard.putNumberArray(
+            constants.kPhotonvisionNoteCameraKey,
+            advantagescopeconvert.convertToSendablePoses([noteCameraPose]),
+        )
+
+        notePoses = []
+        SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
+
+        for note in constants.kNotesStartingField:
+            if self.noteCamera.canSeeTarget(simPose3d, note):
+                SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
+                relation = CameraTargetRelation(noteCameraPose, note)
+
+                x = constants.kRobotToNoteCameraTransform.Z() / tan(
+                    constants.kNoteCameraPitch - relation.camToTargPitch.radians()
+                )
+                dist = (constants.kRobotToNoteCameraTransform.Z() ** 2 + x**2) ** 0.5
+                y = dist * tan(-relation.camToTargYaw.radians())
+                cameraToNote = Transform3d(x, y, 0, Rotation3d(0, 0, atan(y / x)))
+
+                notePose = (
+                    simPose3d + constants.kRobotToNoteCameraTransform + cameraToNote
+                )
+                notePoses.append(notePose)
+
+        SmartDashboard.putNumberArray(
+            constants.kNoteInViewKey.valueKey,
+            advantagescopeconvert.convertToSendablePoses(notePoses),
+        )
 
 
 class RNG:
