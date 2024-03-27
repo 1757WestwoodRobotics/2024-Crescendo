@@ -60,8 +60,8 @@ class LightSubsystem(Subsystem):
         self.intakeRunning2 = StrobeAnimation(252, 252, 3, 255, 0.3, 3, ledOffset=16) #Yellow
         self.intakeCentering1 = StrobeAnimation(252, 3, 3, 255, 0.3, 4, ledOffset=8) #Red
         self.intakeCentering2 = StrobeAnimation(252, 3, 3, 255, 0.3, 3, ledOffset=16) #Red
-        self.intakeHolding1 = SingleFadeAnimation(252, 140, 3, 255, 0.7, 4, ledOffset=8)
-        self.intakeHolding2 = SingleFadeAnimation(252, 140, 3, 255, 0.7, 3, ledOffset=16)
+        self.intakeHolding1 = SingleFadeAnimation(3, 255, 3, 255, 0.7, 4, ledOffset=8)
+        self.intakeHolding2 = SingleFadeAnimation(3, 255, 3, 255, 0.7, 3, ledOffset=16)
 
         self.estopAnim1 = StrobeAnimation(255, 0, 0, 255, 0.3, 8 + 5, 8)
 

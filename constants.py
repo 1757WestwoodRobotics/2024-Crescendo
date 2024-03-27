@@ -536,24 +536,24 @@ kApriltagPositionDict = {  # thanks 6328 for FieldConstants!
         (kMetersPerInch * 53.38),
         Rotation3d(0.0, 0.0, kRadiansPerDegree * 60),
     ),
-    11: Pose3d(
-        (kMetersPerInch * 468.69),
-        (kMetersPerInch * 146.19),
-        (kMetersPerInch * 52.00),
-        Rotation3d(0.0, 0.0, kRadiansPerDegree * 300),
-    ),
-    12: Pose3d(
-        (kMetersPerInch * 468.69),
-        (kMetersPerInch * 177.10),
-        (kMetersPerInch * 52.00),
-        Rotation3d(0.0, 0.0, kRadiansPerDegree * 60),
-    ),
-    13: Pose3d(
-        (kMetersPerInch * 441.74),
-        (kMetersPerInch * 161.62),
-        (kMetersPerInch * 52.00),
-        Rotation3d(0.0, 0.0, kRadiansPerDegree * 180),
-    ),
+    # 11: Pose3d(
+    #     (kMetersPerInch * 468.69),
+    #     (kMetersPerInch * 146.19),
+    #     (kMetersPerInch * 52.00),
+    #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 300),
+    # ),
+    # 12: Pose3d(
+    #     (kMetersPerInch * 468.69),
+    #     (kMetersPerInch * 177.10),
+    #     (kMetersPerInch * 52.00),
+    #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 60),
+    # ),
+    # 13: Pose3d(
+    #     (kMetersPerInch * 441.74),
+    #     (kMetersPerInch * 161.62),
+    #     (kMetersPerInch * 52.00),
+    #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 180),
+    # ),
     14: Pose3d(
         (kMetersPerInch * 209.48),
         (kMetersPerInch * 161.62),
@@ -630,11 +630,11 @@ kDriveToTargetAngularVelocityTolerance = 5 * kRadiansPerDegree / 1
 """radians / second"""
 
 # Trajectory Following
-kTrajectoryPositionPGain = 2
+kTrajectoryPositionPGain = 3
 kTrajectoryPositionIGain = 0
 kTrajectoryPositionDGain = 0
 
-kTrajectoryAnglePGain = 3
+kTrajectoryAnglePGain = 5
 kTrajectoryAngleIGain = 0
 kTrajectoryAngleDGain = 0
 
@@ -643,7 +643,7 @@ kPathFollowingConfig = HolonomicPathFollowerConfig(
         kTrajectoryPositionPGain, kTrajectoryPositionIGain, kTrajectoryPositionDGain
     ),
     PIDConstants(kTrajectoryAnglePGain, kTrajectoryAngleIGain, kTrajectoryAngleDGain),
-    kMaxForwardLinearVelocity,
+    kMaxForwardLinearVelocity / 2,
     kFrontLeftWheelPosition.norm(),
     ReplanningConfig(),
 )
@@ -816,7 +816,7 @@ kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = 1
 kIntakeFirstSensorPositionOffset = 2
-kIntakePositionThreshold = 1
+kIntakePositionThreshold = 0.75
 kIntakeStoppedThreshold = 10  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"
@@ -903,7 +903,7 @@ kPodiumShooterSpeed = 4000  # NEEDS UPDATE
 kShooterPassAngle = kShooterMinAngle
 kShooterPassSpeed = 4000
 
-kShooterIdleSpeed = 500
+kShooterIdleSpeed = 0
 
 kShooterManualModeKey = "shooter/manualMode"
 kShooterAngleFudgeKey = "shooter/fudge/angle"
@@ -989,7 +989,7 @@ kNoteTrajectoryTimeInterval = 0.15
 kShooterWheelRadius = kShooterWheelDiameter / 2
 kShooterMovingIterations = 5
 
-kAlignAnglePGain = 0.4
+kAlignAnglePGain = 0.6
 kAlignAngleIGain = 0
 kAlignAngleDGain = 0
 

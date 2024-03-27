@@ -130,7 +130,7 @@ class IntakeSubsystem(Subsystem):
             self.positionFigured = False
             self.intakeMotor.set(
                 NEOBrushless.ControlMode.Percent,
-                Preferences.getDouble(constants.kIntakeIntakingVoltage),
+                Preferences.getDouble(constants.kIntakeFineVoltage),
             )
 
     def holdingState(self, frontLimitState: bool, backLimitState: bool) -> None:

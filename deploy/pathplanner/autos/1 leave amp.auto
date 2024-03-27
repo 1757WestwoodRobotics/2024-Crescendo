@@ -24,9 +24,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 8.0
+            "name": "intake"
           }
         },
         {
@@ -40,6 +40,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndFire"
           }
         }
       ]

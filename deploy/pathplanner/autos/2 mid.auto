@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "holding"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndFire"
           }
         },
