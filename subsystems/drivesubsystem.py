@@ -34,6 +34,7 @@ from util import convenientmath
 from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
 from util.simtalon import Talon
+from util.getsdarray import getSDArray
 from subsystems.visionsubsystem import VisionSubsystem
 
 
@@ -441,9 +442,7 @@ class DriveSubsystem(Subsystem):
     def getAngularVelocity(self) -> float:
         """radians"""
         if RobotBase.isSimulation():
-            return SmartDashboard.getNumberArray(
-                constants.kSimRobotVelocityArrayKey, [0, 0, 0]
-            )[2]
+            return getSDArray(constants.kSimRobotVelocityArrayKey, [0, 0, 0])[2]
         return (
             self.gyro.get_angular_velocity_z_world().value * constants.kRadiansPerDegree
         )

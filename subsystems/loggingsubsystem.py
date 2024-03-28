@@ -13,6 +13,7 @@ from operatorinterface import OperatorInterface
 import constants
 from util import advantagescopeconvert
 from util.convenientmath import map_range, pose3dFrom2d
+from util.getsdarray import getSDArray
 
 
 class LoggingSubsystem(Subsystem):
@@ -28,11 +29,7 @@ class LoggingSubsystem(Subsystem):
 
     def updateBotPositions(self) -> None:
         botPose = pose3dFrom2d(
-            Pose2d(
-                *SmartDashboard.getNumberArray(
-                    constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
-                )
-            )
+            Pose2d(*getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]))
         )
 
         elevatorHeight = SmartDashboard.getNumber(constants.kElevatorPositionKey, 0)

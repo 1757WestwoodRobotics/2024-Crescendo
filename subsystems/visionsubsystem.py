@@ -21,6 +21,7 @@ from wpimath.geometry import (
 import constants
 from util import advantagescopeconvert
 from util.convenientmath import pose3dFrom2d
+from util.getsdarray import getSDArray
 
 
 class EstimatedPose:
@@ -83,12 +84,9 @@ class VisionSubsystemReal(Subsystem):
     def periodic(self) -> None:
         # self.estimatedPosition = self.drive.getPose()
         # self.updateAdvantagescopePose()
-        visionPose = SmartDashboard.getNumberArray(
-            constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0]
-        )
-        robotPose = SmartDashboard.getNumberArray(
-            constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
-        )
+
+        visionPose = getSDArray(constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0])
+        robotPose = getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0])
 
         noteResult = self.noteCamera.getLatestResult()
         if noteResult.hasTargets():
@@ -273,9 +271,7 @@ class VisionSubsystemSim(Subsystem):
         self.rng = RNG(constants.kSimulationVariation)
 
     def periodic(self) -> None:
-        simPose = Pose2d(
-            *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
-        )
+        simPose = Pose2d(*getSDArray(constants.kSimRobotPoseArrayKey, [0, 0, 0]))
         simPose3d = pose3dFrom2d(simPose)
 
         self.robotToTags = []

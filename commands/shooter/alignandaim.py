@@ -13,6 +13,7 @@ from subsystems.drivesubsystem import DriveSubsystem
 
 import constants
 from util.convenientmath import rotationFromTranslation
+from util.getsdarray import getSDArray
 
 
 class AlignAndAim(Command):
@@ -104,9 +105,7 @@ class AlignAndAim(Command):
 
     def execute(self):
         botPose = self.drive.getPose()
-        robotVelocity = SmartDashboard.getNumberArray(
-            constants.kDriveVelocityKeys, [0, 0, 0]
-        )
+        robotVelocity = getSDArray(constants.kDriveVelocityKeys, [0, 0, 0])
         time, velocity, psi, theta, distance = 0, 0, Rotation2d(), Rotation2d(), 0
         target = self.targetPose.translation()
 

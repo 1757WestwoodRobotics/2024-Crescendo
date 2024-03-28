@@ -28,6 +28,7 @@ from subsystems.intakesubsystem import IntakeSubsystem
 from util.advantagescopeconvert import convertToSendablePoses
 from util.convenientmath import clamp, pointInCircle
 from util.motorsimulator import MotorSimulator
+from util.getsdarray import getSDArray
 
 
 class SwerveModuleSim:
@@ -225,9 +226,7 @@ class NoteSim:
         )
         atPose = bot.container.intake.intakeAtPosition()
 
-        botPose = Pose2d(
-            *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
-        )
+        botPose = Pose2d(*getSDArray(constants.kSimRobotPoseArrayKey, [0, 0, 0]))
 
         hasNote = SmartDashboard.getBoolean(constants.kIntakeHasNoteKey, False)
 
