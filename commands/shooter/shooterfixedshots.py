@@ -61,11 +61,8 @@ class PassShot(Command):
     def execute(self):
         self.shooter.safePivot()
 
-        spinAmount = Preferences.getDouble("Spin Amount", 100)
-        self.shooter.setLeftShootingMotorSpeed(constants.kShooterPassSpeed - spinAmount)
-        self.shooter.setRightShootingMotorSpeed(
-            constants.kShooterPassSpeed + spinAmount
-        )
+        self.shooter.setLeftShootingMotorSpeed(constants.kShooterPassSpeed)
+        self.shooter.setRightShootingMotorSpeed(constants.kShooterPassSpeed)
 
 
 class SafetyPosition(Command):
