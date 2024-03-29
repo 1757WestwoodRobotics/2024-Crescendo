@@ -487,7 +487,6 @@ class DriveSubsystem(Subsystem):
         Called periodically when it can be called. Updates the robot's
         odometry with sensor data.
         """
-        start = self.printTimer.get()
 
         swervePositions = (
                 self.frontLeftModule.getPosition(),
@@ -501,8 +500,6 @@ class DriveSubsystem(Subsystem):
         )
         robotPose = self.getPose()
 
-        delta1 = self.printTimer.get() - start
-        start = self.printTimer.get()
 
         # putSDArray(
         #     constants.kSwerveActualStatesKey,
@@ -522,8 +519,6 @@ class DriveSubsystem(Subsystem):
 
         putSDArray(constants.kRobotPoseArrayKeys.valueKey, robotPoseArray)
         # SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, True)
-        delta2 = self.printTimer.get() - start
-        start = self.printTimer.get()
 
         estimatedCameraPoses = self.vision.poseList
         hasTargets = False
@@ -546,8 +541,6 @@ class DriveSubsystem(Subsystem):
         self.vision.poseList.clear()
 
         self.visionEstimate = self.estimator.getEstimatedPosition()
-        delta3 = self.printTimer.get() - start
-        start = self.printTimer.get()
 
         # I swear there's an easier way to do this but I couldn't figure it out
         speakerDistance = (
@@ -564,8 +557,6 @@ class DriveSubsystem(Subsystem):
                 ).translation()
             )
         )
-        delta4 = self.printTimer.get() - start
-        start = self.printTimer.get()
         SmartDashboard.putNumber(constants.kSpeakerDistanceKey, speakerDistance)
         SmartDashboard.putBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
@@ -578,30 +569,28 @@ class DriveSubsystem(Subsystem):
                 self.visionEstimate.rotation().radians(),
             ],
         )
-        delta5 = self.printTimer.get() - start
-        start = self.printTimer.get()
-        curTime = self.printTimer.get()
-        if self.printTimer.hasElapsed(constants.kPrintPeriod):
-            # DataLogManager.log(
-            #     # pylint:disable-next=consider-using-f-string
-            #     "r: {:.1f}, {:.1f}, {:.0f}* fl: {:.0f}* {:.1f} fr: {:.0f}* {:.1f} bl: {:.0f}* {:.1f} br: {:.0f}* {:.1f}".format(
-            #         robotPose.X(),
-            #         robotPose.Y(),
-            #         robotPose.rotation().degrees(),
-            #         self.frontLeftModule.getSwerveAngle().degrees(),
-            #         self.frontLeftModule.getWheelLinearVelocity(),
-            #         self.frontRightModule.getSwerveAngle().degrees(),
-            #         self.frontRightModule.getWheelLinearVelocity(),
-            #         self.backLeftModule.getSwerveAngle().degrees(),
-            #         self.backLeftModule.getWheelLinearVelocity(),
-            #         self.backRightModule.getSwerveAngle().degrees(),
-            #         self.backRightModule.getWheelLinearVelocity(),
-            #     )
-            # )
-            DataLogManager.log(
-                f"Timing: {1 / (curTime - self.pastTime)}, {delta1}, {delta2}, {delta3}, {delta4}, {delta5}"
-            )
-        self.pastTime = curTime
+        # curTime = self.printTimer.get()
+        # if self.printTimer.hasElapsed(constants.kPrintPeriod):
+        #     # DataLogManager.log(
+        #     #     # pylint:disable-next=consider-using-f-string
+        #     #     "r: {:.1f}, {:.1f}, {:.0f}* fl: {:.0f}* {:.1f} fr: {:.0f}* {:.1f} bl: {:.0f}* {:.1f} br: {:.0f}* {:.1f}".format(
+        #     #         robotPose.X(),
+        #     #         robotPose.Y(),
+        #     #         robotPose.rotation().degrees(),
+        #     #         self.frontLeftModule.getSwerveAngle().degrees(),
+        #     #         self.frontLeftModule.getWheelLinearVelocity(),
+        #     #         self.frontRightModule.getSwerveAngle().degrees(),
+        #     #         self.frontRightModule.getWheelLinearVelocity(),
+        #     #         self.backLeftModule.getSwerveAngle().degrees(),
+        #     #         self.backLeftModule.getWheelLinearVelocity(),
+        #     #         self.backRightModule.getSwerveAngle().degrees(),
+        #     #         self.backRightModule.getWheelLinearVelocity(),
+        #     #     )
+        #     # )
+        #     DataLogManager.log(
+        #         f"Timing: {1 / (curTime - self.pastTime)}, {delta1}, {delta2}, {delta3}, {delta4}, {delta5}"
+        #     )
+        # self.pastTime = curTime
 
     def arcadeDriveWithFactors(
         self,
