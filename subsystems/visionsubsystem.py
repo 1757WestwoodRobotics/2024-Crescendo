@@ -21,6 +21,7 @@ from wpimath.geometry import (
 import constants
 from util import advantagescopeconvert
 from util.convenientmath import pose3dFrom2d
+from util.getsdarray import getSDArray, putSDArray
 
 
 class EstimatedPose:
@@ -83,12 +84,9 @@ class VisionSubsystemReal(Subsystem):
     def periodic(self) -> None:
         # self.estimatedPosition = self.drive.getPose()
         # self.updateAdvantagescopePose()
-        visionPose = SmartDashboard.getNumberArray(
-            constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0]
-        )
-        robotPose = SmartDashboard.getNumberArray(
-            constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
-        )
+
+        visionPose = getSDArray(constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0])
+        robotPose = getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0])
 
         noteResult = self.noteCamera.getLatestResult()
         if noteResult.hasTargets():
@@ -103,7 +101,7 @@ class VisionSubsystemReal(Subsystem):
                 ).toPose2d()
                 for note in notes
             ]
-            SmartDashboard.putNumberArray(
+            putSDArray(
                 constants.kNoteInViewKey.valueKey,
                 advantagescopeconvert.convertToPose2dSendable(notePositions),
             )
@@ -175,9 +173,9 @@ class VisionSubsystemReal(Subsystem):
             poses, ids, ambiguitys = list(zip(*self.robotToTags))
 
             poses3d = advantagescopeconvert.convertToSendablePoses(poses)
-            SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
-            SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
-            SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
+            putSDArray(constants.kRobotToTagPoseKey, poses3d)
+            putSDArray(constants.kRobotToTagIdKey, ids)
+            putSDArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
     @staticmethod
     def updateAdvantagescopePose(
@@ -189,7 +187,7 @@ class VisionSubsystemReal(Subsystem):
         cameraPose = advantagescopeconvert.convertToSendablePoses(
             [cameraPose3d, botPose + cameraToRobotTransform.inverse()]
         )
-        SmartDashboard.putNumberArray(cameraKey, cameraPose)
+        putSDArray(cameraKey, cameraPose)
 
     def getCameraToNote(self, note: PhotonTrackedTarget) -> Transform3d:
         x = constants.kRobotToNoteCameraTransform.Z() / tan(
@@ -273,9 +271,7 @@ class VisionSubsystemSim(Subsystem):
         self.rng = RNG(constants.kSimulationVariation)
 
     def periodic(self) -> None:
-        simPose = Pose2d(
-            *SmartDashboard.getNumberArray(constants.kSimRobotPoseArrayKey, [0, 0, 0])
-        )
+        simPose = Pose2d(*getSDArray(constants.kSimRobotPoseArrayKey, [0, 0, 0]))
         simPose3d = pose3dFrom2d(simPose)
 
         self.robotToTags = []
@@ -328,9 +324,9 @@ class VisionSubsystemSim(Subsystem):
             poses, ids, ambiguitys = list(zip(*self.robotToTags))
 
             poses3d = advantagescopeconvert.convertToSendablePoses(poses)
-            SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
-            SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
-            SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
+            putSDArray(constants.kRobotToTagPoseKey, poses3d)
+            putSDArray(constants.kRobotToTagIdKey, ids)
+            putSDArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
 
 class RNG:

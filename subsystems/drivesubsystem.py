@@ -34,6 +34,7 @@ from util import convenientmath
 from util.angleoptimize import optimizeAngle
 from util.simcoder import CTREEncoder
 from util.simtalon import Talon
+from util.getsdarray import getSDArray, putSDArray
 from subsystems.visionsubsystem import VisionSubsystem
 
 
@@ -417,7 +418,7 @@ class DriveSubsystem(Subsystem):
             moduleStates, constants.kMaxWheelLinearVelocity
         )
 
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kSwerveExpectedStatesKey,
             [
                 frontLeftState.angle.radians(),
@@ -441,9 +442,7 @@ class DriveSubsystem(Subsystem):
     def getAngularVelocity(self) -> float:
         """radians"""
         if RobotBase.isSimulation():
-            return SmartDashboard.getNumberArray(
-                constants.kSimRobotVelocityArrayKey, [0, 0, 0]
-            )[2]
+            return getSDArray(constants.kSimRobotVelocityArrayKey, [0, 0, 0])[2]
         return (
             self.gyro.get_angular_velocity_z_world().value * constants.kRadiansPerDegree
         )
@@ -497,7 +496,7 @@ class DriveSubsystem(Subsystem):
         )
         robotPose = self.getPose()
 
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kSwerveActualStatesKey,
             [
                 self.frontLeftModule.getSwerveEncoderAngle().radians(),
@@ -513,7 +512,7 @@ class DriveSubsystem(Subsystem):
 
         robotPoseArray = [robotPose.X(), robotPose.Y(), robotPose.rotation().radians()]
 
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kRobotPoseArrayKeys.valueKey, robotPoseArray
         )
         SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, True)
@@ -580,7 +579,7 @@ class DriveSubsystem(Subsystem):
         SmartDashboard.putBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
         )
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kRobotVisionPoseArrayKeys.valueKey,
             [
                 self.visionEstimate.X(),
@@ -671,7 +670,7 @@ class DriveSubsystem(Subsystem):
             -self.getRotation(),
         )
 
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kDriveVelocityKeys,
             [fieldSpeeds.vx, fieldSpeeds.vy, fieldSpeeds.omega],
         )

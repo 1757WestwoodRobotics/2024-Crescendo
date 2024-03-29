@@ -10,6 +10,7 @@ from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
 from util.advantagescopeconvert import convertToSendablePoses
 from util.convenientmath import clamp
+from util.getsdarray import getSDArray, putSDArray
 import constants
 
 
@@ -257,13 +258,10 @@ class ShooterSubsystem(Subsystem):
         )
 
     def addSimNote(self) -> None:
-        pose = SmartDashboard.getNumberArray(
-            constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0]
-        )
+        pose = getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0])
         robotPose = Pose2d(*pose)
-        robotVelocities = SmartDashboard.getNumberArray(
-            constants.kDriveVelocityKeys, [0, 0, 0]
-        )
+        robotVelocities = getSDArray(constants.kDriveVelocityKeys, [0, 0, 0])
+
         shooterPose = Pose3d(robotPose) + constants.kRobotToShooterTransform
 
         noteSpeed = (
@@ -317,7 +315,7 @@ class ShooterSubsystem(Subsystem):
                 )
             else:
                 onGround = True
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kLatestNoteTrajectoryKey,
             convertToSendablePoses(latestNoteTrajectory),
         )
@@ -333,7 +331,7 @@ class ShooterSubsystem(Subsystem):
                 notePoses.append(
                     Pose3d(simNote.xc, simNote.yc, simNote.zc, Rotation3d(0, 0, 0))
                 )
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kSimNoteArrayKey, convertToSendablePoses(notePoses)
         )
         # logging
