@@ -351,10 +351,13 @@ class DriveSubsystem(Subsystem):
             Pose2d(),
         )
         self.printTimer = Timer()
+        self.printTimer.start()
         self.vxLimiter = SlewRateLimiter(constants.kDriveAccelLimit)
         self.vyLimiter = SlewRateLimiter(constants.kDriveAccelLimit)
 
         self.visionEstimate = Pose2d()
+
+        self.pastTime = self.printTimer.get()
 
         AutoBuilder.configureHolonomic(
             self.getPose,
@@ -484,6 +487,7 @@ class DriveSubsystem(Subsystem):
         Called periodically when it can be called. Updates the robot's
         odometry with sensor data.
         """
+        start = self.printTimer.get()
 
         self.odometry.update(
             self.getRotation(),
@@ -512,28 +516,8 @@ class DriveSubsystem(Subsystem):
 
         robotPoseArray = [robotPose.X(), robotPose.Y(), robotPose.rotation().radians()]
 
-        putSDArray(
-            constants.kRobotPoseArrayKeys.valueKey, robotPoseArray
-        )
-        SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, True)
-
-        if self.printTimer.hasElapsed(constants.kPrintPeriod):
-            DataLogManager.log(
-                # pylint:disable-next=consider-using-f-string
-                "r: {:.1f}, {:.1f}, {:.0f}* fl: {:.0f}* {:.1f} fr: {:.0f}* {:.1f} bl: {:.0f}* {:.1f} br: {:.0f}* {:.1f}".format(
-                    robotPose.X(),
-                    robotPose.Y(),
-                    robotPose.rotation().degrees(),
-                    self.frontLeftModule.getSwerveAngle().degrees(),
-                    self.frontLeftModule.getWheelLinearVelocity(),
-                    self.frontRightModule.getSwerveAngle().degrees(),
-                    self.frontRightModule.getWheelLinearVelocity(),
-                    self.backLeftModule.getSwerveAngle().degrees(),
-                    self.backLeftModule.getWheelLinearVelocity(),
-                    self.backRightModule.getSwerveAngle().degrees(),
-                    self.backRightModule.getWheelLinearVelocity(),
-                )
-            )
+        putSDArray(constants.kRobotPoseArrayKeys.valueKey, robotPoseArray)
+        # SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, True)
 
         estimatedCameraPoses = self.vision.poseList
         hasTargets = False
@@ -587,6 +571,29 @@ class DriveSubsystem(Subsystem):
                 self.visionEstimate.rotation().radians(),
             ],
         )
+        curTime = self.printTimer.get()
+        if self.printTimer.hasElapsed(constants.kPrintPeriod):
+            # DataLogManager.log(
+            #     # pylint:disable-next=consider-using-f-string
+            #     "r: {:.1f}, {:.1f}, {:.0f}* fl: {:.0f}* {:.1f} fr: {:.0f}* {:.1f} bl: {:.0f}* {:.1f} br: {:.0f}* {:.1f}".format(
+            #         robotPose.X(),
+            #         robotPose.Y(),
+            #         robotPose.rotation().degrees(),
+            #         self.frontLeftModule.getSwerveAngle().degrees(),
+            #         self.frontLeftModule.getWheelLinearVelocity(),
+            #         self.frontRightModule.getSwerveAngle().degrees(),
+            #         self.frontRightModule.getWheelLinearVelocity(),
+            #         self.backLeftModule.getSwerveAngle().degrees(),
+            #         self.backLeftModule.getWheelLinearVelocity(),
+            #         self.backRightModule.getSwerveAngle().degrees(),
+            #         self.backRightModule.getWheelLinearVelocity(),
+            #     )
+            # )
+            DataLogManager.log(
+                f"Timing: {1 / (curTime - self.pastTime)}, {curTime - start}"
+            )
+        self.pastTime = curTime
+
 
     def arcadeDriveWithFactors(
         self,

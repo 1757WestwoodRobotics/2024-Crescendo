@@ -1,5 +1,4 @@
 import os
-from commands2.sequentialcommandgroup import SequentialCommandGroup
 import wpilib
 from wpimath.geometry import Pose2d
 import commands2
@@ -9,11 +8,10 @@ from pathplannerlib.auto import (
     NamedCommands,
 )
 from commands.drive.absoluterelativedrive import AbsoluteRelativeDrive
-from commands.elevatorsetting import ElevatorTopPosition
 from commands.autonotepickup import AutoNotePickup
 import constants
 
-from commands.climber import NeutralClimberState, RetractClimberPosition
+from commands.climber import NeutralClimberState
 from commands.autospecific import AimAndFire, IntakeAuto
 from commands.resetdrive import ResetDrive
 from commands.intakesetting import ResetIntake

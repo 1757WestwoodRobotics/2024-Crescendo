@@ -1,5 +1,3 @@
-from wpilib import SmartDashboard
-
 from ntcore import NetworkTableInstance
 
 inst = NetworkTableInstance.getDefault().getTable("SmartDashboard")
@@ -7,8 +5,8 @@ inst = NetworkTableInstance.getDefault().getTable("SmartDashboard")
 def getSDArray(key: str, defaultValue):
     """use only for number arrays"""
     return (
-        SmartDashboard.getValue(key).getDoubleArray()
-        if SmartDashboard.getValue(key).isValid()
+        inst.getEntry(key).getDoubleArray(defaultValue)
+        if inst.getEntry(key).getValue().isValid()
         else defaultValue
     )
 
