@@ -10,7 +10,7 @@ from util.simneo import NEOBrushless
 from util.simcoder import CTREEncoder
 from util.advantagescopeconvert import convertToSendablePoses
 from util.convenientmath import clamp
-from util.getsdarray import getSDArray
+from util.getsdarray import getSDArray, putSDArray
 import constants
 
 
@@ -315,7 +315,7 @@ class ShooterSubsystem(Subsystem):
                 )
             else:
                 onGround = True
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kLatestNoteTrajectoryKey,
             convertToSendablePoses(latestNoteTrajectory),
         )
@@ -331,7 +331,7 @@ class ShooterSubsystem(Subsystem):
                 notePoses.append(
                     Pose3d(simNote.xc, simNote.yc, simNote.zc, Rotation3d(0, 0, 0))
                 )
-        SmartDashboard.putNumberArray(
+        putSDArray(
             constants.kSimNoteArrayKey, convertToSendablePoses(notePoses)
         )
         # logging

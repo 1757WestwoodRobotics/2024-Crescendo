@@ -21,7 +21,7 @@ from wpimath.geometry import (
 import constants
 from util import advantagescopeconvert
 from util.convenientmath import pose3dFrom2d
-from util.getsdarray import getSDArray
+from util.getsdarray import getSDArray, putSDArray
 
 
 class EstimatedPose:
@@ -101,7 +101,7 @@ class VisionSubsystemReal(Subsystem):
                 ).toPose2d()
                 for note in notes
             ]
-            SmartDashboard.putNumberArray(
+            putSDArray(
                 constants.kNoteInViewKey.valueKey,
                 advantagescopeconvert.convertToPose2dSendable(notePositions),
             )
@@ -173,9 +173,9 @@ class VisionSubsystemReal(Subsystem):
             poses, ids, ambiguitys = list(zip(*self.robotToTags))
 
             poses3d = advantagescopeconvert.convertToSendablePoses(poses)
-            SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
-            SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
-            SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
+            putSDArray(constants.kRobotToTagPoseKey, poses3d)
+            putSDArray(constants.kRobotToTagIdKey, ids)
+            putSDArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
     @staticmethod
     def updateAdvantagescopePose(
@@ -187,7 +187,7 @@ class VisionSubsystemReal(Subsystem):
         cameraPose = advantagescopeconvert.convertToSendablePoses(
             [cameraPose3d, botPose + cameraToRobotTransform.inverse()]
         )
-        SmartDashboard.putNumberArray(cameraKey, cameraPose)
+        putSDArray(cameraKey, cameraPose)
 
     def getCameraToNote(self, note: PhotonTrackedTarget) -> Transform3d:
         x = constants.kRobotToNoteCameraTransform.Z() / tan(
@@ -324,9 +324,9 @@ class VisionSubsystemSim(Subsystem):
             poses, ids, ambiguitys = list(zip(*self.robotToTags))
 
             poses3d = advantagescopeconvert.convertToSendablePoses(poses)
-            SmartDashboard.putNumberArray(constants.kRobotToTagPoseKey, poses3d)
-            SmartDashboard.putNumberArray(constants.kRobotToTagIdKey, ids)
-            SmartDashboard.putNumberArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
+            putSDArray(constants.kRobotToTagPoseKey, poses3d)
+            putSDArray(constants.kRobotToTagIdKey, ids)
+            putSDArray(constants.kRobotToTagAmbiguityKey, ambiguitys)
 
 
 class RNG:
