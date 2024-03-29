@@ -198,7 +198,7 @@ class Talon:
         return False
 
     def get(self, controlMode: ControlMode) -> float:
-        self.updateDashboard()
+        # self.updateDashboard()
         if controlMode == Talon.ControlMode.Position:
             return self.motor.get_position().value
         elif controlMode == Talon.ControlMode.Velocity:

@@ -489,35 +489,41 @@ class DriveSubsystem(Subsystem):
         """
         start = self.printTimer.get()
 
-        self.odometry.update(
-            self.getRotation(),
-            (
+        swervePositions = (
                 self.frontLeftModule.getPosition(),
                 self.frontRightModule.getPosition(),
                 self.backLeftModule.getPosition(),
                 self.backRightModule.getPosition(),
-            ),
+            )
+        self.odometry.update(
+            self.getRotation(),
+            swervePositions
         )
         robotPose = self.getPose()
 
-        putSDArray(
-            constants.kSwerveActualStatesKey,
-            [
-                self.frontLeftModule.getSwerveEncoderAngle().radians(),
-                self.frontLeftModule.getWheelLinearVelocity(),
-                self.frontRightModule.getSwerveEncoderAngle().radians(),
-                self.frontRightModule.getWheelLinearVelocity(),
-                self.backLeftModule.getSwerveEncoderAngle().radians(),
-                self.backLeftModule.getWheelLinearVelocity(),
-                self.backRightModule.getSwerveEncoderAngle().radians(),
-                self.backRightModule.getWheelLinearVelocity(),
-            ],
-        )
+        delta1 = self.printTimer.get() - start
+        start = self.printTimer.get()
+
+        # putSDArray(
+        #     constants.kSwerveActualStatesKey,
+        #     [
+        #         self.frontLeftModule.getSwerveEncoderAngle().radians(),
+        #         self.frontLeftModule.getWheelLinearVelocity(),
+        #         self.frontRightModule.getSwerveEncoderAngle().radians(),
+        #         self.frontRightModule.getWheelLinearVelocity(),
+        #         self.backLeftModule.getSwerveEncoderAngle().radians(),
+        #         self.backLeftModule.getWheelLinearVelocity(),
+        #         self.backRightModule.getSwerveEncoderAngle().radians(),
+        #         self.backRightModule.getWheelLinearVelocity(),
+        #     ],
+        # )
 
         robotPoseArray = [robotPose.X(), robotPose.Y(), robotPose.rotation().radians()]
 
         putSDArray(constants.kRobotPoseArrayKeys.valueKey, robotPoseArray)
         # SmartDashboard.putBoolean(constants.kRobotPoseArrayKeys.validKey, True)
+        delta2 = self.printTimer.get() - start
+        start = self.printTimer.get()
 
         estimatedCameraPoses = self.vision.poseList
         hasTargets = False
@@ -534,15 +540,14 @@ class DriveSubsystem(Subsystem):
             self.printTimer.getFPGATimestamp(),
             self.odometry.getPose().rotation(),
             [
-                self.frontLeftModule.getPosition(),
-                self.frontRightModule.getPosition(),
-                self.backLeftModule.getPosition(),
-                self.backRightModule.getPosition(),
+                *swervePositions
             ],
         )
         self.vision.poseList.clear()
 
         self.visionEstimate = self.estimator.getEstimatedPosition()
+        delta3 = self.printTimer.get() - start
+        start = self.printTimer.get()
 
         # I swear there's an easier way to do this but I couldn't figure it out
         speakerDistance = (
@@ -559,6 +564,8 @@ class DriveSubsystem(Subsystem):
                 ).translation()
             )
         )
+        delta4 = self.printTimer.get() - start
+        start = self.printTimer.get()
         SmartDashboard.putNumber(constants.kSpeakerDistanceKey, speakerDistance)
         SmartDashboard.putBoolean(
             constants.kRobotVisionPoseArrayKeys.validKey, hasTargets
@@ -571,6 +578,8 @@ class DriveSubsystem(Subsystem):
                 self.visionEstimate.rotation().radians(),
             ],
         )
+        delta5 = self.printTimer.get() - start
+        start = self.printTimer.get()
         curTime = self.printTimer.get()
         if self.printTimer.hasElapsed(constants.kPrintPeriod):
             # DataLogManager.log(
@@ -590,10 +599,9 @@ class DriveSubsystem(Subsystem):
             #     )
             # )
             DataLogManager.log(
-                f"Timing: {1 / (curTime - self.pastTime)}, {curTime - start}"
+                f"Timing: {1 / (curTime - self.pastTime)}, {delta1}, {delta2}, {delta3}, {delta4}, {delta5}"
             )
         self.pastTime = curTime
-
 
     def arcadeDriveWithFactors(
         self,
