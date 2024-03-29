@@ -88,38 +88,38 @@ class VisionSubsystemReal(Subsystem):
         visionPose = getSDArray(constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0])
         robotPose = getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0])
 
-        noteResult = self.noteCamera.getLatestResult()
-        if noteResult.hasTargets():
-            notes = noteResult.getTargets()
-            notePositions = [
-                (
-                    Pose3d(
-                        robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2])
-                    )
-                    + constants.kRobotToNoteCameraTransform
-                    + VisionSubsystemReal.getCameraToNote(self, note)
-                ).toPose2d()
-                for note in notes
-            ]
-            putSDArray(
-                constants.kNoteInViewKey.valueKey,
-                advantagescopeconvert.convertToPose2dSendable(notePositions),
-            )
-            closestNote = Pose2d(*robotPose).nearest(notePositions)
-            intakePickupPosition = (
-                Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
-            )
+        # noteResult = self.noteCamera.getLatestResult()
+        # if noteResult.hasTargets():
+        #     notes = noteResult.getTargets()
+        #     notePositions = [
+        #         (
+        #             Pose3d(
+        #                 robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2])
+        #             )
+        #             + constants.kRobotToNoteCameraTransform
+        #             + VisionSubsystemReal.getCameraToNote(self, note)
+        #         ).toPose2d()
+        #         for note in notes
+        #     ]
+        #     putSDArray(
+        #         constants.kNoteInViewKey.valueKey,
+        #         advantagescopeconvert.convertToPose2dSendable(notePositions),
+        #     )
+        #     closestNote = Pose2d(*robotPose).nearest(notePositions)
+        #     intakePickupPosition = (
+        #         Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
+        #     )
 
-            # angle robot needs to rotate by to pick up note by driving forward
-            self.dRobotAngle = (
-                Rotation2d(robotPose[2])
-                + Transform2d(intakePickupPosition, closestNote).rotation()
-            )
+        #     # angle robot needs to rotate by to pick up note by driving forward
+        #     self.dRobotAngle = (
+        #         Rotation2d(robotPose[2])
+        #         + Transform2d(intakePickupPosition, closestNote).rotation()
+        #     )
 
-            SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
-        else:
-            # rotate around if no note in vision
-            SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
+        #     SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
+        # else:
+        #     # rotate around if no note in vision
+        #     SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
 
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
