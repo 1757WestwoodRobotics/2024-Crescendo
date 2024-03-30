@@ -168,23 +168,23 @@
     "Buttonbox"
   ],
   "resetElevator": [
-    0,
+    1,
     {
-      "Button": 13
+      "Button": 22
     },
     "something on stick"
   ],
   "resetIntake": [
-    0,
+    1,
     {
-      "Button": 14
+      "Button": 23
     },
     "something on stick"
   ],
   "resetShooter": [
-    0,
+    1,
     {
-      "Button": 15
+      "Button": 24
     },
     "something on stick"
   ],
