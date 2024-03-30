@@ -12,7 +12,7 @@ from subsystems.shootersubsystem import ShooterSubsystem
 from subsystems.drivesubsystem import DriveSubsystem
 
 import constants
-from util.convenientmath import rotationFromTranslation
+from util.convenientmath import deadband, rotationFromTranslation
 from util.getsdarray import getSDArray
 
 
@@ -144,8 +144,11 @@ class AlignAndAim(Command):
         self.shooter.setRightShootingMotorSpeed(launch_vel_rpm + spinAmount)
 
         # rotation pid gain
-        rotation = self.thetaController.calculate(
-            botPose.rotation().radians(), theta.radians()
+        rotation = deadband(
+            self.thetaController.calculate(
+                botPose.rotation().radians(), theta.radians()
+            ),
+            constants.kRotationAlignDeadband.radians(),
         )
 
         if DriverStation.getAlliance() == DriverStation.Alliance.kRed:

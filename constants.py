@@ -634,7 +634,7 @@ kTrajectoryPositionPGain = 3
 kTrajectoryPositionIGain = 0
 kTrajectoryPositionDGain = 0
 
-kTrajectoryAnglePGain = 5
+kTrajectoryAnglePGain = 7
 kTrajectoryAngleIGain = 0
 kTrajectoryAngleDGain = 0
 
@@ -992,9 +992,11 @@ kNoteTrajectoryTimeInterval = 0.15
 kShooterWheelRadius = kShooterWheelDiameter / 2
 kShooterMovingIterations = 5
 
-kAlignAnglePGain = 0.6
+kAlignAnglePGain = 1.1
 kAlignAngleIGain = 0
 kAlignAngleDGain = 0
+
+kRotationAlignDeadband = Rotation2d.fromDegrees(3)
 
 kPathfindingConstraints = PathConstraints(
     kMaxWheelLinearVelocity,
