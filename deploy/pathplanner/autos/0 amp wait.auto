@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9567867436271553,
-      "y": 4.523190155503746
+      "x": 0.7717054574300003,
+      "y": 6.574793964229721
     },
-    "rotation": -58.572666394434286
+    "rotation": 57.52995103324914
   },
   "command": {
     "type": "sequential",
@@ -24,34 +24,22 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 8.0
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "source side to stage"
+                  "pathName": "amp side start to wing 1"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "holding"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aimAndFire"
           }
         }
       ]
