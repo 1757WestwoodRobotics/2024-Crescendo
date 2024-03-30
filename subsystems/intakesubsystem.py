@@ -118,14 +118,14 @@ class IntakeSubsystem(Subsystem):
                 self.positionFigured = True
             self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
 
-        elif frontLimitState:
-            if not self.positionFigured:
-                self.heldPosition = (
-                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
-                    + constants.kIntakeSafetyPositionOffset + constants.kIntakeStoppedThreshold
-                )
-                self.positionFigured = True
-            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+        # elif frontLimitState:
+        #     if not self.positionFigured:
+        #         self.heldPosition = (
+        #             self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+        #             + constants.kIntakeSafetyPositionOffset + constants.kIntakeStoppedThreshold
+        #         )
+        #         self.positionFigured = True
+        #     self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
         else:
             self.positionFigured = False
             self.intakeMotor.set(
@@ -174,7 +174,7 @@ class IntakeSubsystem(Subsystem):
         else:
             if self.state == self.IntakeState.Intaking:
                 if (
-                    self.hasPosition
+                    backLimitState
                     and self.intakeMotor.get(NEOBrushless.ControlMode.Velocity)
                     < constants.kIntakeStoppedThreshold
                 ):
