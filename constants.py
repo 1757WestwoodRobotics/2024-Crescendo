@@ -910,6 +910,9 @@ kShooterAngleFudgeKey = "shooter/fudge/angle"
 kLeftMotorFudgeKey = "shooter/fudge/leftMotor"
 kRightMotorFudgeKey = "shooter/fudge/rightMotor"
 
+kShooterFudgeGlobalRed = Rotation2d(0.025)
+kShooterFudgeGlobalBlue = Rotation2d(0)
+
 
 kShooterCalcSpeed = "shooter/calculated/speed"
 kShooterCalcAngle = "shooter/calculated/angle"

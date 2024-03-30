@@ -142,13 +142,19 @@ class ShooterSubsystem(Subsystem):
         )
 
     def setShooterAngle(self, angle: Rotation2d) -> None:
-        self.targetAngle = Rotation2d(
-            clamp(
-                angle.radians(),
-                constants.kShooterMinAngle.radians(),
-                constants.kShooterMaxAngle.radians(),
+        self.targetAngle = (
+            Rotation2d(
+                clamp(
+                    angle.radians(),
+                    constants.kShooterMinAngle.radians(),
+                    constants.kShooterMaxAngle.radians(),
+                )
             )
-        ) + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
+            + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
+            + constants.kShooterFudgeGlobalRed
+            if DriverStation.getAlliance() == DriverStation.Alliance.kRed
+            else constants.kShooterFudgeGlobalBlue
+        )
 
         if (
             SmartDashboard.getBoolean(constants.kIntakeAtPositionKey, False)
@@ -331,9 +337,7 @@ class ShooterSubsystem(Subsystem):
                 notePoses.append(
                     Pose3d(simNote.xc, simNote.yc, simNote.zc, Rotation3d(0, 0, 0))
                 )
-        putSDArray(
-            constants.kSimNoteArrayKey, convertToSendablePoses(notePoses)
-        )
+        putSDArray(constants.kSimNoteArrayKey, convertToSendablePoses(notePoses))
         # logging
         if not SmartDashboard.getBoolean(constants.kShooterManualModeKey, False):
             SmartDashboard.putNumber(
