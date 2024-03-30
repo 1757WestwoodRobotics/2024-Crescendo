@@ -151,9 +151,11 @@ class ShooterSubsystem(Subsystem):
                 )
             )
             + Rotation2d(SmartDashboard.getNumber(constants.kShooterAngleFudgeKey, 0))
-            + constants.kShooterFudgeGlobalRed
-            if DriverStation.getAlliance() == DriverStation.Alliance.kRed
-            else constants.kShooterFudgeGlobalBlue
+            + (
+                constants.kShooterFudgeGlobalRed
+                if DriverStation.getAlliance() == DriverStation.Alliance.kRed
+                else constants.kShooterFudgeGlobalBlue
+            )
         )
 
         if (
