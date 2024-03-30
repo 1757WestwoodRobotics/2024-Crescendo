@@ -816,7 +816,7 @@ kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = 1
 kIntakeFirstSensorPositionOffset = 2
-kIntakePositionThreshold = 0.75
+kIntakePositionThreshold = 0.5
 kIntakeStoppedThreshold = 10  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"
