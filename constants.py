@@ -554,24 +554,24 @@ kApriltagPositionDict = {  # thanks 6328 for FieldConstants!
     #     (kMetersPerInch * 52.00),
     #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 180),
     # ),
-    14: Pose3d(
-        (kMetersPerInch * 209.48),
-        (kMetersPerInch * 161.62),
-        (kMetersPerInch * 52.00),
-        Rotation3d(0.0, 0.0, kRadiansPerDegree * 0),
-    ),
-    15: Pose3d(
-        (kMetersPerInch * 182.73),
-        (kMetersPerInch * 177.10),
-        (kMetersPerInch * 52.00),
-        Rotation3d(0.0, 0.0, kRadiansPerDegree * 120),
-    ),
-    16: Pose3d(
-        (kMetersPerInch * 182.73),
-        (kMetersPerInch * 146.19),
-        (kMetersPerInch * 52.00),
-        Rotation3d(0.0, 0.0, kRadiansPerDegree * 240),
-    ),
+    # 14: Pose3d(
+    #     (kMetersPerInch * 209.48),
+    #     (kMetersPerInch * 161.62),
+    #     (kMetersPerInch * 52.00),
+    #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 0),
+    # ),
+    # 15: Pose3d(
+    #     (kMetersPerInch * 182.73),
+    #     (kMetersPerInch * 177.10),
+    #     (kMetersPerInch * 52.00),
+    #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 120),
+    # ),
+    # 16: Pose3d(
+    #     (kMetersPerInch * 182.73),
+    #     (kMetersPerInch * 146.19),
+    #     (kMetersPerInch * 52.00),
+    #     Rotation3d(0.0, 0.0, kRadiansPerDegree * 240),
+    # ),
 }
 
 # Autonomous
