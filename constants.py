@@ -996,6 +996,10 @@ kAlignAnglePGain = 1.1
 kAlignAngleIGain = 0
 kAlignAngleDGain = 0
 
+kAutoAimPGain = 0.6
+kAutoAimIGain = 0
+kAutoAimDGain = 0
+
 kRotationAlignDeadband = Rotation2d.fromDegrees(3)
 
 kPathfindingConstraints = PathConstraints(

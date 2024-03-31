@@ -37,9 +37,9 @@ class AlignAndAim(Command):
         self.targetPose = Pose3d()
 
         self.thetaController = ProfiledPIDControllerRadians(
-            constants.kAlignAnglePGain,
-            constants.kAlignAngleIGain,
-            constants.kAlignAngleDGain,
+            constants.kAutoAimPGain,
+            constants.kAutoAimIGain,
+            constants.kAutoAimDGain,
             TrapezoidProfileRadians.Constraints(
                 constants.kMaxRotationAngularVelocity,
                 constants.kMaxRotationAngularAcceleration,
