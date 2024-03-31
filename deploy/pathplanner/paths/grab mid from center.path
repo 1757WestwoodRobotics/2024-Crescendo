@@ -3,54 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8416287632766933,
-        "y": 4.416870974836472
+        "x": 1.3343147868199454,
+        "y": 5.504512048462161
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.783305117783248,
-        "y": 1.3466395059571603
+        "x": 1.4620973101501293,
+        "y": 4.3234928817080815
       },
       "isLocked": false,
-      "linkedName": "source start"
+      "linkedName": "subwoofer front"
     },
     {
       "anchor": {
-        "x": 3.7335476148498867,
-        "y": 1.8379411958960272
+        "x": 2.5936782814999755,
+        "y": 2.9027074473476953
       },
       "prevControl": {
-        "x": 2.07365266222927,
-        "y": 1.856880925769041
+        "x": 1.274758010144166,
+        "y": 3.413049800877873
       },
       "nextControl": {
-        "x": 4.973778796828217,
-        "y": 1.8237899126900188
+        "x": 3.332287500768702,
+        "y": 2.6169103635609683
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.420293417832823,
-        "y": 1.8379411958960272
+        "x": 7.802127682714819,
+        "y": 4.119855221703531
       },
       "prevControl": {
-        "x": 5.121773548065811,
-        "y": 1.8288946879783838
+        "x": 5.600768185336796,
+        "y": 4.205585385958093
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "piece5pickup"
+      "linkedName": "centerNote"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": -71.18064398891215,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -61,11 +55,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -61.941622907967506,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
