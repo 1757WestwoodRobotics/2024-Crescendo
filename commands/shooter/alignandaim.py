@@ -1,4 +1,4 @@
-from math import atan2, pi, sqrt
+from math import atan2, pi, sqrt, cos
 import typing
 
 from commands2.command import Command
@@ -80,20 +80,20 @@ class AlignAndAim(Command):
         angleToTarget = rotationFromTranslation(deltaTranslation)
         distanceToTarget = deltaTranslation.norm()
 
-        extraYVel = Preferences.getDouble("Shooter Extra")
 
-        vy = sqrt(
-            extraYVel**2
-            + (self.targetPose.Z() - constants.kRobotToShooterTransform.Z())
-            * 2
-            * constants.kGravity
-        )
-        airtime = (vy - extraYVel) / constants.kGravity
-        vx = distanceToTarget / airtime
+        launch_vel = 26.6 # m/s
+        launchAngle = atan2(self.targetPose.Z(), distanceToTarget)
+        # vy = sqrt(
+        #     extraYVel**2
+        #     + (self.targetPose.Z() - constants.kRobotToShooterTransform.Z())
+        #     * 2
+        #     * constants.kGravity
+        # )
+        airtime = distanceToTarget / (launch_vel * cos(launchAngle))
+        # vx = distanceToTarget / airtime
 
-        launchAngle = atan2(vy, vx)  # radians
+        # launchAngle = atan2(vy, vx)  # radians
         angleAdjust = constants.kShooterAngleAdjustmentMappingFunction(distanceToTarget)
-        launch_vel = sqrt(vx**2 + vy**2)  # m/s
 
         return (
             airtime,
