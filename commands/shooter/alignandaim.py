@@ -31,6 +31,8 @@ class AlignAndAim(Command):
         self.drive = driveSubsystem
         self.t = Timer()
 
+        self.doFlip = False
+
         self.forward = forward
         self.sideways = sideways
 
@@ -68,6 +70,7 @@ class AlignAndAim(Command):
 
         self.t.reset()
         self.t.start()
+        self.doFlip = not self.doFlip
 
     def calculateTimeVelocityAngle(
         self, position: Translation3d
@@ -80,8 +83,7 @@ class AlignAndAim(Command):
         angleToTarget = rotationFromTranslation(deltaTranslation)
         distanceToTarget = deltaTranslation.norm()
 
-
-        launch_vel = 26.6 # m/s
+        launch_vel = 20  # m/s
         launchAngle = atan2(self.targetPose.Z(), distanceToTarget)
         # vy = sqrt(
         #     extraYVel**2
@@ -93,7 +95,7 @@ class AlignAndAim(Command):
         # vx = distanceToTarget / airtime
 
         # launchAngle = atan2(vy, vx)  # radians
-        angleAdjust = constants.kShooterAngleAdjustmentMappingFunction(distanceToTarget)
+        angleAdjust = constants.kShooterAngleAdjustmentMappingFunction(launchAngle)
 
         return (
             airtime,
@@ -137,7 +139,9 @@ class AlignAndAim(Command):
         SmartDashboard.putNumber(constants.kShooterCalcDistance, distance)
         SmartDashboard.putNumber(constants.kShooterCalcAngle, psi.radians())
 
-        spinAmount = Preferences.getDouble("Spin Amount", 100)
+        spinAmount = Preferences.getDouble("Spin Amount", 100) * (
+            1 if self.doFlip else -1
+        )
 
         self.shooter.setShooterAngle(psi)
         self.shooter.setLeftShootingMotorSpeed(launch_vel_rpm - spinAmount)
