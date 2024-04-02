@@ -732,9 +732,7 @@ kNotesStartingRedWing = [
     Pose3d(13.63, 7.004, 0.03018, Rotation3d()),
 ]
 
-kNotesStartingField = (
-    kNotesStartingMidline + kNotesStartingBlueWing + kNotesStartingRedWing
-)
+kNotesStartingField = [Pose3d(8.258, 7.462, 0.03018, Rotation3d())]
 
 kNoteLoadingStationPositionBlue = Pose3d(15, 1, 0, Rotation3d())
 kNoteLoadingStationPositionRed = Pose3d(54 * kMetersPerFoot - 15, 1, 0, Rotation3d())

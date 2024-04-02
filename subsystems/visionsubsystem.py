@@ -247,6 +247,15 @@ class SimCamera:
             and abs(rel.targToCamAngle.degrees()) < 90
         )
 
+    def canSeeNote(self, botPose: Pose3d, targetPose: Pose3d):
+        cameraPose = botPose + self.location
+        rel = CameraTargetRelation(cameraPose, targetPose)
+        return (
+            abs(rel.camToTargYaw.degrees()) < self.horizFOV / 2
+            and abs(rel.camToTargPitch.degrees()) < self.vertFOV / 2
+            and abs(rel.camToTargAngle.degrees()) < 90
+        )
+
 
 class VisionSubsystemSim(Subsystem):
     def __init__(self) -> None:
@@ -350,22 +359,30 @@ class VisionSubsystemSim(Subsystem):
         SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
 
         for note in constants.kNotesStartingField:
-            if self.noteCamera.canSeeTarget(simPose3d, note):
-                SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
-                relation = CameraTargetRelation(noteCameraPose, note)
+            relation = CameraTargetRelation(noteCameraPose, note)
 
+            if self.noteCamera.canSeeNote(simPose3d, note):
+                SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
                 x = constants.kRobotToNoteCameraTransform.Z() / tan(
-                    constants.kNoteCameraPitch - relation.camToTargPitch.radians()
+                    constants.kNoteCameraPitch + relation.camToTargPitch.radians()
                 )
                 dist = (constants.kRobotToNoteCameraTransform.Z() ** 2 + x**2) ** 0.5
-                y = dist * tan(-relation.camToTargYaw.radians())
+                y = dist * tan(relation.camToTargYaw.radians())
                 cameraToNote = Transform3d(x, y, 0, Rotation3d(0, 0, atan(y / x)))
-
                 notePose = (
-                    simPose3d + constants.kRobotToNoteCameraTransform + cameraToNote
+                    simPose3d
+                    + Transform3d(
+                        Pose3d(),
+                        Pose3d(
+                            0.330296,
+                            -0.333443,
+                            0.570646,
+                            Rotation3d(0, 0, constants.kNoteCameraYaw),
+                        ),
+                    )
+                    + cameraToNote
                 )
                 notePoses.append(notePose)
-
         SmartDashboard.putNumberArray(
             constants.kNoteInViewKey.valueKey,
             advantagescopeconvert.convertToSendablePoses(notePoses),
