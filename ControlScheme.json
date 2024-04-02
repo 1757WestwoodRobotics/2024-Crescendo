@@ -128,21 +128,30 @@
   "prepShotSubwoofer": [
     2,
     {
-      "POV": [0, 90]
+      "POV": [
+        0,
+        90
+      ]
     },
     "Throttle middle rocker up"
   ],
   "prepShotPodium": [
     2,
     {
-      "POV": [0, 270]
+      "POV": [
+        0,
+        270
+      ]
     },
     "Throttle middle rocker down"
   ],
   "prepShotPass": [
     2,
     {
-      "POV": [0, 180]
+      "POV": [
+        0,
+        180
+      ]
     },
     "Throttle thumb pov down"
   ],
@@ -263,13 +272,13 @@
     {
       "Button": 3
     },
-    "Throttle thumb pov up"
+    "top of left joystick left button"
   ],
-    "spinUpShooter": [
-        1,
-        {
-            "Button": 17
-        },
-            "buttonbox"
-    ]
+  "spinUpShooter": [
+    1,
+    {
+      "Button": 17
+    },
+    "buttonbox"
+  ]
 }

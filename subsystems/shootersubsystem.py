@@ -179,8 +179,10 @@ class ShooterSubsystem(Subsystem):
 
     def setLeftShootingMotorSpeed(self, rpm: float) -> None:
         self.leftTargetSpeed = (
-            rpm + SmartDashboard.getNumber(constants.kLeftMotorFudgeKey, 0)
-        ) * constants.kShootingMotorRatio
+            (rpm + SmartDashboard.getNumber(constants.kLeftMotorFudgeKey, 0))
+            * constants.kShootingMotorRatio
+            / 60
+        )
         self.leftShootingMotor.set(
             Talon.ControlMode.Velocity,
             self.leftTargetSpeed,
@@ -189,8 +191,10 @@ class ShooterSubsystem(Subsystem):
 
     def setRightShootingMotorSpeed(self, rpm: float) -> None:
         self.rightTargetSpeed = (
-            rpm + SmartDashboard.getNumber(constants.kRightMotorFudgeKey, 0)
-        ) * constants.kShootingMotorRatio
+            (rpm + SmartDashboard.getNumber(constants.kRightMotorFudgeKey, 0))
+            * constants.kShootingMotorRatio
+            / 60
+        )
         self.rightShootingMotor.set(
             Talon.ControlMode.Velocity,
             self.rightTargetSpeed,
@@ -230,11 +234,11 @@ class ShooterSubsystem(Subsystem):
 
     def getLeftShooterSpeed(self) -> int:
         # RPM
-        return self.leftShootingMotor.get(NEOBrushless.ControlMode.Velocity)
+        return self.leftShootingMotor.get(Talon.ControlMode.Velocity)
 
     def getRightShooterSpeed(self) -> int:
         # RPM
-        return self.rightShootingMotor.get(NEOBrushless.ControlMode.Velocity)
+        return self.rightShootingMotor.get(Talon.ControlMode.Velocity)
 
     def angleOnTarget(self) -> bool:
         return (

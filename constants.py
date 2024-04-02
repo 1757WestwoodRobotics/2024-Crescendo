@@ -828,7 +828,7 @@ kPivotAngleKey = "intake/pivotAngle"
 kIntakeSpeedKey = "intake/speed"
 
 kAngleMotorRatio = (64 / 12) * (64 / 16) * (60 / 18)
-kShootingMotorRatio = 36 / 24
+kShootingMotorRatio = 24 / 36
 
 # change numbers later
 
