@@ -251,6 +251,11 @@ kRobotToNoteCameraTransform = Transform3d(
     ),
 )
 
+kRobotToNoteCameraTransformNoPitch = Transform3d(
+    Pose3d(),
+    Pose3d(0.330296, -0.333443, 0.570646, Rotation3d(0, 0, kNoteCameraYaw)),
+)
+
 kCameraFOVHorizontal = 75.9  # degrees
 kCameraFOVVertical = 47.4  # degrees
 
@@ -1041,7 +1046,7 @@ kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(10)
 kNoteCameraDebounceTime = 1  # seconds
 kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
 
-kAutoNotePickupPGain = 0.001
+kAutoNotePickupPGain = 0.5
 kAutoNotePickupIGain = 0
 kAutoNotePickupDGain = 0
 
