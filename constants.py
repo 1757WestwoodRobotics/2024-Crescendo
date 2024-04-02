@@ -732,7 +732,9 @@ kNotesStartingRedWing = [
     Pose3d(13.63, 7.004, 0.03018, Rotation3d()),
 ]
 
-kNotesStartingField = [Pose3d(8.258, 7.462, 0.03018, Rotation3d())]
+kNotesStartingField = (
+    kNotesStartingMidline + kNotesStartingBlueWing + kNotesStartingRedWing
+)
 
 kNoteLoadingStationPositionBlue = Pose3d(15, 1, 0, Rotation3d())
 kNoteLoadingStationPositionRed = Pose3d(54 * kMetersPerFoot - 15, 1, 0, Rotation3d())
@@ -1036,7 +1038,7 @@ kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(10)
 kNoteCameraDebounceTime = 1  # seconds
 kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
 
-kAutoNotePickupPGain = 0.001
+kAutoNotePickupPGain = 0.5
 kAutoNotePickupIGain = 0
 kAutoNotePickupDGain = 0
 

@@ -60,6 +60,7 @@ class AutoNotePickup(Command):
             self.drive.arcadeDriveWithFactors(
                 driveOutput, 0, angleOutput, self.drive.CoordinateMode.RobotRelative
             )
+            print(driveOutput)
         else:
             self.drive.arcadeDriveWithFactors(
                 0, 0, angleOutput, self.drive.CoordinateMode.RobotRelative

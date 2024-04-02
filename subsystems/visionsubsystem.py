@@ -382,10 +382,20 @@ class VisionSubsystemSim(Subsystem):
                     )
                     + cameraToNote
                 )
-                notePoses.append(notePose)
+                notePoses.append(Pose2d(notePose.X(), notePose.Y(), 0))
+        closestNote = simPose.nearest(notePoses)
+        intakePickupPosition = simPose + constants.kRobotToIntakePickupTransform
+        intakeToNoteTransform = Transform2d(
+            Pose2d(intakePickupPosition.X(), intakePickupPosition.Y(), 0),
+            closestNote,
+        )
+
+        self.dRobotAngle = simPose.rotation() - Rotation2d(
+            intakeToNoteTransform.X(), intakeToNoteTransform.Y()
+        )
         SmartDashboard.putNumberArray(
             constants.kNoteInViewKey.valueKey,
-            advantagescopeconvert.convertToSendablePoses(notePoses),
+            advantagescopeconvert.convertToPose2dSendable(notePoses),
         )
 
 
