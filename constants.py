@@ -1038,7 +1038,7 @@ kAutoNotePickupAngleTolerance = Rotation2d.fromDegrees(10)
 kNoteCameraDebounceTime = 1  # seconds
 kMaxAutoNotePickupSpeed = 0.5  # 0 to 1
 
-kAutoNotePickupPGain = 0.5
+kAutoNotePickupPGain = 0.5  # it probably seems high but it's slow in sim
 kAutoNotePickupIGain = 0
 kAutoNotePickupDGain = 0
 

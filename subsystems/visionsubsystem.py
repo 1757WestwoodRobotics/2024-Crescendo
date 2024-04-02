@@ -98,7 +98,12 @@ class VisionSubsystemReal(Subsystem):
                     Pose3d(
                         robotPose[0], robotPose[1], 0, Rotation3d(0, 0, robotPose[2])
                     )
-                    + constants.kRobotToNoteCameraTransform
+                    + Pose3d(
+                        0.330296,
+                        0.333443,
+                        0.570646,
+                        Rotation3d(0, 0, constants.kNoteCameraYaw),
+                    )
                     + VisionSubsystemReal.getCameraToNote(self, note)
                 ).toPose2d()
                 for note in notes
@@ -111,11 +116,11 @@ class VisionSubsystemReal(Subsystem):
             intakePickupPosition = (
                 Pose2d(*robotPose) + constants.kRobotToIntakePickupTransform
             )
+            intakeToNoteTransform = Transform2d(intakePickupPosition, closestNote)
 
             # angle robot needs to rotate by to pick up note by driving forward
-            self.dRobotAngle = (
-                Rotation2d(robotPose[2])
-                - Transform2d(intakePickupPosition, closestNote).rotation()
+            self.dRobotAngle = Rotation2d(robotPose[2]) - Rotation2d(
+                intakeToNoteTransform.X(), intakeToNoteTransform.Y()
             )
 
             SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, True)
