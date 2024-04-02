@@ -73,23 +73,23 @@ class ShooterSubsystem(Subsystem):
             moMagicVel=constants.kAngleMotorVel,
         )
         self.angleMotor.setNeutralMode(Talon.NeutralMode.Brake)
-        self.leftShootingMotor = NEOBrushless(
+        self.leftShootingMotor = Talon(
             constants.kLeftShootingMotorCANId,
             constants.kLeftShootingMotorName,
-            constants.kLeftShootingMotorPIDSlot,
             constants.kLeftShootingMotorPGain,
             constants.kLeftShootingMotorIGain,
             constants.kLeftShootingMotorDGain,
             constants.kLeftShootingMotorInverted,
+            kV=constants.kLeftShootingMotorKv,
         )
-        self.rightShootingMotor = NEOBrushless(
+        self.rightShootingMotor = Talon(
             constants.kRightShootingMotorCANId,
             constants.kRightShootingMotorName,
-            constants.kRightShootingMotorPIDSlot,
             constants.kRightShootingMotorPGain,
             constants.kRightShootingMotorIGain,
             constants.kRightShootingMotorDGain,
             constants.kRightShootingMotorInverted,
+            kV=constants.kLeftShootingMotorKv,
         )
 
         self.shooterEncoder = CTREEncoder(
@@ -97,11 +97,15 @@ class ShooterSubsystem(Subsystem):
         )
         self.shooterInitPosition = self.shooterEncoder.getPosition()
 
-        self.leftShootingMotor.setSmartCurrentLimit(
-            constants.kShootingMotorCurrentLimit
+        self.leftShootingMotor.setCurrentLimit(
+            CurrentLimitsConfigs().with_supply_current_limit(
+                constants.kShootingMotorCurrentLimit
+            )
         )
-        self.rightShootingMotor.setSmartCurrentLimit(
-            constants.kShootingMotorCurrentLimit
+        self.rightShootingMotor.setCurrentLimit(
+            CurrentLimitsConfigs().with_supply_current_limit(
+                constants.kShootingMotorCurrentLimit
+            )
         )
 
         self.angleMotor.setCurrentLimit(
@@ -178,7 +182,7 @@ class ShooterSubsystem(Subsystem):
             rpm + SmartDashboard.getNumber(constants.kLeftMotorFudgeKey, 0)
         ) * constants.kShootingMotorRatio
         self.leftShootingMotor.set(
-            NEOBrushless.ControlMode.Velocity,
+            Talon.ControlMode.Velocity,
             self.leftTargetSpeed,
             self.ff.calculate(self.leftTargetSpeed),
         )
@@ -188,7 +192,7 @@ class ShooterSubsystem(Subsystem):
             rpm + SmartDashboard.getNumber(constants.kRightMotorFudgeKey, 0)
         ) * constants.kShootingMotorRatio
         self.rightShootingMotor.set(
-            NEOBrushless.ControlMode.Velocity,
+            Talon.ControlMode.Velocity,
             self.rightTargetSpeed,
             self.ff.calculate(self.rightTargetSpeed),
         )

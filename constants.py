@@ -837,26 +837,28 @@ kAngleMotorInverted = True
 kAngleMotorAccel = 300
 kAngleMotorVel = 100
 
+# gains taken from 6328 comp https://github.com/Mechanical-Advantage/RobotCode2024/blob/main/src/main/java/org/littletonrobotics/frc2024/subsystems/flywheels/FlywheelConstants.java#L20
+
 kLeftShootingMotorCANId = 20
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
-kLeftShootingMotorPGain = 0.0003
+kLeftShootingMotorPGain = 0.18
 kLeftShootingMotorIGain = 0
-kLeftShootingMotorDGain = 0
+kLeftShootingMotorDGain = 0.0006
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 0.00200  # V / rpm
-kLeftShootingMotorKs = 0.33329
+kLeftShootingMotorKv = 0.00108  # V / rpm
+kLeftShootingMotorKs = 0.38367
 
 # Kv taken from motor specifications
 
 kRightShootingMotorCANId = 21
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
-kRightShootingMotorPGain = 0.0003
+kRightShootingMotorPGain = 0.18
 kRightShootingMotorIGain = 0
-kRightShootingMotorDGain = 0
+kRightShootingMotorDGain = 0.0006
 kRightShootingMotorInverted = False
-kRightShootingMotorKv = 1 / (DCMotor.neoVortex().Kv / kRadiansPerRevolution)  # V / rpm
+kRightShootingMotorKv = 0.00108  # V / rpm
 
 kAngleMotorMappingFunction = lambda x, y: x * y
 kLeftShootingMotorMappingFunction = lambda x, y: x * y
