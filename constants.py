@@ -819,9 +819,9 @@ kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
 kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = 1
-kIntakeFirstSensorPositionOffset = 2
-kIntakePositionThreshold = 0.5
+kIntakeSafetyPositionOffset = 1 * 3
+kIntakeFirstSensorPositionOffset = 2 * 3
+kIntakePositionThreshold = 0.5 * 3
 kIntakeStoppedThreshold = 10  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"
