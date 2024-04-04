@@ -766,7 +766,7 @@ kVelocityControlkV = 0.01
 kIntakeCANID = 25
 kIntakeName = "IntakeMotor"
 kIntakePIDSlot = 0
-kIntakePGain = 0.6
+kIntakePGain = 0.8
 kIntakeIGain = 0
 kIntakeDGain = 0
 kIntakeKv = 0.00200  # stolen from shooter :)
@@ -821,7 +821,7 @@ kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
 kIntakeSafetyPositionOffset = 1 * 3
 kIntakeFirstSensorPositionOffset = 2 * 3
-kIntakePositionThreshold = 0.5 * 3
+kIntakePositionThreshold = 0.25
 kIntakeStoppedThreshold = 10  # rpm
 
 kPivotAngleKey = "intake/pivotAngle"

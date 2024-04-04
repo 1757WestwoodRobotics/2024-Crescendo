@@ -99,7 +99,7 @@ class IntakeSubsystem(Subsystem):
 
     def centerNote(self, frontLimitState, backLimitState) -> None:
         if self.putInPlace:
-            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+            self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
         elif (
             abs(
                 self.intakeMotor.get(NEOBrushless.ControlMode.Position)
@@ -116,7 +116,13 @@ class IntakeSubsystem(Subsystem):
                     + constants.kIntakeSafetyPositionOffset
                 )
                 self.positionFigured = True
-            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+                # self.putInPlace = True
+
+            # if self.intakeAtPosition():
+            #    self.intakeMotor.set(
+            #        NEOBrushless.ControlMode.Position,
+            #        self.heldPosition,
+            #    )
 
         # elif frontLimitState:
         #     if not self.positionFigured:
@@ -140,7 +146,8 @@ class IntakeSubsystem(Subsystem):
                 self.canMoveNote = True
             else:
                 self.intakeMotor.set(
-                    NEOBrushless.ControlMode.Position, self.heldPosition
+                    NEOBrushless.ControlMode.Position,
+                    self.heldPosition + constants.kIntakeSafetyPositionOffset,
                 )
                 self.canMoveNote = False
 
@@ -175,8 +182,8 @@ class IntakeSubsystem(Subsystem):
             if self.state == self.IntakeState.Intaking:
                 if (
                     backLimitState
-                    and self.intakeMotor.get(NEOBrushless.ControlMode.Velocity)
-                    < constants.kIntakeStoppedThreshold
+                    # and self.intakeMotor.get(NEOBrushless.ControlMode.Velocity)
+                    # < constants.kIntakeStoppedThreshold
                 ):
                     self.overrideIntake = True
             else:
@@ -205,10 +212,16 @@ class IntakeSubsystem(Subsystem):
             #     self.intakeMotor.enableLimitSwitch(
             #         NEOBrushless.LimitSwitch.Forwards, False
             #     )
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent,
-                Preferences.getDouble(constants.kIntakeIntakingVoltage),
-            )
+            if frontLimitState:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent,
+                    Preferences.getDouble(constants.kIntakeFineVoltage),
+                )
+            else:
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Percent,
+                    Preferences.getDouble(constants.kIntakeIntakingVoltage),
+                )
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
             self.holdingState(frontLimitState, backLimitState)
