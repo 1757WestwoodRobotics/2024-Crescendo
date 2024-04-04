@@ -118,11 +118,11 @@ class IntakeSubsystem(Subsystem):
                 self.positionFigured = True
                 # self.putInPlace = True
 
-            # if self.intakeAtPosition():
-            #    self.intakeMotor.set(
-            #        NEOBrushless.ControlMode.Position,
-            #        self.heldPosition,
-            #    )
+            if self.intakeAtPosition():
+               self.intakeMotor.set(
+                   NEOBrushless.ControlMode.Position,
+                   self.heldPosition,
+               )
 
         # elif frontLimitState:
         #     if not self.positionFigured:
@@ -160,8 +160,8 @@ class IntakeSubsystem(Subsystem):
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
         else:
             if self.hasPosition:
-                self.centerNote(frontLimitState, backLimitState)
                 self.setPivotAngle(constants.kStagingPositionAngle)
+                self.centerNote(frontLimitState, backLimitState)
             else:
                 self.positionFigured = False
                 self.setPivotAngle(constants.kHandoffAngle)
