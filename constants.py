@@ -806,6 +806,7 @@ kIntakeFineVoltage = "intake/fineVoltage"
 
 # relative to horizontal
 kHandoffAngle = Rotation2d.fromDegrees(-4.3)  # we should change this bc it's too far
+kFeedAngle = Rotation2d(0.061)  # we should change this bc it's too far
 kFloorPositionAngle = Rotation2d.fromDegrees(217.28378)
 kStagingPositionAngle = Rotation2d.fromDegrees(
     75
@@ -848,11 +849,11 @@ kAngleMotorVel = 100
 kLeftShootingMotorCANId = 20
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
-kLeftShootingMotorPGain = 0.1
+kLeftShootingMotorPGain = 0.11
 kLeftShootingMotorIGain = 0
-kLeftShootingMotorDGain = 0.0006
+kLeftShootingMotorDGain = 0
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 0.0013  # V / rpm
+kLeftShootingMotorKv = 0.004  # V / rpm
 kLeftShootingMotorKs = 0.28367
 
 # Kv taken from motor specifications
@@ -860,11 +861,11 @@ kLeftShootingMotorKs = 0.28367
 kRightShootingMotorCANId = 21
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
-kRightShootingMotorPGain = 0.1
+kRightShootingMotorPGain = 0.12
 kRightShootingMotorIGain = 0
-kRightShootingMotorDGain = 0.0006
+kRightShootingMotorDGain = 0
 kRightShootingMotorInverted = False
-kRightShootingMotorKv = 0.0013  # V / rpm
+kRightShootingMotorKv = 0.004  # V / rpm
 
 kAngleMotorMappingFunction = lambda x, y: x * y
 kLeftShootingMotorMappingFunction = lambda x, y: x * y
@@ -1008,7 +1009,7 @@ kAutoAimPGain = 0.6
 kAutoAimIGain = 0
 kAutoAimDGain = 0
 
-kRotationAlignDeadband = Rotation2d.fromDegrees(3)
+kRotationAlignDeadband = Rotation2d.fromDegrees(1)
 
 kPathfindingConstraints = PathConstraints(
     kMaxWheelLinearVelocity,

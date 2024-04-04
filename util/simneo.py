@@ -74,6 +74,8 @@ class NEOBrushless:
 
         self.motor.setInverted(isInverted)
 
+        # self.motor.burnFlash()
+
     def set(self, controlMode: ControlMode, demand: float, ff: float = 0, slot: int = 0):
         """input is in rotations or rpm"""
         if controlMode == NEOBrushless.ControlMode.Velocity:
@@ -109,6 +111,7 @@ class NEOBrushless:
             self.forwardSwitch.enableLimitSwitch(enable)
         if switch == NEOBrushless.LimitSwitch.Backwards:
             self.reverseSwitch.enableLimitSwitch(enable)
+        # self.motor.burnFlash()
 
     def neutralOutput(self) -> None:
         self.motor.set(0)

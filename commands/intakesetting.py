@@ -35,6 +35,9 @@ class FloorIntake(SetIntakeState):
     def execute(self) -> None:
         self.intake.setIntaking()
 
+    # def isFinished(self) -> bool:
+    #     return self.intake.intakeAtPosition() and self.t.get() > 0.1 and self.intake.putInPlace
+
 
 class HoldIntakeAtHandoff(SetIntakeState):
     def __init__(self, intakeSubsystem: IntakeSubsystem) -> None:
