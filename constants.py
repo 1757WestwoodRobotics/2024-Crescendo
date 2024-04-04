@@ -847,7 +847,7 @@ kAngleMotorVel = 100
 kLeftShootingMotorCANId = 20
 kLeftShootingMotorName = "LeftShootingMotor"
 kLeftShootingMotorPIDSlot = 0
-kLeftShootingMotorPGain = 0.18
+kLeftShootingMotorPGain = 0.1
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0.0006
 kLeftShootingMotorInverted = False
@@ -859,7 +859,7 @@ kLeftShootingMotorKs = 0.38367
 kRightShootingMotorCANId = 21
 kRightShootingMotorName = "RightShootingMotor"
 kRightShootingMotorPIDSlot = 0
-kRightShootingMotorPGain = 0.18
+kRightShootingMotorPGain = 0.1
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0.0006
 kRightShootingMotorInverted = False
@@ -885,8 +885,8 @@ kShooterPivotTargetKey = "shooter/pivotTarget"
 kShooterSubsystemKey = "shooter/subsystem"
 
 kShooterAngleTolerance = Rotation2d(0.05)
-# in RPM
-kShooterSpeedTolerance = 100
+# in RPS
+kShooterSpeedTolerance = 100 / 60
 
 kShooterAngleOnTargetKey = "shooter/angleOnTarget"
 kLeftShootingMotorOnTargetKey = "shooter/leftMotorOnTarget"
