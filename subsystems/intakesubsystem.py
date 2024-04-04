@@ -107,10 +107,12 @@ class IntakeSubsystem(Subsystem):
             )
             < constants.kIntakePositionThreshold
         ):
-            if (frontLimitState == True):
+            if frontLimitState == True:
                 self.heldPosition += constants.kIntakeAvoidPivotFudge
             else:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position, self.heldPosition
+                )
                 self.putInPlace = True
         elif frontLimitState and backLimitState:
             if not self.positionFigured:
@@ -122,25 +124,10 @@ class IntakeSubsystem(Subsystem):
                 # self.putInPlace = True
 
             if self.intakeAtPosition():
-               self.intakeMotor.set(
-                   NEOBrushless.ControlMode.Position,
-                   self.heldPosition,
-               )
-
-        # elif frontLimitState:
-        #     if not self.positionFigured:
-        #         self.heldPosition = (
-        #             self.intakeMotor.get(NEOBrushless.ControlMode.Position)
-        #             + constants.kIntakeSafetyPositionOffset + constants.kIntakeStoppedThreshold
-        #         )
-        #         self.positionFigured = True
-        #     self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
-        else:
-            self.positionFigured = False
-            self.intakeMotor.set(
-                NEOBrushless.ControlMode.Percent,
-                Preferences.getDouble(constants.kIntakeFineVoltage),
-            )
+                self.intakeMotor.set(
+                    NEOBrushless.ControlMode.Position,
+                    self.heldPosition,
+                )
 
     def holdingState(self, frontLimitState: bool, backLimitState: bool) -> None:
         if self.putInPlace:
