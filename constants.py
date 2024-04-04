@@ -821,7 +821,7 @@ kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
 kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = 1.25 * 3
+kIntakeSafetyPositionOffset = 1.5 * 3
 kIntakeFirstSensorPositionOffset = 2 * 3
 kIntakePositionThreshold = 0.25
 kIntakeStoppedThreshold = 10  # rpm
