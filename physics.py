@@ -392,6 +392,16 @@ class PhysicsEngine:
             1,
             constants.kSimulationRotationalInertia,
         )
+        self.motorsim.addKraken(
+            robot.container.shooter.leftShootingMotor,
+            1,
+            constants.kSimulationRotationalInertiaFlywheel,
+        )
+        self.motorsim.addKraken(
+            robot.container.shooter.rightShootingMotor,
+            1,
+            constants.kSimulationRotationalInertiaFlywheel,
+        )
 
         targets = []
         for target in constants.kApriltagPositionDict.values():

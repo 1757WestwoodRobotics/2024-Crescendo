@@ -679,6 +679,7 @@ kTurboSpeedMultiplier = 0.95  # full speed!!!
 
 # Simulation Parameters
 kSimulationRotationalInertia = 0.0002
+kSimulationRotationalInertiaFlywheel = 0.002
 kSimMotorResistance = 0.002
 """[meters, meters, radians]"""
 

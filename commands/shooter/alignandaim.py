@@ -83,8 +83,11 @@ class AlignAndAim(Command):
         angleToTarget = rotationFromTranslation(deltaTranslation)
         distanceToTarget = deltaTranslation.norm()
 
-        launch_vel = 20  # m/s
-        launchAngle = atan2(self.targetPose.Z(), distanceToTarget)
+        launch_vel = 26  # m/s
+        launchAngle = atan2(
+            self.targetPose.Z() - constants.kRobotToShooterTransform.Z(),
+            distanceToTarget,
+        )
         # vy = sqrt(
         #     extraYVel**2
         #     + (self.targetPose.Z() - constants.kRobotToShooterTransform.Z())
