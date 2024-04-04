@@ -820,7 +820,7 @@ kIntakePercentageVoltage = 0.35
 kIntakeFineControlVoltage = 0.07
 kIntakeFineVelocityRPM = 250
 # EncoderTicks, to be changed
-kIntakeSafetyPositionOffset = 1 * 3
+kIntakeSafetyPositionOffset = 1.25 * 3
 kIntakeFirstSensorPositionOffset = 2 * 3
 kIntakePositionThreshold = 0.25
 kIntakeStoppedThreshold = 10  # rpm
@@ -852,8 +852,8 @@ kLeftShootingMotorPGain = 0.1
 kLeftShootingMotorIGain = 0
 kLeftShootingMotorDGain = 0.0006
 kLeftShootingMotorInverted = False
-kLeftShootingMotorKv = 0.00108  # V / rpm
-kLeftShootingMotorKs = 0.38367
+kLeftShootingMotorKv = 0.0013  # V / rpm
+kLeftShootingMotorKs = 0.28367
 
 # Kv taken from motor specifications
 
@@ -864,7 +864,7 @@ kRightShootingMotorPGain = 0.1
 kRightShootingMotorIGain = 0
 kRightShootingMotorDGain = 0.0006
 kRightShootingMotorInverted = False
-kRightShootingMotorKv = 0.00108  # V / rpm
+kRightShootingMotorKv = 0.0013  # V / rpm
 
 kAngleMotorMappingFunction = lambda x, y: x * y
 kLeftShootingMotorMappingFunction = lambda x, y: x * y
@@ -887,7 +887,7 @@ kShooterSubsystemKey = "shooter/subsystem"
 
 kShooterAngleTolerance = Rotation2d(0.05)
 # in RPS
-kShooterSpeedTolerance = 100 / 60
+kShooterSpeedTolerance = 3
 
 kShooterAngleOnTargetKey = "shooter/angleOnTarget"
 kLeftShootingMotorOnTargetKey = "shooter/leftMotorOnTarget"
@@ -1055,7 +1055,7 @@ kSpeakerDistanceKey = "SpeakerDistance"
 
 # NEEDS TEST DATA
 kShooterAngleAdjustmentMappingFunction = (
-    lambda x: -0.43 + 0.435 * x + -0.152 * x * x + 0.0184 * x * x * x
+    lambda x: 0.989 - 3.64 * x + 3.79 * x * x + 1.01 * x * x * x -2.31 * x * x * x * x
 )
 # kShooterAngleAdjustmentMappingFunction = lambda x: 0
 
