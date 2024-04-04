@@ -107,8 +107,11 @@ class IntakeSubsystem(Subsystem):
             )
             < constants.kIntakePositionThreshold
         ):
-            self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
-            self.putInPlace = True
+            if (frontLimitState == True):
+                self.heldPosition += constants.kIntakeAvoidPivotFudge
+            else:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Position, self.heldPosition)
+                self.putInPlace = True
         elif frontLimitState and backLimitState:
             if not self.positionFigured:
                 self.heldPosition = (
