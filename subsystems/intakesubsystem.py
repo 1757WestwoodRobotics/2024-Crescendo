@@ -75,6 +75,7 @@ class IntakeSubsystem(Subsystem):
         self.overrideIntake = False
 
         self.noteClearOfPivotPositionSet = False
+        self.scoochCount = 0
 
         Preferences.initDouble(
             constants.kIntakeIntakingVoltage, constants.kIntakePercentageVoltage
@@ -104,8 +105,9 @@ class IntakeSubsystem(Subsystem):
             )
             < constants.kIntakePositionThreshold
         ):
-            if frontLimitState == True:
+            if frontLimitState == True and self.scoochCount < 3:
                 self.heldPosition += constants.kIntakeAvoidPivotFudge
+                self.scoochCount += 1
                 if self.intakeAtPosition():
                     self.intakeMotor.set(
                         NEOBrushless.ControlMode.Position,
@@ -171,6 +173,7 @@ class IntakeSubsystem(Subsystem):
         if not self.hasNote:
             self.noteClearOfPivot = False
             self.overrideIntake = False
+            self.scoochCount = 0
         else:
             if self.state == self.IntakeState.Intaking:
                 if backLimitState:
@@ -204,14 +207,6 @@ class IntakeSubsystem(Subsystem):
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
             self.holdingState(frontLimitState, backLimitState)
-            # none - intaking
-            # only front - keep intaking
-            # front and back - get position and hold
-            # only back - go to held position from front and back
-
-            # put in place to stop when in a good spot
-            # Only front to continue
-            # On rising edge of back state (both, it's a known position), intake a bit more and lock
 
         elif self.state == self.IntakeState.Feeding:
             self.setPivotAngle(constants.kHandoffAngle)
