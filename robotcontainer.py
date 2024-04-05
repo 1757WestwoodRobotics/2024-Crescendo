@@ -12,7 +12,7 @@ from commands.autonotepickup import AutoNotePickup
 import constants
 
 from commands.climber import NeutralClimberState
-from commands.autospecific import AimAndFire, IntakeAuto
+from commands.autospecific import AimAndFire, IntakeAuto, SubwooferAuto
 from commands.resetdrive import ResetDrive
 from commands.intakesetting import ResetIntake
 from commands.drivedistance import DriveDistance
@@ -78,7 +78,7 @@ class RobotContainer:
         self.elevator = ElevatorSubsystem()
         self.shooter = ShooterSubsystem()
         self.climber = ClimberSubsystem()
-        self.lights = LightSubsystem(self.intake,self.shooter)
+        self.lights = LightSubsystem(self.intake, self.shooter)
 
         # Robot demo subsystems
         # self.velocity = VelocityControl()
@@ -107,6 +107,9 @@ class RobotContainer:
         NamedCommands.registerCommand("intake", IntakeAuto(self.intake, self.shooter))
         NamedCommands.registerCommand(
             "holding", DefaultIntake(self.elevator, self.intake)
+        )
+        NamedCommands.registerCommand(
+            "subwooferShot", SubwooferAuto(self.intake, self.shooter)
         )
 
         pathsPath = os.path.join(wpilib.getDeployDirectory(), "pathplanner", "autos")

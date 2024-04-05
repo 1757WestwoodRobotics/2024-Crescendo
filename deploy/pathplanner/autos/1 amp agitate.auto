@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7717054574300003,
+      "y": 6.574793964229721
+    },
+    "rotation": 59.82777714603433
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "subwooferShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp side start to wing 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "holding"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndFire"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "wing 1 to agitate"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -27,6 +27,9 @@ class SubwooferShot(Command):
             constants.kShooterSubwooferSpeed + spinAmount
         )
 
+    def isFinished(self) -> bool:
+        return self.shooter.readyToShoot()
+
 
 class PodiumShot(Command):
     def __init__(self, shooterSubsystem: ShooterSubsystem):
