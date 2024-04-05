@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7005279678491659,
-      "y": 6.5667344415856075
+      "x": 0.7480952477770076,
+      "y": 6.607349548634162
     },
     "rotation": 57.52995103324914
   },
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndFire"
+            "name": "subwooferShot"
           }
         },
         {
