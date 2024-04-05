@@ -109,6 +109,11 @@ class IntakeSubsystem(Subsystem):
         ):
             if frontLimitState == True:
                 self.heldPosition += constants.kIntakeAvoidPivotFudge
+                if self.intakeAtPosition():
+                    self.intakeMotor.set(
+                        NEOBrushless.ControlMode.Position,
+                        self.heldPosition,
+                    )
             else:
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Position, self.heldPosition
@@ -273,7 +278,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeSpeedKey,
             self.intakeMotor.get(NEOBrushless.ControlMode.Velocity),
         )
-        SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, self.hasNote)
+        SmartDashboard.putBoolean(constants.kIntakePutInPlaceKey, self.hasNote)
         SmartDashboard.putBoolean(
             constants.kIntakeAtPositionKey, self.intakeAtPosition()
         )
@@ -282,6 +287,11 @@ class IntakeSubsystem(Subsystem):
         SmartDashboard.putBoolean(constants.kIntakeCanMoveKey, self.canMoveNote)
         SmartDashboard.putBoolean(constants.kIntakeHoldSetKey, self.holdSet)
         SmartDashboard.putBoolean(constants.kIntakePutInPlaceKey, self.noteClearOfPivot)
+        SmartDashboard.putNumber(
+            constants.kIntakeCurrentPositionKey,
+            self.intakeMotor.get(NEOBrushless.ControlMode.Position),
+        )
+        SmartDashboard.putNumber(constants.kIntakeHeldPositionKey, self.heldPosition)
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:
         self.targetAngle = rotation

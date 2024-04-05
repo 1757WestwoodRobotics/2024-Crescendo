@@ -800,6 +800,8 @@ kIntakeCanMoveKey = "intake/debug/canMove"
 kIntakeHoldSetKey = "intake/debug/holdSet"
 kIntakePutInPlaceKey = "intake/debug/putInPlace"
 kIntakeSubsystemKey = "intake/subsystem"
+kIntakeCurrentPositionKey = "intake/currentPosition"
+kIntakeHeldPositionKey = "intake/heldPositionValue"
 
 kIntakeIntakingVoltage = "intake/intakingVoltage"
 kIntakeFineVoltage = "intake/fineVoltage"
