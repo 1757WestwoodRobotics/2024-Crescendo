@@ -194,15 +194,6 @@ class IntakeSubsystem(Subsystem):
             else:
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.targetAngle = constants.kFloorPositionAngle
-            self.intakeMotor.setEncoder(0)
-            # if self.hasNote:
-            #     self.intakeMotor.enableLimitSwitch(
-            #         NEOBrushless.LimitSwitch.Forwards, False
-            #     )
-            # else:
-            #     self.intakeMotor.enableLimitSwitch(
-            #         NEOBrushless.LimitSwitch.Forwards, False
-            #     )
             if frontLimitState:
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Percent,
