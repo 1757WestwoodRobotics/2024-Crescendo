@@ -73,6 +73,7 @@ class IntakeSubsystem(Subsystem):
         self.canMoveNote = False
         self.shooterPosition = 0
         self.overrideIntake = False
+        self.stopMovingAfterGrabbingANote = False
 
         self.noteClearOfPivotPositionSet = False
         self.scoochCount = 0
@@ -174,6 +175,7 @@ class IntakeSubsystem(Subsystem):
             self.noteClearOfPivot = False
             self.overrideIntake = False
             self.scoochCount = 0
+            self.stopMovingAfterGrabbingANote = False
         else:
             if self.state == self.IntakeState.Intaking:
                 if backLimitState:
@@ -206,6 +208,9 @@ class IntakeSubsystem(Subsystem):
                 )
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
+            if not self.stopMovingAfterGrabbingANote:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+                self.stopMovingAfterGrabbingANote = True
             self.holdingState(frontLimitState, backLimitState)
 
         elif self.state == self.IntakeState.Feeding:
@@ -258,7 +263,7 @@ class IntakeSubsystem(Subsystem):
             constants.kIntakeSpeedKey,
             self.intakeMotor.get(NEOBrushless.ControlMode.Velocity),
         )
-        SmartDashboard.putBoolean(constants.kIntakePutInPlaceKey, self.hasNote)
+        SmartDashboard.putBoolean(constants.kIntakeHasNoteKey, self.hasNote)
         SmartDashboard.putBoolean(
             constants.kIntakeAtPositionKey, self.intakeAtPosition()
         )
