@@ -139,3 +139,4 @@ networktables.json.bck
 FRC*.wpilog
 logs
 ctre_sim
+scripts/verify-simulator-starts.sh
