@@ -123,9 +123,10 @@ class IntakeSubsystem(Subsystem):
                     0  # It shouldve just reset to 0
                     + constants.kIntakeSafetyPositionOffset
                 )
-                self.noteClearOfPivotPositionSet = True
+                if abs(self.intakeMotor.get(NEOBrushless.ControlMode.Position)) < 1:
+                    self.noteClearOfPivotPositionSet = True
 
-            if self.intakeAtPosition():
+            if self.intakeAtPosition() and self.noteClearOfPivotPositionSet:
                 self.intakeMotor.set(
                     NEOBrushless.ControlMode.Position,
                     self.heldPosition,
