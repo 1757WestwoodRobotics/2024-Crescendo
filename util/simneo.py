@@ -140,5 +140,8 @@ class NEOBrushless:
         self.motor.setSmartCurrentLimit(limit)
         # """25 amps"""
 
+    def setEncoder(self, rotations: float) -> None:
+        self.encoder.setPosition(rotations)
+
     def getNettableIden(self) -> str:
         return self._nettableidentifier

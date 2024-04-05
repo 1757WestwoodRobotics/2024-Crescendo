@@ -66,7 +66,8 @@ class IntakeSubsystem(Subsystem):
         self.frontSensor = NEOBrushless.LimitSwitch.Forwards
         self.backSensor = NEOBrushless.LimitSwitch.Backwards
         self.hasNote = False
-        self.heldPosition = self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+        self.intakeMotor.setEncoder(0)
+        self.heldPosition = 0
         self.noteClearOfPivot = False
         self.targetAngle = Rotation2d()
         self.holdSet = False
@@ -121,8 +122,9 @@ class IntakeSubsystem(Subsystem):
                 self.noteClearOfPivot = True
         elif frontLimitState and backLimitState:
             if not self.noteClearOfPivotPositionSet:
+                self.intakeMotor.setEncoder(0)
                 self.heldPosition = (
-                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
+                    0  # It shouldve just reset to 0
                     + constants.kIntakeSafetyPositionOffset
                 )
                 self.noteClearOfPivotPositionSet = True
@@ -174,11 +176,7 @@ class IntakeSubsystem(Subsystem):
             self.overrideIntake = False
         else:
             if self.state == self.IntakeState.Intaking:
-                if (
-                    backLimitState
-                    # and self.intakeMotor.get(NEOBrushless.ControlMode.Velocity)
-                    # < constants.kIntakeStoppedThreshold
-                ):
+                if backLimitState:
                     self.overrideIntake = True
             else:
                 self.overrideIntake = False
@@ -187,10 +185,8 @@ class IntakeSubsystem(Subsystem):
             # allow preload
             if self.hasNote:
                 self.noteClearOfPivot = True
-                self.heldPosition = (
-                    self.intakeMotor.get(NEOBrushless.ControlMode.Position)
-                    + constants.kIntakeSafetyPositionOffset
-                )
+                self.intakeMotor.setEncoder(0)
+                self.heldPosition = 0 + constants.kIntakeSafetyPositionOffset
 
         if not self.overrideIntake and self.state == self.IntakeState.Intaking:
             if SmartDashboard.getBoolean(constants.kShooterAngleOnTargetKey, False):
@@ -198,6 +194,7 @@ class IntakeSubsystem(Subsystem):
             else:
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.targetAngle = constants.kFloorPositionAngle
+            self.intakeMotor.setEncoder(0)
             # if self.hasNote:
             #     self.intakeMotor.enableLimitSwitch(
             #         NEOBrushless.LimitSwitch.Forwards, False
