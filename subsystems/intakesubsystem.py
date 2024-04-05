@@ -106,7 +106,7 @@ class IntakeSubsystem(Subsystem):
             )
             < constants.kIntakePositionThreshold
         ):
-            if frontLimitState == True and self.scoochCount < 3:
+            if frontLimitState == True and self.scoochCount < 6:
                 self.heldPosition += constants.kIntakeAvoidPivotFudge
                 self.scoochCount += 1
                 if self.intakeAtPosition():
@@ -208,9 +208,9 @@ class IntakeSubsystem(Subsystem):
                 )
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
-            if not self.stopMovingAfterGrabbingANote:
-                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
-                self.stopMovingAfterGrabbingANote = True
+            # if not self.stopMovingAfterGrabbingANote:
+            #     self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+            #     self.stopMovingAfterGrabbingANote = True
             self.holdingState(frontLimitState, backLimitState)
 
         elif self.state == self.IntakeState.Feeding:
