@@ -223,7 +223,7 @@ class RobotContainer:
         )
 
         commands2.button.POVButton(*self.operatorInterface.prepShotSubwoofer).whileTrue(
-            SubwooferShot(self.shooter)
+            SubwooferShot(self.shooter).repeatedly()
         )
         commands2.button.POVButton(*self.operatorInterface.prepShotPodium).whileTrue(
             PodiumShot(self.shooter)

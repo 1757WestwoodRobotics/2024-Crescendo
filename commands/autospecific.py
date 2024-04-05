@@ -14,5 +14,5 @@ IntakeAuto = lambda intake, shooter: SequentialCommandGroup(
 )
 
 SubwooferAuto = lambda intake, shooter: SequentialCommandGroup(
-    SubwooferShot(shooter), FeedIntakeToShooter(intake)
+    HoldIntakeAtHandoff(intake), SubwooferShot(shooter), FeedIntakeToShooter(intake)
 )
