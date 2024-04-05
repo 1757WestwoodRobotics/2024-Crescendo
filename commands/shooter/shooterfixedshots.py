@@ -31,6 +31,30 @@ class SubwooferShot(Command):
         return self.shooter.readyToShoot()
 
 
+class AutoSubwooferShot(Command):
+    def __init__(self, shooterSubsystem: ShooterSubsystem):
+        Command.__init__(self)
+        self.setName(__class__.__name__)
+
+        self.shooter = shooterSubsystem
+
+        self.addRequirements(shooterSubsystem)
+
+    def execute(self):
+        self.shooter.setShooterAngle(constants.kShooterSubwooferAngle + 0.04)
+
+        spinAmount = Preferences.getDouble("Spin Amount", 100)
+        self.shooter.setLeftShootingMotorSpeed(
+            constants.kShooterSubwooferSpeed - spinAmount
+        )
+        self.shooter.setRightShootingMotorSpeed(
+            constants.kShooterSubwooferSpeed + spinAmount
+        )
+
+    def isFinished(self) -> bool:
+        return self.shooter.readyToShoot()
+
+
 class PodiumShot(Command):
     def __init__(self, shooterSubsystem: ShooterSubsystem):
         Command.__init__(self)

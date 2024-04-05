@@ -159,7 +159,6 @@ class IntakeSubsystem(Subsystem):
                 self.setPivotAngle(constants.kStagingPositionAngle)
                 self.centerNote(frontLimitState, backLimitState)
             else:
-                self.noteClearOfPivotPositionSet = False
                 self.setPivotAngle(constants.kHandoffAngle)
                 self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
 
@@ -173,6 +172,7 @@ class IntakeSubsystem(Subsystem):
         self.hasNote = backLimitState or frontLimitState
         if not self.hasNote:
             self.noteClearOfPivot = False
+            self.noteClearOfPivotPositionSet = False
             self.overrideIntake = False
             self.scoochCount = 0
             self.stopMovingAfterGrabbingANote = False
@@ -208,9 +208,9 @@ class IntakeSubsystem(Subsystem):
                 )
 
         elif self.state == self.IntakeState.Holding or self.overrideIntake:
-            # if not self.stopMovingAfterGrabbingANote:
-            #     self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
-            #     self.stopMovingAfterGrabbingANote = True
+            if not self.stopMovingAfterGrabbingANote:
+                self.intakeMotor.set(NEOBrushless.ControlMode.Percent, 0)
+                self.stopMovingAfterGrabbingANote = True
             self.holdingState(frontLimitState, backLimitState)
 
         elif self.state == self.IntakeState.Feeding:
@@ -276,6 +276,7 @@ class IntakeSubsystem(Subsystem):
             self.intakeMotor.get(NEOBrushless.ControlMode.Position),
         )
         SmartDashboard.putNumber(constants.kIntakeHeldPositionKey, self.heldPosition)
+        SmartDashboard.putNumber(constants.kIntakeNudgeCounterKey, self.scoochCount)
 
     def setPivotAngle(self, rotation: Rotation2d) -> None:
         self.targetAngle = rotation

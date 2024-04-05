@@ -1,7 +1,7 @@
 from commands2.sequentialcommandgroup import SequentialCommandGroup
 from commands.intakesetting import FeedIntakeToShooter, FloorIntake, HoldIntakeAtHandoff
 from commands.shooter.alignandaim import AlignAndAim
-from commands.shooter.shooterfixedshots import SafetyPosition, SubwooferShot
+from commands.shooter.shooterfixedshots import SafetyPosition, AutoSubwooferShot
 
 AimAndFire = lambda shooter, drive, intake: SequentialCommandGroup(
     HoldIntakeAtHandoff(intake),
@@ -14,5 +14,5 @@ IntakeAuto = lambda intake, shooter: SequentialCommandGroup(
 )
 
 SubwooferAuto = lambda intake, shooter: SequentialCommandGroup(
-    HoldIntakeAtHandoff(intake), SubwooferShot(shooter), FeedIntakeToShooter(intake)
+    HoldIntakeAtHandoff(intake), AutoSubwooferShot(shooter), FeedIntakeToShooter(intake)
 )
