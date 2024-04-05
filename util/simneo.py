@@ -57,8 +57,8 @@ class NEOBrushless:
         SmartDashboard.putBoolean(f"{self._nettableidentifier}/fwdLimit", False)
         SmartDashboard.putBoolean(f"{self._nettableidentifier}/bckLimit", False)
 
-        if not revCheckError("factoryConfig", self.motor.restoreFactoryDefaults()):
-            return
+        # if not revCheckError("factoryConfig", self.motor.restoreFactoryDefaults()):
+        #     return
         if not revCheckError("setP", self.controller.setP(pGain, pidSlot)):
             return
         if not revCheckError("setI", self.controller.setI(iGain, pidSlot)):
@@ -76,7 +76,9 @@ class NEOBrushless:
 
         # self.motor.burnFlash()
 
-    def set(self, controlMode: ControlMode, demand: float, ff: float = 0, slot: int = 0):
+    def set(
+        self, controlMode: ControlMode, demand: float, ff: float = 0, slot: int = 0
+    ):
         """input is in rotations or rpm"""
         if controlMode == NEOBrushless.ControlMode.Velocity:
             self.controller.setReference(
