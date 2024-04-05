@@ -70,8 +70,6 @@ class IntakeSubsystem(Subsystem):
         self.heldPosition = 0
         self.noteClearOfPivot = False
         self.targetAngle = Rotation2d()
-        self.holdSet = False
-        self.holdPosition = 0
         self.canMoveNote = False
         self.shooterPosition = 0
         self.overrideIntake = False
@@ -95,8 +93,6 @@ class IntakeSubsystem(Subsystem):
             * constants.kPivotGearRatio
         )
         self.pivotMotor.setEncoderPosition(pivotMotorPosition)
-        self.holdPosition = 0
-        self.holdSet = False
 
     def centerNote(self, frontLimitState, backLimitState) -> None:
         if self.noteClearOfPivot:
@@ -273,7 +269,6 @@ class IntakeSubsystem(Subsystem):
         SmartDashboard.putBoolean(constants.kIntakeFrontSwitchKey, frontLimitState)
         SmartDashboard.putBoolean(constants.kIntakeBackSwitchKey, backLimitState)
         SmartDashboard.putBoolean(constants.kIntakeCanMoveKey, self.canMoveNote)
-        SmartDashboard.putBoolean(constants.kIntakeHoldSetKey, self.holdSet)
         SmartDashboard.putBoolean(constants.kIntakePutInPlaceKey, self.noteClearOfPivot)
         SmartDashboard.putNumber(
             constants.kIntakeCurrentPositionKey,
