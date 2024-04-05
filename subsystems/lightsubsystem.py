@@ -1,6 +1,12 @@
 from enum import Enum, auto
 from commands2 import Subsystem
-from phoenix5.led import CANdle, RainbowAnimation, StrobeAnimation, SingleFadeAnimation, Animation
+from phoenix5.led import (
+    CANdle,
+    RainbowAnimation,
+    StrobeAnimation,
+    SingleFadeAnimation,
+    Animation,
+)
 from wpilib import RobotState
 
 import constants
@@ -13,7 +19,7 @@ from subsystems.shootersubsystem import ShooterSubsystem
 
 class LightSubsystem(Subsystem):
     class StateShoot(Enum):
-        #Shooter LED commands, top half
+        # Shooter LED commands, top half
         readyToShoot = auto()
         spinningUp = auto()
         hangingOut = auto()
@@ -21,8 +27,8 @@ class LightSubsystem(Subsystem):
         trapping = auto()
 
     class StateIntake(Enum):
-        #Intake LED commands, bottom half
-        hangingOut= auto()
+        # Intake LED commands, bottom half
+        hangingOut = auto()
         intaking = auto()
         centeringNote = auto()
         holdingNote = auto()
@@ -51,15 +57,31 @@ class LightSubsystem(Subsystem):
         self.chillingAnimation2s = SingleFadeAnimation(
             3, 219, 252, 255, 0.7, 2, ledOffset=19
         )  # light blue
-        self.shooterSpinningUp1 = SingleFadeAnimation(252, 252, 3, 255, 0.7, 4, ledOffset=12) #Yellowish
-        self.shooterSpinningUp2 = SingleFadeAnimation(252, 252, 3, 255, 0.7, 4, ledOffset=19) #Yellowish
-        self.shooterReady1 = StrobeAnimation(3, 252, 3, 255, 0.3, 4, ledOffset=12) #Green flashing
-        self.shooterReady2 = StrobeAnimation(3, 252, 3, 255, 0.3, 2, ledOffset=19) #Green flashing
+        self.shooterSpinningUp1 = SingleFadeAnimation(
+            252, 252, 3, 255, 0.7, 4, ledOffset=12
+        )  # Yellowish
+        self.shooterSpinningUp2 = SingleFadeAnimation(
+            252, 252, 3, 255, 0.7, 4, ledOffset=19
+        )  # Yellowish
+        self.shooterReady1 = StrobeAnimation(
+            3, 252, 3, 255, 0.3, 4, ledOffset=12
+        )  # Green flashing
+        self.shooterReady2 = StrobeAnimation(
+            3, 252, 3, 255, 0.3, 2, ledOffset=19
+        )  # Green flashing
 
-        self.intakeRunning1 = StrobeAnimation(252, 252, 3, 255, 0.3, 4, ledOffset=8) #Yellow
-        self.intakeRunning2 = StrobeAnimation(252, 252, 3, 255, 0.3, 3, ledOffset=16) #Yellow
-        self.intakeCentering1 = StrobeAnimation(252, 3, 3, 255, 0.3, 4, ledOffset=8) #Red
-        self.intakeCentering2 = StrobeAnimation(252, 3, 3, 255, 0.3, 3, ledOffset=16) #Red
+        self.intakeRunning1 = StrobeAnimation(
+            252, 252, 3, 255, 0.3, 4, ledOffset=8
+        )  # Yellow
+        self.intakeRunning2 = StrobeAnimation(
+            252, 252, 3, 255, 0.3, 3, ledOffset=16
+        )  # Yellow
+        self.intakeCentering1 = StrobeAnimation(
+            252, 3, 3, 255, 0.3, 4, ledOffset=8
+        )  # Red
+        self.intakeCentering2 = StrobeAnimation(
+            252, 3, 3, 255, 0.3, 3, ledOffset=16
+        )  # Red
         self.intakeHolding1 = SingleFadeAnimation(3, 255, 3, 255, 0.7, 4, ledOffset=8)
         self.intakeHolding2 = SingleFadeAnimation(3, 255, 3, 255, 0.7, 3, ledOffset=16)
 
@@ -68,9 +90,9 @@ class LightSubsystem(Subsystem):
         self.stateshooter = LightSubsystem.StateShoot.hangingOut
         self.stateintake = LightSubsystem.StateIntake.hangingOut
 
-        self.noanimation = StrobeAnimation(0,0,0,0,0,0)
+        self.noanimation = StrobeAnimation(0, 0, 0, 0, 0, 0)
 
-        # animation maps: 
+        # animation maps:
         # 0: bottom back
         # 1: top back
         # 2: bottom front
@@ -115,7 +137,7 @@ class LightSubsystem(Subsystem):
 
     def updateState(self) -> None:
         self.stateintake = intakeStateMapping[self.intake.state]
-        if self.intake.hasPosition:
+        if self.intake.hasNote:
             self.stateintake = LightSubsystem.StateIntake.holdingNote
         if self.shooter.readyToShoot():
             self.stateshooter = LightSubsystem.StateShoot.readyToShoot
@@ -134,4 +156,3 @@ intakeStateMapping = {
     IntakeSubsystem.IntakeState.Trap: LightSubsystem.StateIntake.trapping,
     IntakeSubsystem.IntakeState.Ejecting: LightSubsystem.StateIntake.holdingNote,
 }
-
