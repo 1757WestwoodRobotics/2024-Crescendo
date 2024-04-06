@@ -2,7 +2,7 @@ from commands2.command import Command
 from wpilib import Preferences
 
 from subsystems.shootersubsystem import ShooterSubsystem
-
+from wpimath.geometry import Rotation2d
 
 import constants
 
@@ -41,7 +41,9 @@ class AutoSubwooferShot(Command):
         self.addRequirements(shooterSubsystem)
 
     def execute(self):
-        self.shooter.setShooterAngle(constants.kShooterSubwooferAngle + 0.04)
+        self.shooter.setShooterAngle(
+            constants.kShooterSubwooferAngle + Rotation2d(0.04)
+        )
 
         spinAmount = Preferences.getDouble("Spin Amount", 100)
         self.shooter.setLeftShootingMotorSpeed(
