@@ -27,5 +27,6 @@ robotpy_extras = [
 
 # Other pip packages to install
 requires = [
-    "photonlibpy==2024.2.9"
+    "photonlibpy==2024.3.1"
 ]
+

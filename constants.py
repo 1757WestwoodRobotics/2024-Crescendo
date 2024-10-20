@@ -478,6 +478,9 @@ kRobotToTagPoseKey = "vision/poses"
 kRobotToTagIdKey = "vision/ids"
 kRobotToTagAmbiguityKey = "vision/ambiguity"
 
+kXyStdDevCoeff = 0.005
+kThetaStdDevCoeff = 0.01
+
 kTargetName = "Target"
 
 kApriltagPositionDict = {  # thanks 6328 for FieldConstants!

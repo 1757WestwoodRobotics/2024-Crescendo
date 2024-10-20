@@ -4,7 +4,9 @@ import typing
 import wpilib
 import commands2
 from phoenix6.signal_logger import SignalLogger
+from phoenix6 import BaseStatusSignal
 
+from util.simtalon import Talon
 from robotcontainer import RobotContainer
 
 
@@ -32,6 +34,10 @@ class MentorBot(commands2.TimedCommandRobot):
         # autonomous chooser on the dashboard.
         SignalLogger.start()
         self.container = RobotContainer()
+
+    def robotPeriodic(self) -> None:
+        for signals in Talon.signals.values():
+            BaseStatusSignal.refresh_all(*signals)
 
     def disabledInit(self) -> None:
         """This function is called once each time the robot enters Disabled mode."""

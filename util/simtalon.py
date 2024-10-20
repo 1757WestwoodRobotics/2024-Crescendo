@@ -19,10 +19,14 @@ from phoenix6.hardware.talon_fx import TalonFX
 from phoenix6.configs.talon_fx_configs import TalonFXConfiguration
 from phoenix6.status_code import StatusCode
 
-from wpilib import RobotBase, SmartDashboard
+from wpilib import RobotBase
+
+from util.logging import nt
 
 
 class Talon:
+    signals = {}
+
     class ControlMode(Enum):
         Position = auto()
         """rotations"""
@@ -40,7 +44,7 @@ class Talon:
         Forwards = auto()
         Backwards = auto()
 
-    # pylint:disable-next=too-many-arguments
+    # pylint:disable-next=too-many-arguments, too-many-positional-arguments
     def __init__(
         self,
         canID: int,
@@ -58,6 +62,7 @@ class Talon:
         self.id = canID
         self.name = name
         self.motor = TalonFX(canID, canbus)
+        self.canbus = canbus
 
         self.isReversed = isReversed
 
@@ -74,12 +79,19 @@ class Talon:
         conf.motion_magic.motion_magic_acceleration = moMagicAccel
         conf.motion_magic.motion_magic_cruise_velocity = moMagicVel
         self._nettableidentifier = f"motors/{self.name}({self.id})"
-        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/p", pGain)
-        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/i", iGain)
-        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/d", dGain)
-        SmartDashboard.putNumber(f"{self._nettableidentifier}/gains/v", kV)
-        SmartDashboard.putBoolean(f"{self._nettableidentifier}/inverted", isReversed)
-        SmartDashboard.putString(f"{self._nettableidentifier}/canbus", canbus)
+        self._mainTable = nt.getTable(self._nettableidentifier)
+
+        self._gainsTable = self._mainTable.getSubTable("gains")
+        self._gainsTable.putNumber("p", pGain)
+        self._gainsTable.putNumber("i", iGain)
+        self._gainsTable.putNumber("d", dGain)
+        self._gainsTable.putNumber("v", kV)
+
+        self._mainTable.putBoolean("inverted", isReversed)
+        self._mainTable.putString("canbus", canbus)
+
+        if canbus not in Talon.signals:
+            Talon.signals[canbus] = []
 
         self.motor.configurator.apply(conf)
 
@@ -90,6 +102,28 @@ class Talon:
 
         self.velControl.slot = 0
         self.posControl.slot = 0
+
+        self.positionSignal = self.motor.get_position()
+        self.velocitySignal = self.motor.get_velocity()
+        self.accelSignal = self.motor.get_acceleration()
+        self.voltageSignal = self.motor.get_motor_voltage()
+        self.supplyVoltageSignal = self.motor.get_supply_voltage()
+        self.tempSignal = self.motor.get_device_temp()
+        self.dutySignal = self.motor.get_duty_cycle()
+        self.currentSignal = self.motor.get_torque_current()
+
+        for signal in [
+            self.positionSignal,
+            self.voltageSignal,
+            self.accelSignal,
+            self.voltageSignal,
+            self.supplyVoltageSignal,
+            self.tempSignal,
+            self.dutySignal,
+            self.currentSignal,
+        ]:
+            Talon.signals[self.canbus].append(signal)
+            signal.set_update_frequency(50)  # Hz
 
         if RobotBase.isSimulation():
             self.motor.get_position().set_update_frequency(100)
@@ -104,7 +138,9 @@ class Talon:
         duty_cycle: bool = True,
     ) -> None:
         self.updateDashboard()
-        SmartDashboard.putNumber(f"{self._nettableidentifier}/target", demand)
+
+        self._mainTable.putNumber("target", demand)
+        c = None
         if controlMode == Talon.ControlMode.Position:
             c = self.motor.set_control(
                 self.posControl.with_position(demand).with_feed_forward(ff)
@@ -133,34 +169,15 @@ class Talon:
             print(f"ERROR: {c} \n {self.motor.device_id})")
 
     def updateDashboard(self):
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/position", self.motor.get_position().value
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/velocity", self.motor.get_velocity().value
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/acceleration",
-            self.motor.get_acceleration().value,
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/outvoltage",
-            self.motor.get_motor_voltage().value,
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/supplyvoltage",
-            self.motor.get_supply_voltage().value,
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/temp", self.motor.get_device_temp().value
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/dutycycle", self.motor.get_duty_cycle().value
-        )
-        SmartDashboard.putNumber(
-            f"{self._nettableidentifier}/current",
-            self.motor.get_torque_current().value,
-        )
+        self._mainTable.putNumber("position", self.positionSignal.value)
+        self._mainTable.putNumber("velocity", self.velocitySignal.value)
+        self._mainTable.putNumber("acceleration", self.accelSignal.value)
+
+        self._mainTable.putNumber("outVoltage", self.voltageSignal.value)
+        self._mainTable.putNumber("supplyVoltage", self.supplyVoltageSignal.value)
+        self._mainTable.putNumber("temp", self.tempSignal.value)
+        self._mainTable.putNumber("dutycycle", self.dutySignal.value)
+        self._mainTable.putNumber("current", self.currentSignal.value)
 
     def setCurrentLimit(self, lim: CurrentLimitsConfigs):
         self.motor.configurator.apply(lim)
@@ -198,13 +215,14 @@ class Talon:
         return False
 
     def get(self, controlMode: ControlMode) -> float:
-        # self.updateDashboard()
+        self.updateDashboard()
+
         if controlMode == Talon.ControlMode.Position:
-            return self.motor.get_position().value
+            return self.positionSignal.value
         elif controlMode == Talon.ControlMode.Velocity:
-            return self.motor.get_velocity().value
+            return self.velocitySignal.value
         elif controlMode == Talon.ControlMode.Percent:
-            return self.motor.get_motor_voltage().value / 12
+            return self.voltageSignal.value / 12
         return 0
 
     def setEncoderPosition(self, rotations: float):

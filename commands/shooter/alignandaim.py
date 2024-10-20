@@ -75,7 +75,7 @@ class AlignAndAim(Command):
     def calculateTimeVelocityAngle(
         self, position: Translation3d
     ) -> typing.Tuple[float, float, Rotation2d, Rotation2d, float]:
-        botPose = self.drive.estimator.getEstimatedPosition()
+        botPose = self.drive.estimator.estimatedPose
         target2d = position.toTranslation2d()
 
         deltaTranslation = botPose.translation() - target2d
@@ -109,7 +109,7 @@ class AlignAndAim(Command):
         )
 
     def execute(self):
-        botPose = self.drive.estimator.getEstimatedPosition()
+        botPose = self.drive.estimator.estimatedPose
         robotVelocity = getSDArray(constants.kDriveVelocityKeys, [0, 0, 0])
         time, velocity, psi, theta, distance = 0, 0, Rotation2d(), Rotation2d(), 0
         target = self.targetPose.translation()

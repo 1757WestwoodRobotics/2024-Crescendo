@@ -1,5 +1,5 @@
 from collections import deque
-from math import hypot, sin, tan, atan
+from math import hypot, inf, sin, tan, atan
 
 # import numpy as np
 
@@ -25,34 +25,36 @@ from util.getsdarray import getSDArray, putSDArray
 
 
 class EstimatedPose:
-    def __init__(self, pose: Pose3d, hasTargets: bool, timestamp: float):
+    def __init__(
+        self, pose: Pose3d, hasTargets: bool, timestamp: float, stdDev: list[float]
+    ):
         self.pose = pose
         self.hasTargets = hasTargets
         self.timestamp = timestamp
+        self.stdDev = stdDev
 
 
 class VisionCamera:  # hi its landon here
+    cameraTransforms = {
+        "frontLeft": constants.kRobotToFrontLeftCameraTransform,
+        "frontRight": constants.kRobotToFrontRightCameraTransform,
+        "backLeft": constants.kRobotToBackLeftCameraTransform,
+        "backRight": constants.kRobotToBackRightCameraTransform,
+    }
+    cameraKeys = {
+        "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
+        "frontRight": constants.kPhotonvisionFrontRightCameraKey,
+        "backLeft": constants.kPhotonvisionBackLeftCameraKey,
+        "backRight": constants.kPhotonvisionBackRightCameraKey,
+    }
+
     def __init__(self, camera: PhotonCamera):
         self.camera = camera
         self.name = camera.getName()
 
-        cameraKeys = {
-            "frontLeft": constants.kPhotonvisionFrontLeftCameraKey,
-            "frontRight": constants.kPhotonvisionFrontRightCameraKey,
-            "backLeft": constants.kPhotonvisionBackLeftCameraKey,
-            "backRight": constants.kPhotonvisionBackRightCameraKey,
-        }
+        self.key = VisionCamera.cameraKeys[self.name]
 
-        self.key = cameraKeys[self.name]
-
-        cameraTransforms = {
-            "frontLeft": constants.kRobotToFrontLeftCameraTransform,
-            "frontRight": constants.kRobotToFrontRightCameraTransform,
-            "backLeft": constants.kRobotToBackLeftCameraTransform,
-            "backRight": constants.kRobotToBackRightCameraTransform,
-        }
-
-        self.cameraToRobotTransform = cameraTransforms[self.name].inverse()
+        self.cameraToRobotTransform = VisionCamera.cameraTransforms[self.name].inverse()
 
 
 class VisionSubsystemReal(Subsystem):
@@ -81,13 +83,8 @@ class VisionSubsystemReal(Subsystem):
         #     inst.setServer("localhost")
         #     inst.startClient4("Robot Sim")
 
-    def periodic(self) -> None:
-        # self.estimatedPosition = self.drive.getPose()
-        # self.updateAdvantagescopePose()
-
-        visionPose = getSDArray(constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0])
+    def noteDetection(self) -> None:
         robotPose = getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0])
-
         noteResult = self.noteCamera.getLatestResult()
         if noteResult.hasTargets():
             notes = noteResult.getTargets()
@@ -120,18 +117,28 @@ class VisionSubsystemReal(Subsystem):
         else:
             SmartDashboard.putBoolean(constants.kNoteInViewKey.validKey, False)
 
+    def periodic(self) -> None:
+        visionPose = getSDArray(constants.kRobotVisionPoseArrayKeys.valueKey, [0, 0, 0])
+        robotPose = getSDArray(constants.kRobotPoseArrayKeys.valueKey, [0, 0, 0])
+
         combinedPose = pose3dFrom2d(Pose2d(visionPose[0], visionPose[1], robotPose[2]))
         self.robotToTags = []
         for camera in self.cameras:
             photonResult = camera.getLatestResult()
             hasTargets = len(photonResult.getTargets()) > 0
             multitagresult = photonResult.multiTagResult
+            useVisionRotation = True
             bestRelativeTransform = multitagresult.estimatedPose.best
+
+            avgDistance = bestRelativeTransform.translation().norm()
+            tagPoses = [bestRelativeTransform * len(multitagresult.fiducialIDsUsed)]
 
             currentCamera = VisionCamera(camera)
 
             ambiguity = 10
             if not multitagresult.estimatedPose.isPresent:
+                useVisionRotation = False
+                tagPoses: list[Transform3d] = []
                 for result in photonResult.targets:
                     # pylint:disable-next=consider-iterating-dictionary
                     if result.fiducialId in constants.kApriltagPositionDict.keys():
@@ -139,6 +146,7 @@ class VisionSubsystemReal(Subsystem):
                             currentCamera.cameraToRobotTransform.inverse()
                             + result.bestCameraToTarget
                         )
+                        tagPoses.append(result.bestCameraToTarget)
                         self.robotToTags.append(
                             (botToTagPose, result.fiducialId, result.poseAmbiguity),
                         )
@@ -152,6 +160,14 @@ class VisionSubsystemReal(Subsystem):
                             )
                             ambiguity = result.poseAmbiguity
 
+                if len(tagPoses) == 0:
+                    continue
+                totalDistance = 0
+                for pose in tagPoses:
+                    totalDistance += pose.translation().norm()
+
+                avgDistance = totalDistance / len(tagPoses)
+
             VisionSubsystemReal.updateAdvantagescopePose(
                 Pose3d() + bestRelativeTransform,
                 currentCamera.key,
@@ -163,9 +179,27 @@ class VisionSubsystemReal(Subsystem):
                 Pose3d() + bestRelativeTransform + currentCamera.cameraToRobotTransform
             )
 
+            xyStdDev = (
+                constants.kXyStdDevCoeff * (avgDistance * avgDistance) / len(tagPoses)
+            )
+            thetaStdDev = (
+                (
+                    constants.kThetaStdDevCoeff
+                    * (avgDistance * avgDistance)
+                    / len(tagPoses)
+                )
+                if useVisionRotation
+                else inf
+            )
+
             if ambiguity < 10:
                 self.poseList.append(
-                    EstimatedPose(botPose, hasTargets, photonResult.getTimestamp())
+                    EstimatedPose(
+                        botPose,
+                        hasTargets,
+                        photonResult.getTimestamp(),
+                        [xyStdDev, xyStdDev, thetaStdDev],
+                    )
                 )
 
         if len(self.robotToTags) > 0:
@@ -221,6 +255,7 @@ class CameraTargetRelation:
 
 
 class SimCamera:
+    # pylint:disable-next=too-many-arguments, too-many-positional-arguments
     def __init__(
         self,
         name: str,
@@ -277,6 +312,8 @@ class VisionSubsystemSim(Subsystem):
         for camera in self.cameras:
             seeTag = False
             botPose = Pose3d()
+            tagPoses: list[Transform3d] = []
+
             for tagId, apriltag in constants.kApriltagPositionDict.items():
                 if camera.canSeeTarget(simPose3d, apriltag):
                     rngOffset = Transform3d(
@@ -291,6 +328,7 @@ class VisionSubsystemSim(Subsystem):
                     botToTagPose = (
                         botToTagPose + rngOffset * botToTagPose.translation().norm()
                     )
+                    tagPoses.append(Transform3d(simPose3d + camera.location, apriltag))
                     self.robotToTags.append(
                         (
                             botToTagPose,
@@ -315,8 +353,30 @@ class VisionSubsystemSim(Subsystem):
                 botPose + camera.location, camera.key, simPose3d, rel.camToTarg
             )
 
+            if len(tagPoses) == 0:
+                continue
+            totalDistance = 0
+            for transform in tagPoses:
+                totalDistance += transform.translation().norm()
+
+            avgDistance = totalDistance / len(tagPoses)
+
+            xyStdDev = (
+                constants.kXyStdDevCoeff * (avgDistance * avgDistance) / len(tagPoses)
+            )
+            thetaStdDev = (
+                constants.kThetaStdDevCoeff
+                * (avgDistance * avgDistance)
+                / len(tagPoses)
+            )
+
             self.poseList.append(
-                EstimatedPose(botPose, seeTag, Timer.getFPGATimestamp())
+                EstimatedPose(
+                    botPose,
+                    seeTag,
+                    Timer.getFPGATimestamp(),
+                    [xyStdDev, xyStdDev, thetaStdDev],
+                )
             )
 
         if len(self.robotToTags) > 0:
