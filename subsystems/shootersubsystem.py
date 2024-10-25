@@ -257,13 +257,13 @@ class ShooterSubsystem(Subsystem):
         return (
             abs(self.leftTargetSpeed - self.getLeftShooterSpeed())
             < constants.kShooterSpeedTolerance
-        ) or self.getLeftShooterSpeed() > 65
+        ) or abs(self.getLeftShooterSpeed()) > 65
 
     def rightMotorSpeedOnTarget(self) -> bool:
         return (
             abs(self.rightTargetSpeed - self.getRightShooterSpeed())
             < constants.kShooterSpeedTolerance
-        ) or self.getRightShooterSpeed() > 65
+        ) or abs(self.getRightShooterSpeed()) > 65
 
     def readyToShoot(self) -> bool:
         return (
