@@ -232,11 +232,11 @@ class ShooterSubsystem(Subsystem):
     def getShooterAngleAbsolute(self) -> Rotation2d:
         return self.shooterEncoder.getPosition()
 
-    def getLeftShooterSpeed(self) -> int:
+    def getLeftShooterSpeed(self) -> float:
         # RPM
         return self.leftShootingMotor.get(Talon.ControlMode.Velocity)
 
-    def getRightShooterSpeed(self) -> int:
+    def getRightShooterSpeed(self) -> float:
         # RPM
         return self.rightShootingMotor.get(Talon.ControlMode.Velocity)
 

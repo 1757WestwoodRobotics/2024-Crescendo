@@ -114,7 +114,7 @@ class Talon:
 
         for signal in [
             self.positionSignal,
-            self.voltageSignal,
+            self.velocitySignal,
             self.accelSignal,
             self.voltageSignal,
             self.supplyVoltageSignal,
